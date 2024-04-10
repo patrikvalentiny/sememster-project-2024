@@ -7,8 +7,6 @@ app.Run();
 
 public static class StartupClass
 {
-    
-
     public static Task<WebApplication> Startup(string[] args)
     {
         
@@ -20,7 +18,15 @@ public static class StartupClass
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+            .Build();
+        
         Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
             // .WriteTo.Console()
             .CreateLogger();
 
