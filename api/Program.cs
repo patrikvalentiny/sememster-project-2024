@@ -36,7 +36,8 @@ public static class StartupClass
 
 
         builder.Host.UseSerilog();
-        // builder.WebHost.UseUrls("http://*:5000");
+        builder.WebHost.UseUrls("http://*:5000");
+        
 
         var app = builder.Build();
         app.UseSerilogRequestLogging();
