@@ -1,0 +1,15 @@
+sdk: ^2.0.0-alpha.100
+prefixes:
+  bme280: bme280-driver
+  mqtt: mqtt
+packages:
+  bme280-driver:
+    url: github.com/toitware/bme280-driver
+    name: bme280
+    version: 1.0.0
+    hash: 65b88ac19a5e2b48627a2dbae6d7757ae45c502c
+  mqtt:
+    url: github.com/toitware/mqtt
+    name: mqtt
+    version: 2.7.0
+    hash: ae42b7f4949ec65512e845e7bef7e90a33a914d9

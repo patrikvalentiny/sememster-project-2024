@@ -1,0 +1,9 @@
+﻿services:
+  api:
+#    image: api
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8181:8181"
