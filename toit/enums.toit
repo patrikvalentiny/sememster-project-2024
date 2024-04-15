@@ -1,1 +1,1 @@
-TOPIC-PREFIX /string ::= "climatectrl"
+TOPIC-PREFIX /string ::= "climatectrl-dev"

@@ -6,4 +6,15 @@
         dockerfile: Dockerfile
     ports:
       - "8080:8080"
-      - "8181:8181"
+      
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: climate_ctrl
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_SCHEMA: public

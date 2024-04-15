@@ -7,6 +7,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		compose.yml = compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "service", "service\service.csproj", "{1870B8FE-379A-4CAB-ADAF-489954F48AB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "infrastructure", "infrastructure\infrastructure.csproj", "{621341C5-9547-4A18-9ADE-6C9A9D10C666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "commons", "commons\commons.csproj", "{EB373C2D-CF20-4CC8-88EE-DAA98196A1FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +23,17 @@ Global
 		{43CE4DCA-EADF-4B7D-883B-E6F4523B2A6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43CE4DCA-EADF-4B7D-883B-E6F4523B2A6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43CE4DCA-EADF-4B7D-883B-E6F4523B2A6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1870B8FE-379A-4CAB-ADAF-489954F48AB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1870B8FE-379A-4CAB-ADAF-489954F48AB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1870B8FE-379A-4CAB-ADAF-489954F48AB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1870B8FE-379A-4CAB-ADAF-489954F48AB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{621341C5-9547-4A18-9ADE-6C9A9D10C666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{621341C5-9547-4A18-9ADE-6C9A9D10C666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{621341C5-9547-4A18-9ADE-6C9A9D10C666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{621341C5-9547-4A18-9ADE-6C9A9D10C666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB373C2D-CF20-4CC8-88EE-DAA98196A1FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB373C2D-CF20-4CC8-88EE-DAA98196A1FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB373C2D-CF20-4CC8-88EE-DAA98196A1FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB373C2D-CF20-4CC8-88EE-DAA98196A1FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
