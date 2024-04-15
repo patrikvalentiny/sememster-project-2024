@@ -5,15 +5,17 @@ namespace infrastructure;
 
 public class DeviceRepository(DbDataSource dataSource)
 {
-    public TestRecord InsertDevice(string mac)
+    public Device InsertDevice(string mac)
     {
-        var sql = @$"INSERT INTO climate_ctrl.devices (mac) VALUES (@mac) 
+        var sql = @$"INSERT INTO climate_ctrl.devices (mac) VALUES (@mac)
+                        ON CONFLICT (mac) DO UPDATE SET mac = EXCLUDED.mac
                         RETURNING 
-                            id as {nameof(TestRecord.Id)}, 
-                            mac as {nameof(TestRecord.Mac)};";
+                            id as {nameof(Device.Id)}, 
+                            mac as {nameof(Device.Mac)};";
+        
         using var conn = dataSource.OpenConnection();
-        return conn.QueryFirst<TestRecord>(sql, mac);
+        return conn.QueryFirst<Device>(sql, new {mac});
     }
 }
 
-public record TestRecord(int Id, string Mac);
+public record Device(int Id, string Mac);

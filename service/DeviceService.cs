@@ -4,8 +4,8 @@ namespace service;
 
 public class DeviceService(DeviceRepository deviceRepository)
 {
-    public TestRecord StatusCheck()
+    public Device InsertDevice(string mac)
     {
-        return deviceRepository.InsertDevice("test");
+        return deviceRepository.InsertDevice(mac);
     }
 }

@@ -1,16 +1,15 @@
 using System.Net;
+using api.Mqtt;
 using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
+using MQTTnet.Client;
 using Serilog;
 using service;
 using WebSocketProxy;
 using Host = WebSocketProxy.Host;
 
 StartupClass.Startup(args);
-// var tcp = 
-// tcp.Start();
-// app.Run();
 
 public static class StartupClass
 {
@@ -40,9 +39,10 @@ public static class StartupClass
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
             dataSourceBuilder => 
                 dataSourceBuilder.EnableParameterLogging());
-        
+        builder.Services.AddSingleton<WebSocketStateService>();
         builder.Services.AddSingleton<DeviceService>();
         builder.Services.AddSingleton<DeviceRepository>();
+        builder.Services.AddSingleton<MqttClientService>();
         
         // Add services to the container.
         builder.Services.AddControllers();
@@ -83,15 +83,24 @@ public static class StartupClass
                 Port = 8181
             }
         };
+        
 
         using var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
         using var tcpProxy = new TcpProxyServer(proxyConfiguration);
-
+        var webSocketStateService = app.Services.GetRequiredService<WebSocketStateService>();
         // Initialize Fleck
         websocketServer.Start(socket =>
         {
-            socket.OnOpen = () => { Log.Debug("Client connected: {Id}", socket.ConnectionInfo.Id); };
-            socket.OnClose = () => { Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id); };
+            socket.OnOpen = () =>
+            {
+                Log.Debug("Client connected: {Id}", socket.ConnectionInfo.Id);
+                webSocketStateService.Connections.TryAdd(socket.ConnectionInfo.Id, socket);
+            };
+            socket.OnClose = () =>
+            {
+                Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id); 
+                webSocketStateService.Connections.TryRemove(socket.ConnectionInfo.Id, out _);
+            };
             socket.OnMessage = async message =>
             {
                 Log.Debug("Message received: {Message}", message);
@@ -108,6 +117,8 @@ public static class StartupClass
             };
         });
 
+        _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
+        
         // Initialize the proxy
         tcpProxy.Start();
 

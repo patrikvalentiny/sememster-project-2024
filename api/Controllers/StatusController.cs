@@ -2,14 +2,15 @@
 using service;
 
 namespace api.Controllers;
+
 [ApiController]
 [Route("api/v1/status")]
-public class StatusController(DeviceService deviceService): Controller
+public class StatusController : Controller
 {
     
     [HttpGet]
     public IActionResult GetStatus()
     {
-        return Ok(deviceService.StatusCheck());
+        return Ok("Service is running");
     }
 }
