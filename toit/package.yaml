@@ -2,6 +2,9 @@ dependencies:
   bme280:
     url: github.com/toitware/bme280-driver
     version: ^1.0.0
+  http:
+    url: github.com/toitlang/pkg-http
+    version: ^2.6.0
   mqtt:
     url: github.com/toitware/mqtt
     version: ^2.7.0

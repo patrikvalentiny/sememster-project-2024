@@ -1,3 +1,5 @@
+secrets.toit
+
 bin/
 obj/
 /packages/
@@ -548,4 +550,5 @@ e2e/*.map
 
 # System Files
 .DS_Store/
+
 
