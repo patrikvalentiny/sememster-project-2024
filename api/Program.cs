@@ -118,7 +118,7 @@ public static class StartupClass
         });
 
         _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
-        
+        app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         // Initialize the proxy
         tcpProxy.Start();
 
