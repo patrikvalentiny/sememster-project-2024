@@ -8,4 +8,9 @@ public class DeviceService(DeviceRepository deviceRepository)
     {
         return deviceRepository.InsertDevice(mac);
     }
+
+    public IEnumerable<Device> GetDevices()
+    {
+        return deviceRepository.GetDevices();
+    }
 }
