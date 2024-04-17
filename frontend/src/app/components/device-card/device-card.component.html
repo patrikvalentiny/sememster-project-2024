@@ -1,12 +1,18 @@
 <div class="card bg-base-100 shadow-xl h-80 hover:bg-base-200">
   <div class="card-body">
-    <div class="badge" [ngClass]="{
+    <div class="flex flex-row w-full justify-between items-center">
+
+      <div class="flex flex-col gap-2">
+        <h2 class="card-title">{{ device.name }}</h2>
+        <p class="italic text-sm">{{ device.mac }}</p>
+      </div>
+      <div class="badge" [ngClass]="{
       'badge-success': device.status === 'online',
       'badge-error': device.status === 'offline',
       'badge-warning': device.status === 'suspended'
-    }">{{ device.status }}
+       }">
+        {{ device.status }}
+      </div>
     </div>
-    <h2 class="card-title">{{ device.name }}</h2>
-    <p>{{ device.mac }}</p>
   </div>
 </div>

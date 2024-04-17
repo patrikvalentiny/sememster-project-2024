@@ -1,9 +1,14 @@
 using System.Net;
+using System.Reflection;
+using api.ClientEventHandlers;
 using api.Mqtt;
+using api.Utils;
 using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
+using MediatR;
 using MQTTnet.Client;
+using Newtonsoft.Json;
 using Serilog;
 using service;
 using WebSocketProxy;
@@ -43,6 +48,13 @@ public static class StartupClass
         builder.Services.AddSingleton<DeviceService>();
         builder.Services.AddSingleton<DeviceRepository>();
         builder.Services.AddSingleton<MqttClientService>();
+        var types = Assembly.GetExecutingAssembly();
+        builder.Services.AddMediatR(cfg => {
+            cfg.RegisterServicesFromAssembly(types);
+        });
+        
+        var baseDtos = WsHelper.GetBaseDtos(types);
+        Log.Debug("BaseDtos: {BaseDtos}", baseDtos);
         
         // Add services to the container.
         builder.Services.AddControllers();
@@ -84,10 +96,11 @@ public static class StartupClass
             }
         };
         
-
+        
         using var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
         using var tcpProxy = new TcpProxyServer(proxyConfiguration);
         var webSocketStateService = app.Services.GetRequiredService<WebSocketStateService>();
+        var mediatr = app.Services.GetRequiredService<IMediator>();
         // Initialize Fleck
         websocketServer.Start(socket =>
         {
@@ -106,7 +119,10 @@ public static class StartupClass
                 Log.Debug("Message received: {Message}", message);
                 try
                 {
-                    await socket.Send("Hello from server");
+                    // await socket.Send("Hello from server");
+                    var clientSaysHelloDto = JsonConvert.DeserializeObject<ClientSaysHelloDto>(message)!;
+                    var response = await mediatr.Send(clientSaysHelloDto);
+                    await socket.Send(response!.ToString());
                     // await app.InvokeClientEventHandler(services, socket, message);
                 }
                 catch (Exception e)

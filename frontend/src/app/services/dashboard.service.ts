@@ -11,7 +11,7 @@ export class DashboardService{
   private readonly http: HttpClient = inject(HttpClient);
   devices:Device[] = [];
   constructor() {
-    this.getDevices().then(r =>{})
+    this.getDevices().then(() =>{})
   }
 
 
