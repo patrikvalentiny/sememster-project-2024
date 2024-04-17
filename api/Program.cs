@@ -123,8 +123,7 @@ public static class StartupClass
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e, "Error handling message");
-                    // e.Handle(socket);
+                    e.Handle(socket);
                 }
             };
         });
