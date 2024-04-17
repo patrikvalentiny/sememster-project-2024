@@ -1,37 +1,46 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 using Fleck;
 using MediatR;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 
 namespace api.Utils;
 
 public static class WsHelper
 {
-    private static readonly HashSet<Type> BaseDtos = [];
+    private static readonly ConcurrentDictionary<string, Type> BaseDtos = [];
+
     public static void InitBaseDtos(Assembly assembly)
     {
         foreach (var type in assembly.GetTypes())
-        {
-            if (type.BaseType != null &&
-                type.BaseType.IsGenericType &&
-                type.BaseType.GetGenericTypeDefinition() == typeof(BaseDto<>))
+            if (type.BaseType != null
+                && type.BaseType == typeof(BaseDto))
             {
-                BaseDtos.Add(type);
+                var eventType = (type.Name.ToLower().EndsWith("dto")
+                    ? type.Name.Substring(0, type.Name.Length - 3)
+                    : type.Name).ToLower();
+                BaseDtos.TryAdd(eventType, type);
             }
-        }
     }
-    
-    public static Task InvokeBaseDtoHandler(this IMediator mediator, IWebSocketConnection ws, string message)
+
+    public static Task InvokeBaseDtoHandler(this IWebSocketConnection ws, string message, IMediator mediator)
     {
-        var dto = JsonConvert.DeserializeObject<BaseDto<object>>(message);
-        var type = BaseDtos.FirstOrDefault(x => x.Name.Equals(dto!.EventType + "Dto"));
-        
-        //TODO: exception handling
-        if (type == null)
+        var dto = JsonConvert.DeserializeObject<BaseDto>(message, new JsonSerializerSettings
         {
-            return Task.CompletedTask;
-        }
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        });
+
+
+        if (dto == null) throw new NullReferenceException("Could not deserialize message");
+
+        var eventType = (dto.EventType.EndsWith("dto", StringComparison.OrdinalIgnoreCase)
+            ? dto.EventType.Substring(0, dto.EventType.Length - 3)
+            : dto.EventType).ToLower();
+
+
+        if (!BaseDtos.TryGetValue(eventType, out var type)) throw new NullReferenceException("Could not find type");
 
         var request = JsonConvert.DeserializeObject(message, type);
         //TODO: null check
@@ -41,17 +50,17 @@ public static class WsHelper
             Log.Error(response.Exception, "Error invoking handler");
             return Task.CompletedTask;
         }
-        if (response.Result == null)
-        {
-            return Task.CompletedTask;
-        }
-        return ws.SendJson(response.Result);
+
+        return response.Result == null ? Task.CompletedTask : ws.SendJson(response.Result);
     }
-    
-    public static Task SendJson(this IWebSocketConnection ws, object obj)
+
+    private static Task SendJson<T>(this IWebSocketConnection ws, T obj)
     {
-        var json = JsonConvert.SerializeObject(obj);
-        Log.Debug("Sending: {json}",json);
+        var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        });
+        Log.Debug("Sending: {json}", json);
         return ws.Send(json);
     }
 }

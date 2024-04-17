@@ -119,7 +119,7 @@ public static class StartupClass
                 Log.Debug("Message received: {Message}", message);
                 try
                 {
-                    await mediatr.InvokeBaseDtoHandler(socket, message);
+                    await socket.InvokeBaseDtoHandler(message, mediatr);
                 }
                 catch (Exception e)
                 {

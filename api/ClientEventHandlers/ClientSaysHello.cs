@@ -3,15 +3,20 @@ using MediatR;
 
 namespace api.ClientEventHandlers;
 
-public class ClientSaysHelloDto : BaseDto<ClientSaysHelloDto>, IRequest<string>
+public class ClientSaysHelloDto : BaseDto, IRequest<ServerSaysHelloDto>
 {
     public string Message { get; set; }
 }
 
-public class ClientSaysHelloHandler : IRequestHandler<ClientSaysHelloDto, string>
+public class ServerSaysHelloDto : BaseDto
 {
-    public Task<string> Handle(ClientSaysHelloDto request, CancellationToken cancellationToken)
+    public string Message { get; set; }
+}
+
+public class ClientSaysHelloHandler : IRequestHandler<ClientSaysHelloDto, ServerSaysHelloDto>
+{
+    public Task<ServerSaysHelloDto> Handle(ClientSaysHelloDto request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(request.Message);
+        return Task.FromResult(new ServerSaysHelloDto() {Message = $"Hello, {request.Message}!"});
     }
 }
