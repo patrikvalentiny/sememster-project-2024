@@ -53,8 +53,7 @@ public static class StartupClass
             cfg.RegisterServicesFromAssembly(types);
         });
         
-        var baseDtos = WsHelper.GetBaseDtos(types);
-        Log.Debug("BaseDtos: {BaseDtos}", baseDtos);
+        WsHelper.InitBaseDtos(types);
         
         // Add services to the container.
         builder.Services.AddControllers();
@@ -99,6 +98,7 @@ public static class StartupClass
         
         using var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
         using var tcpProxy = new TcpProxyServer(proxyConfiguration);
+        
         var webSocketStateService = app.Services.GetRequiredService<WebSocketStateService>();
         var mediatr = app.Services.GetRequiredService<IMediator>();
         // Initialize Fleck
@@ -119,11 +119,7 @@ public static class StartupClass
                 Log.Debug("Message received: {Message}", message);
                 try
                 {
-                    // await socket.Send("Hello from server");
-                    var clientSaysHelloDto = JsonConvert.DeserializeObject<ClientSaysHelloDto>(message)!;
-                    var response = await mediatr.Send(clientSaysHelloDto);
-                    await socket.Send(response!.ToString());
-                    // await app.InvokeClientEventHandler(services, socket, message);
+                    await mediatr.InvokeBaseDtoHandler(socket, message);
                 }
                 catch (Exception e)
                 {
