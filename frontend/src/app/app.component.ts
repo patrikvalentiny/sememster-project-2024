@@ -1,17 +1,14 @@
-import {Component, inject} from '@angular/core';
-import {HotToastService} from "@ngxpert/hot-toast";
+import {Component} from '@angular/core';
+import {HomeSkeletonComponent} from "./pages/home/home-skeleton/home-skeleton.component";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css',
-    standalone: true
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+  imports: [
+    HomeSkeletonComponent
+  ],
+  standalone: true
 })
 export class AppComponent {
-  title = 'app';
-  private readonly toast: HotToastService = inject(HotToastService);
-
-  btnClick() {
-    this.toast.show('Hello world');
-  }
 }

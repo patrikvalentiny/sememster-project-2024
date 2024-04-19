@@ -9,6 +9,8 @@
 
     <ItemGroup>
         <PackageReference Include="Fleck" Version="1.2.0"/>
+        <PackageReference Include="MediatR" Version="12.2.0" />
+        <PackageReference Include="MQTTnet" Version="4.3.3.952" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Npgsql.DependencyInjection" Version="8.0.2" />
         <PackageReference Include="patrikvalentiny-WebSocketProxy" Version="1.1.0" />
@@ -22,6 +24,10 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\service\service.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,22 @@
+﻿using api.Utils;
+using MediatR;
+
+namespace api.ClientEventHandlers;
+
+public class ClientSaysHelloDto : BaseDto, IRequest<ServerSaysHelloDto>
+{
+    public string Message { get; set; }
+}
+
+public class ServerSaysHelloDto : BaseDto
+{
+    public string Message { get; set; }
+}
+
+public class ClientSaysHelloHandler : IRequestHandler<ClientSaysHelloDto, ServerSaysHelloDto>
+{
+    public Task<ServerSaysHelloDto> Handle(ClientSaysHelloDto request, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(new ServerSaysHelloDto() {Message = $"Hello, {request.Message}!"});
+    }
+}
