@@ -12,9 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          - cd frontend/
-          - npm 
-          - npm run build
+          cd frontend/
+          npm i 
+          npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
