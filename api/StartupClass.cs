@@ -17,6 +17,31 @@ public static class StartupClass
 {
     public static void Startup(string[] args)
     {
+        
+        SetupLogger();
+        
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.AddServices();
+        
+        var app = builder.Build();
+        
+        app.SetupApp();
+        
+        using var tcpProxy = CreateProxy();
+        using var websocketServer = StartWebSocketServer(app.Services);
+
+        // MQTT
+        _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
+        
+        // Initialize the proxy
+        tcpProxy.Start();
+        
+        app.Run();
+    }
+
+    private static void SetupLogger()
+    {
         //setup logger
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -30,14 +55,14 @@ public static class StartupClass
             .ReadFrom.Configuration(configuration)
             // .WriteTo.Console()
             .CreateLogger();
-
-
-        var builder = WebApplication.CreateBuilder(args);
-
+    }
+    
+    private static void AddServices(this WebApplicationBuilder builder)
+    {
         builder.Host.UseSerilog();
         
         var conn = Environment.GetEnvironmentVariable("ASPNETCORE_ConnectionStrings__Postgres") ??
-                     throw new Exception("Connection string not found");
+                   throw new Exception("Connection string not found");
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
             dataSourceBuilder => 
                 dataSourceBuilder.EnableParameterLogging());
@@ -59,8 +84,10 @@ public static class StartupClass
         builder.Services.AddSwaggerGen();
 
         builder.WebHost.UseUrls("http://*:5000");
+    }
 
-        var app = builder.Build();
+    private static void SetupApp(this WebApplication app)
+    {
         app.UseSerilogRequestLogging();
         app.UseForwardedHeaders();
 
@@ -72,7 +99,17 @@ public static class StartupClass
         }
 
         app.MapControllers();
+        string[] allowedOrigins = app.Environment.IsDevelopment()
+            ? ["http://localhost:4200", "http://localhost:5000"]
+            : ["https://climate-ctrl.web.app", "https://climate-ctrl.firebaseapp.com"];
+            
+        app.UseCors(corsPolicyBuilder => corsPolicyBuilder.WithOrigins(allowedOrigins)
+            .AllowAnyMethod().AllowAnyHeader());
 
+    }
+
+    private static TcpProxyServer CreateProxy()
+    {
         var proxyConfiguration = new TcpProxyConfiguration
         {
             PublicHost = new Host
@@ -91,13 +128,14 @@ public static class StartupClass
                 Port = 8181
             }
         };
-        
-        
-        using var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
-        using var tcpProxy = new TcpProxyServer(proxyConfiguration);
-        
-        var webSocketStateService = app.Services.GetRequiredService<WebSocketStateService>();
-        var mediatr = app.Services.GetRequiredService<IMediator>();
+        return new TcpProxyServer(proxyConfiguration);
+    }
+
+    private static IWebSocketServer StartWebSocketServer(IServiceProvider services)
+    {
+        var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
+        var webSocketStateService =services.GetRequiredService<WebSocketStateService>();
+        var mediatr = services.GetRequiredService<IMediator>();
         // Initialize Fleck
         websocketServer.Start(socket =>
         {
@@ -124,16 +162,6 @@ public static class StartupClass
                 }
             };
         });
-
-        _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
-        var allowedOrigins = app.Environment.IsDevelopment()
-            ? new List<string> { "http://localhost:4200", "http://localhost:5000" }
-            : new List<string> {  };
-        app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-        
-        // Initialize the proxy
-        tcpProxy.Start();
-
-        app.Run();
+        return websocketServer;
     }
 }

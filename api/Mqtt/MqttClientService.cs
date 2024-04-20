@@ -24,8 +24,9 @@ public class MqttClientService(WebSocketStateService webSocketStateService, Devi
 
         await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter(f => f.WithTopic("climatectrl-dev/#"))
+            .WithTopicFilter(f => f.WithTopic(environment == "Development" ? "climatectrl-dev/#" : "climatectrl/#"))
             .Build();
 
         await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);

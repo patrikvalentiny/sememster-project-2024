@@ -5,12 +5,12 @@ namespace api.ClientEventHandlers;
 
 public class ClientSaysHelloDto : BaseDto, IRequest<ServerSaysHelloDto>
 {
-    public string Message { get; set; }
+    public required string Message { get; set; }
 }
 
 public class ServerSaysHelloDto : BaseDto
 {
-    public string Message { get; set; }
+    public required string Message { get; set; }
 }
 
 public class ClientSaysHelloHandler : IRequestHandler<ClientSaysHelloDto, ServerSaysHelloDto>
