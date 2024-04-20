@@ -6,6 +6,9 @@
         dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      ASPNETCORE_ConnectionStrings__Postgres: ${ASPNETCORE_ConnectionStrings__Postgres}
+      ASPNETCORE_Flespi__Username: ${ASPNETCORE_Flespi__Username}
       
   db:
     image: postgres:latest
