@@ -1,0 +1,16 @@
+name: Migrate Prod database
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: joshuaavalon/flyway-action@v3.0.0
+        with:
+          url: ${{ secrets.PROD_DB_URL }}
+          user: ${{ secrets.PROD_DB_USER }}
+          password: ${{ secrets.PROD_DB_PASSWORD }}
+      - run: echo 'testing'
