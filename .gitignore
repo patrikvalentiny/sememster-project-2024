@@ -1,3 +1,4 @@
+.env
 secrets.toit
 db/
 bin/
