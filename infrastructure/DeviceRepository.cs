@@ -12,9 +12,9 @@ public class DeviceRepository(DbDataSource dataSource)
                         RETURNING 
                             id as {nameof(Device.Id)}, 
                             mac as {nameof(Device.Mac)};";
-        
+
         using var conn = dataSource.OpenConnection();
-        return conn.QueryFirst<Device>(sql, new {mac});
+        return conn.QueryFirst<Device>(sql, new { mac });
     }
 
     public IEnumerable<Device> GetDevices()

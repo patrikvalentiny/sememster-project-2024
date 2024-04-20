@@ -1,5 +1,4 @@
-﻿using infrastructure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using service;
 
 namespace api.Controllers;
@@ -21,6 +20,5 @@ public class DashboardController(DeviceService deviceService) : Controller
             Console.WriteLine(e);
             throw;
         }
-        
     }
 }

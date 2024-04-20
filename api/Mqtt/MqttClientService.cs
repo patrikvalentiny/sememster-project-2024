@@ -10,12 +10,11 @@ namespace api.Mqtt;
 
 public class MqttClientService(WebSocketStateService webSocketStateService, DeviceService deviceService)
 {
-     public async Task CommunicateWithBroker()
+    public async Task CommunicateWithBroker()
     {
-
         var mqttFactory = new MqttFactory();
         var mqttClient = mqttFactory.CreateMqttClient();
-        
+
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)
             .WithCredentials(Environment.GetEnvironmentVariable("ASPNETCORE_Flespi__Username"), "")
@@ -41,28 +40,24 @@ public class MqttClientService(WebSocketStateService webSocketStateService, Devi
                 var message = m.ConvertPayloadToString();
                 Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, topic);
                 if (topicList[1] == "devices" && topicList.Length == 2)
-                {
                     deviceService.InsertDevice(JsonConvert.DeserializeObject<Device>(message)!.Mac);
-                }
-                
+
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
                     try
                     {
                         await socket.Send(message);
-                    } catch (Exception exc)
+                    }
+                    catch (Exception exc)
                     {
                         Log.Error(exc, "Error sending message to client");
                     }
                 });
-                
-                
             }
             catch (Exception exc)
             {
                 Log.Error(exc, "Error handling message");
             }
         };
-    
     }
 }

@@ -9,5 +9,5 @@ public class BaseDto
         EventType = subString.ToLower().Equals("dto") ? eventType.Substring(0, eventType.Length - 3) : eventType;
     }
 
-    public string EventType { get; init;}
+    public string EventType { get; init; }
 }

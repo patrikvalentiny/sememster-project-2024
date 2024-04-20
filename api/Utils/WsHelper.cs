@@ -45,13 +45,10 @@ public static class WsHelper
 
         var request = JsonConvert.DeserializeObject(message, type);
 
-        if(request == null) throw new NullReferenceException("Could not deserialize to type");
-        
+        if (request == null) throw new NullReferenceException("Could not deserialize to type");
+
         var response = mediator.Send(request);
-        if (response.Exception != null)
-        {
-            throw new HandlerException(response.Exception.Message);
-        }
+        if (response.Exception != null) throw new HandlerException(response.Exception.Message);
 
         return response.Result == null ? Task.CompletedTask : ws.SendJson(response.Result);
     }
@@ -65,31 +62,32 @@ public static class WsHelper
         Log.Debug("Sending: {json}", json);
         return ws.Send(json);
     }
-    
+
     public static void SendNotification(this IWebSocketConnection socket, string message)
     {
         socket.SendJson(new ServerSendsNotificationDto(message));
     }
-    
+
     public static void SendError(this IWebSocketConnection socket, string message)
     {
         socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Error));
     }
-    
+
     public static void SendSuccess(this IWebSocketConnection socket, string message)
     {
         socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Success));
     }
-    
+
     public static void SendWarning(this IWebSocketConnection socket, string message)
     {
         socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Warning));
     }
-    
-    public class HandlerException(string message) : Exception(message);
+
     public static void Handle(this Exception ex, IWebSocketConnection ws)
     {
         ws.SendError(ex.Message);
         Log.Error(ex, ex.Message);
     }
+
+    public class HandlerException(string message) : Exception(message);
 }

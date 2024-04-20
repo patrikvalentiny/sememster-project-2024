@@ -17,26 +17,25 @@ public static class StartupClass
 {
     public static void Startup(string[] args)
     {
-        
         SetupLogger();
-        
+
         var builder = WebApplication.CreateBuilder(args);
 
         builder.AddServices();
-        
+
         var app = builder.Build();
-        
+
         app.SetupApp();
-        
+
         using var tcpProxy = CreateProxy();
         using var websocketServer = StartWebSocketServer(app.Services);
 
         // MQTT
         _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
-        
+
         // Initialize the proxy
         tcpProxy.Start();
-        
+
         app.Run();
     }
 
@@ -56,27 +55,25 @@ public static class StartupClass
             // .WriteTo.Console()
             .CreateLogger();
     }
-    
+
     private static void AddServices(this WebApplicationBuilder builder)
     {
         builder.Host.UseSerilog();
-        
+
         var conn = Environment.GetEnvironmentVariable("ASPNETCORE_ConnectionStrings__Postgres") ??
                    throw new Exception("Connection string not found");
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
-            dataSourceBuilder => 
+            dataSourceBuilder =>
                 dataSourceBuilder.EnableParameterLogging());
         builder.Services.AddSingleton<WebSocketStateService>();
         builder.Services.AddSingleton<DeviceService>();
         builder.Services.AddSingleton<DeviceRepository>();
         builder.Services.AddSingleton<MqttClientService>();
         var types = Assembly.GetExecutingAssembly();
-        builder.Services.AddMediatR(cfg => {
-            cfg.RegisterServicesFromAssembly(types);
-        });
-        
+        builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
+
         WsHelper.InitBaseDtos(types);
-        
+
         // Add services to the container.
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -102,10 +99,9 @@ public static class StartupClass
         string[] allowedOrigins = app.Environment.IsDevelopment()
             ? ["http://localhost:4200", "http://localhost:5000"]
             : ["https://climate-ctrl.web.app", "https://climate-ctrl.firebaseapp.com"];
-            
+
         app.UseCors(corsPolicyBuilder => corsPolicyBuilder.WithOrigins(allowedOrigins)
             .AllowAnyMethod().AllowAnyHeader());
-
     }
 
     private static TcpProxyServer CreateProxy()
@@ -134,7 +130,7 @@ public static class StartupClass
     private static IWebSocketServer StartWebSocketServer(IServiceProvider services)
     {
         var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
-        var webSocketStateService =services.GetRequiredService<WebSocketStateService>();
+        var webSocketStateService = services.GetRequiredService<WebSocketStateService>();
         var mediatr = services.GetRequiredService<IMediator>();
         // Initialize Fleck
         websocketServer.Start(socket =>
@@ -146,7 +142,7 @@ public static class StartupClass
             };
             socket.OnClose = () =>
             {
-                Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id); 
+                Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id);
                 webSocketStateService.Connections.TryRemove(socket.ConnectionInfo.Id, out _);
             };
             socket.OnMessage = async message =>

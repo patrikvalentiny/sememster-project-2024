@@ -17,6 +17,6 @@ public class ClientSaysHelloHandler : IRequestHandler<ClientSaysHelloDto, Server
 {
     public Task<ServerSaysHelloDto> Handle(ClientSaysHelloDto request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(new ServerSaysHelloDto() {Message = $"Hello, {request.Message}!"});
+        return Task.FromResult(new ServerSaysHelloDto { Message = $"Hello, {request.Message}!" });
     }
 }

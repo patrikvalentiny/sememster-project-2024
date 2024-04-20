@@ -2,6 +2,7 @@
 using service;
 
 namespace api.Controllers;
+
 [ApiController]
 [Route("api/v1/device")]
 public class DeviceController(DeviceService deviceService) : Controller
@@ -18,6 +19,5 @@ public class DeviceController(DeviceService deviceService) : Controller
             Console.WriteLine(e);
             throw;
         }
-        
     }
 }

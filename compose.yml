@@ -1,6 +1,6 @@
 ﻿services:
   api:
-#    image: api
+    #    image: api
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,7 +9,7 @@
     environment:
       ASPNETCORE_ConnectionStrings__Postgres: ${ASPNETCORE_ConnectionStrings__Postgres}
       ASPNETCORE_Flespi__Username: ${ASPNETCORE_Flespi__Username}
-      
+  
   db:
     image: postgres:latest
     ports:
