@@ -3,7 +3,6 @@ import {AppComponent} from './app/app.component';
 import {AppRoutingModule} from './app/app-routing.module';
 import {bootstrapApplication, BrowserModule} from '@angular/platform-browser';
 import {provideHotToastConfig} from "@ngxpert/hot-toast";
-import {RouterModule} from "@angular/router";
 import {provideHttpClient, withFetch} from "@angular/common/http";
 
 

@@ -1,17 +1,17 @@
 import {inject, Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import { ServerSendsNotification } from './events/server-sends-notification';
+import {ServerSendsNotification} from './events/server-sends-notification';
 import {HotToastService} from "@ngxpert/hot-toast";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
-  private readonly rws : ReconnectingWebSocket = new ReconnectingWebSocket(environment.wsBaseUrl);
+  online: boolean = false;
+  private readonly rws: ReconnectingWebSocket = new ReconnectingWebSocket(environment.wsBaseUrl);
   private readonly toast = inject(HotToastService);
 
-  online: boolean = false;
   constructor() {
     this.rws.addEventListener("open", () => {
       this.online = true;
@@ -22,11 +22,11 @@ export class WebsocketService {
     this.rws.addEventListener("message", message => {
       console.log("Received message: ", message.data);
     });
-    }
+  }
 
-    send(message: string){
-      this.rws.send(message);
-    }
+  send(message: string) {
+    this.rws.send(message);
+  }
 
   private handleEvent(event: MessageEvent) {
     console.log("Received: " + event.data);

@@ -11,7 +11,7 @@ import {DeviceCardComponent} from "../../../components/device-card/device-card.c
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit {
   dashboardService: DashboardService = inject(DashboardService);
 
   async ngOnInit(): Promise<void> {

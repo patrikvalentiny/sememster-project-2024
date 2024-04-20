@@ -12,7 +12,7 @@ import {NgClass} from "@angular/common";
   styleUrl: './device-card.component.css'
 })
 export class DeviceCardComponent {
-  @Input() device: Device = {id: 0, name: "distinguished-yak",mac:"69420", status_id: 0, status: "offline"};
+  @Input() device: Device = {id: 0, name: "distinguished-yak", mac: "69420", status_id: 0, status: "offline"};
 
 
 }

@@ -6,11 +6,11 @@
         <h2 class="card-title">{{ device.name }}</h2>
         <p class="italic text-sm">{{ device.mac }}</p>
       </div>
-      <div class="badge" [ngClass]="{
+      <div [ngClass]="{
       'badge-success': device.status === 'online',
       'badge-error': device.status === 'offline',
       'badge-warning': device.status === 'suspended'
-       }">
+       }" class="badge">
         {{ device.status }}
       </div>
     </div>

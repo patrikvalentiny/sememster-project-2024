@@ -7,15 +7,17 @@ import {firstValueFrom} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class DashboardService{
+export class DashboardService {
+  devices: Device[] = [];
   private readonly http: HttpClient = inject(HttpClient);
-  devices:Device[] = [];
+
   constructor() {
-    this.getDevices().then(() =>{})
+    this.getDevices().then(() => {
+    })
   }
 
 
-  async getDevices(){
+  async getDevices() {
     const call = this.http.get<Device[]>(environment.restBaseUrl + "/device")
     this.devices = await firstValueFrom<Device[]>(call);
     return this.devices;

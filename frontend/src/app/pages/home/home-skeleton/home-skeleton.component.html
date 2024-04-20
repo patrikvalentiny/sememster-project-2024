@@ -15,7 +15,9 @@
         <a class="btn btn-ghost text-xl" href="">HOME</a>
       </div>
       <div class="navbar-end gap-2">
-        <div class="badge" [ngClass]="ws.online ? 'badge-success' : 'badge-error'">{{ws.online ? "Online" : "Offline"}}</div>
+        <div class="badge"
+             [ngClass]="ws.online ? 'badge-success' : 'badge-error'">{{ ws.online ? "Online" : "Offline" }}
+        </div>
         <a class="btn btn-circle btn-outline" data-testid="profileIcon" href="#" (click)="logout()">
           <svg class="svg-icon h-full w-full stroke-0 p-2" fill="currentColor" stroke="currentColor"
                viewBox="0 0 20 20">
