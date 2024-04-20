@@ -37,7 +37,7 @@ public static class StartupClass
         builder.Host.UseSerilog();
         
         var conn = Environment.GetEnvironmentVariable("ASPNETCORE_ConnectionStrings__Postgres") ??
-                   throw new NullReferenceException("Connection string not found");
+                     throw new Exception("Connection string not found");
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
             dataSourceBuilder => 
                 dataSourceBuilder.EnableParameterLogging());
@@ -128,8 +128,9 @@ public static class StartupClass
         _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
         var allowedOrigins = app.Environment.IsDevelopment()
             ? new List<string> { "http://localhost:4200", "http://localhost:5000" }
-            : new List<string> { "https://weighttrackerpatval.azurewebsites.net", "https://semesterproject2023-7161a.web.app", "https://patrikvalentiny.github.io/WeightTracker" };
+            : new List<string> {  };
         app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        
         // Initialize the proxy
         tcpProxy.Start();
 
