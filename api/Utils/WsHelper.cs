@@ -64,7 +64,7 @@ public static class WsHelper
         return response.Result == null ? Task.CompletedTask : ws.SendJson(response.Result);
     }
 
-    private static Task SendJson<T>(this IWebSocketConnection ws, T obj)
+    public static Task SendJson<T>(this IWebSocketConnection ws, T obj)
     {
         var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
         {

@@ -25,7 +25,6 @@ export class HomeSkeletonComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.checkStatus();
-    this.ws.send("Hello from client");
   }
 
   logout() {

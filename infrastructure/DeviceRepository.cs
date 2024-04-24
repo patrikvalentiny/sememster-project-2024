@@ -8,7 +8,7 @@ public class DeviceRepository(DbDataSource dataSource)
     public Device InsertDevice(string mac)
     {
         var sql = @$"INSERT INTO climate_ctrl.devices (mac) VALUES (@mac)
-                        ON CONFLICT (mac) DO UPDATE SET mac = EXCLUDED.mac
+                        ON CONFLICT (mac) DO UPDATE SET status_id = 1
                         RETURNING 
                             id as {nameof(Device.Id)}, 
                             mac as {nameof(Device.Mac)},

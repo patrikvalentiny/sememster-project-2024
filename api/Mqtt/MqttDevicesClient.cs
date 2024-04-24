@@ -1,4 +1,6 @@
-﻿using infrastructure;
+﻿using api.ServerEvents;
+using api.Utils;
+using infrastructure;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
@@ -37,17 +39,15 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
             {
                 var m = e.ApplicationMessage;
                 var topic = m.Topic;
-                var topicList = topic.Split("/");
                 var message = m.ConvertPayloadToString();
                 Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, topic);
-                if (topicList[1] == "devices" && topicList.Length == 2)
-                    deviceService.InsertDevice(JsonConvert.DeserializeObject<Device>(message)!.Mac);
+                var device = deviceService.InsertDevice(JsonConvert.DeserializeObject<Device>(message)!.Mac);
 
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
                     try
                     {
-                        await socket.Send(message);
+                        await socket.SendJson(new ServerDeviceOnline{Device = device});
                     }
                     catch (Exception exc)
                     {
