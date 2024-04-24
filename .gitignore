@@ -1,5 +1,5 @@
 .env
-secrets.toit
+secrets*.toit
 db/
 bin/
 obj/

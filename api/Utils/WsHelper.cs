@@ -32,24 +32,35 @@ public static class WsHelper
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         });
-
-
+        
         if (dto == null) throw new NullReferenceException("Could not deserialize BaseDto");
 
+        // Remove the "dto" suffix from the event type and convert to lowercase
         var eventType = (dto.EventType.EndsWith("dto", StringComparison.OrdinalIgnoreCase)
             ? dto.EventType.Substring(0, dto.EventType.Length - 3)
             : dto.EventType).ToLower();
 
 
+        // Get the type from the dictionary
         if (!BaseDtos.TryGetValue(eventType, out var type)) throw new NullReferenceException("Could not find type");
-
+        
+        // Deserialize the message to the type
         var request = JsonConvert.DeserializeObject(message, type);
 
-        if (request == null) throw new NullReferenceException("Could not deserialize to type");
-
+        // Set the socket property
+        switch (request)
+        {
+            case null:
+                throw new NullReferenceException("Could not deserialize to type");
+            case BaseDto baseDto:
+                baseDto.Socket = ws;
+                break;
+        }
+        
+        // Send the request to the mediator
         var response = mediator.Send(request);
         if (response.Exception != null) throw new HandlerException(response.Exception.Message);
-
+        // If the response is null, return a completed task otherwise send the response
         return response.Result == null ? Task.CompletedTask : ws.SendJson(response.Result);
     }
 
@@ -62,6 +73,7 @@ public static class WsHelper
         Log.Debug("Sending: {json}", json);
         return ws.Send(json);
     }
+    
 
     public static void SendNotification(this IWebSocketConnection socket, string message)
     {

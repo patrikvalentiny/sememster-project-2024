@@ -1,6 +1,5 @@
 import mqtt
 import .secrets
-import .enums
 
 
 class Flespi-MQTT:
