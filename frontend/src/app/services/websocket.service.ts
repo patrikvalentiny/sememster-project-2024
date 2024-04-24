@@ -3,6 +3,9 @@ import {environment} from "../../environments/environment";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {ServerSendsNotification} from './events/server-sends-notification';
 import {HotToastService} from "@ngxpert/hot-toast";
+import {Device} from "../models/device";
+import {ServerDeviceOnline} from "./events/server/server-device-online";
+import {DashboardService} from "./dashboard.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +14,7 @@ export class WebsocketService {
   online: boolean = false;
   private readonly rws: ReconnectingWebSocket = new ReconnectingWebSocket(environment.wsBaseUrl);
   private readonly toast = inject(HotToastService);
+  private readonly dashboardService = inject(DashboardService);
 
   constructor() {
     this.rws.addEventListener("open", () => {
@@ -20,7 +24,7 @@ export class WebsocketService {
       this.online = false;
     });
     this.rws.addEventListener("message", message => {
-      console.log("Received message: ", message.data);
+      this.handleEvent(message);
     });
   }
 
@@ -29,7 +33,9 @@ export class WebsocketService {
   }
 
   private handleEvent(event: MessageEvent) {
-    console.log("Received: " + event.data);
+    if (!environment.production) {
+      console.log("Message: " + event.data);
+    }
     const data = JSON.parse(event.data) as BaseDto<any>;
     //@ts-ignore
     this[data.eventType].call(this, data);
@@ -53,6 +59,12 @@ export class WebsocketService {
         this.toast.show(data.message)
     }
   }
+
+  private ServerDeviceOnline(data: ServerDeviceOnline) {
+    this.dashboardService.devices.set(data.device!.mac, data.device!);
+    this.toast.info(`Device ${data.device!.name} is online`);
+  }
+
 }
 
 export class BaseDto<T> {

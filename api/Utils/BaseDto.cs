@@ -1,4 +1,6 @@
-﻿namespace api.Utils;
+﻿using Fleck;
+
+namespace api.Utils;
 
 public class BaseDto
 {
@@ -10,4 +12,5 @@ public class BaseDto
     }
 
     public string EventType { get; init; }
+    public IWebSocketConnection? Socket { get; set; }
 }

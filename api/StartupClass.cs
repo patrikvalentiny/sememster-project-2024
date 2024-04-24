@@ -6,6 +6,7 @@ using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
 using MediatR;
+using MQTTnet;
 using Serilog;
 using service;
 using WebSocketProxy;
@@ -31,7 +32,7 @@ public static class StartupClass
         using var websocketServer = StartWebSocketServer(app.Services);
 
         // MQTT
-        _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDevicesClient>().CommunicateWithBroker();
 
         // Initialize the proxy
         tcpProxy.Start();
@@ -68,9 +69,10 @@ public static class StartupClass
         builder.Services.AddSingleton<WebSocketStateService>();
         builder.Services.AddSingleton<DeviceService>();
         builder.Services.AddSingleton<DeviceRepository>();
-        builder.Services.AddSingleton<MqttClientService>();
+        builder.Services.AddSingleton<MqttDevicesClient>();
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
+        builder.Services.AddSingleton<MqttFactory>();
 
         WsHelper.InitBaseDtos(types);
 
