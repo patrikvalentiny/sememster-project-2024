@@ -62,6 +62,7 @@ export class WebsocketService {
 
   private ServerDeviceOnline(data: ServerDeviceOnline) {
     this.dashboardService.devices.set(data.device!.mac, data.device!);
+    this.toast.info(`Device ${data.device!.name} is online`);
   }
 
 }
