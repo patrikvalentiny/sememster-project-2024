@@ -1,4 +1,5 @@
-﻿using api.ServerEvents;
+﻿using api.Mqtt.Helpers;
+using api.ServerEvents;
 using api.Utils;
 using infrastructure;
 using MQTTnet;
@@ -10,28 +11,11 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, MqttFactory mqttFactory)
+public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, MqttClientGenerator clientGenerator)
 {
     public async Task CommunicateWithBroker()
     {
-        var mqttClient = mqttFactory.CreateMqttClient();
-
-        var mqttClientOptions = new MqttClientOptionsBuilder()
-            .WithTcpServer("mqtt.flespi.io", 1883)
-            .WithCredentials(Environment.GetEnvironmentVariable("ASPNETCORE_Flespi__Username"), "")
-            .WithProtocolVersion(MqttProtocolVersion.V500)
-            .Build();
-
-        var connectResult = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-        if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
-            throw new Exception($"Failed to connect to MQTT broker: {connectResult.ResultCode}");
-
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter(f => f.WithTopic((environment == "Development" ? "climatectrl-dev" : "climatectrl") + "/devices"))
-            .Build();
-
-        await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
+        var mqttClient = await clientGenerator.CreateMqttClient("/devices");
 
         mqttClient.ApplicationMessageReceivedAsync += async e =>
         {

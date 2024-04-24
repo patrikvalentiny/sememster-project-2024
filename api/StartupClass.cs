@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Reflection;
 using api.Mqtt;
+using api.Mqtt.Helpers;
 using api.Utils;
 using Fleck;
 using infrastructure;
@@ -73,6 +74,7 @@ public static class StartupClass
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
         builder.Services.AddSingleton<MqttFactory>();
+        builder.Services.AddSingleton<MqttClientGenerator>();
 
         WsHelper.InitBaseDtos(types);
 

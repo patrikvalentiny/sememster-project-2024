@@ -6,6 +6,7 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {Device} from "../models/device";
 import {ServerDeviceOnline} from "./events/server/server-device-online";
 import {DashboardService} from "./dashboard.service";
+import {BaseDto} from "./events/base-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -67,11 +68,4 @@ export class WebsocketService {
 
 }
 
-export class BaseDto<T> {
-  eventType: string;
 
-  constructor(init?: Partial<T>) {
-    this.eventType = this.constructor.name;
-    Object.assign(this, init);
-  }
-}
