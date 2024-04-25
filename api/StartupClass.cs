@@ -34,6 +34,7 @@ public static class StartupClass
 
         // MQTT
         _ = app.Services.GetRequiredService<MqttDevicesClient>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDeviceDataClient>().CommunicateWithBroker();
 
         // Initialize the proxy
         tcpProxy.Start();
@@ -75,6 +76,9 @@ public static class StartupClass
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
         builder.Services.AddSingleton<MqttFactory>();
         builder.Services.AddSingleton<MqttClientGenerator>();
+        builder.Services.AddSingleton<MqttDeviceDataClient>();
+        builder.Services.AddSingleton<DataService>();
+        builder.Services.AddSingleton<DataRepository>();
 
         WsHelper.InitBaseDtos(types);
 

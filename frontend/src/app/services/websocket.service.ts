@@ -7,6 +7,8 @@ import {Device} from "../models/device";
 import {ServerDeviceOnline} from "./events/server/server-device-online";
 import {DashboardService} from "./dashboard.service";
 import {BaseDto} from "./events/base-dto";
+import { ServerDeviceBmeData } from './events/server/server-device-bme-data';
+import {BmeData} from "../models/bme-data";
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +66,12 @@ export class WebsocketService {
   private ServerDeviceOnline(data: ServerDeviceOnline) {
     this.dashboardService.devices.set(data.device!.mac, data.device!);
     this.toast.info(`Device ${data.device!.name} is online`);
+  }
+
+  private ServerDeviceBmeData(data: ServerDeviceBmeData) {
+    //TODO fucking time conversions
+    const bmeData = data.data!;
+    this.dashboardService.bmeData.set(bmeData.deviceMac!, bmeData as BmeData);
   }
 
 }

@@ -3,12 +3,14 @@ import {HttpClient} from "@angular/common/http";
 import {Device} from "../models/device";
 import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
+import {BmeData} from "../models/bme-data";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
   devices:Map<string, Device> = new Map<string, Device>();
+  bmeData:Map<string, BmeData> = new Map<string, BmeData>();
   private readonly http: HttpClient = inject(HttpClient);
 
   constructor() {

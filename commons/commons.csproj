@@ -6,12 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.1.35"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\commons\commons.csproj" />
-    </ItemGroup>
-
 </Project>

@@ -28,10 +28,12 @@ main:
     config_ = json.decode payload
     print "Received config message on topic: $topic with payload: $config_"
 
+
+
   task:: send-bme-data client
   
 send-bme-data client:
-  delay-s /int := 5 * 60
+  delay-s /int := 5
   // create BME280 sensor instance
   bme ::= BME
 
