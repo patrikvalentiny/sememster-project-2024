@@ -35,17 +35,20 @@ public class MqttDeviceDataClient(MqttClientGenerator clientGenerator, DataServi
 
                 var insertedData = dataService.InsertData(data, mac);
                 Log.Debug("Inserted data: {Data}", JsonConvert.SerializeObject(insertedData));
-                webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
+                if(webSocketStateService.MacToConnectionId.TryGetValue(mac, out var connectionId))
                 {
-                    try
+                    if(webSocketStateService.Connections.TryGetValue(connectionId, out var socket))
                     {
-                        await socket.SendJson(new ServerDeviceBmeData { Data = insertedData });
+                        try
+                        {
+                            await socket.SendJson(new ServerDeviceBmeData { Data = insertedData });
+                        }
+                        catch (Exception exc)
+                        {
+                            Log.Error(exc, "Error sending message to client");
+                        }
                     }
-                    catch (Exception exc)
-                    {
-                        Log.Error(exc, "Error sending message to client");
-                    }
-                });
+                }
             }
             catch (Exception exc)
             {

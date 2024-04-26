@@ -26,7 +26,7 @@ public class DeviceRepository(DbDataSource dataSource)
                             d.device_name as {nameof(Device.Name)},
                             d.status_id as {nameof(Device.StatusId)},
                             ds.value as {nameof(Device.Status)}
-                            FROM climate_ctrl.devices d INNER JOIN climate_ctrl.device_status ds on ds.id = d.status_id";
+                            FROM climate_ctrl.devices d INNER JOIN climate_ctrl.device_status ds on ds.id = d.status_id ORDER BY d.id";
         using var conn = dataSource.OpenConnection();
         return conn.Query<Device>(sql);
     }

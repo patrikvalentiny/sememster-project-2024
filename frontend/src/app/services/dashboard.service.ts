@@ -3,16 +3,17 @@ import {HttpClient} from "@angular/common/http";
 import {Device} from "../models/device";
 import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
-import {BmeData} from "../models/bme-data";
+import {WebsocketService} from "./websocket.service";
+import {ClientStartsListeningToDevice} from "./events/client/client-starts-listening-to-device";
+import {StateService} from "./state.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  devices:Map<string, Device> = new Map<string, Device>();
-  bmeData:Map<string, BmeData[]> = new Map<string, BmeData[]>();
   private readonly http: HttpClient = inject(HttpClient);
-
+  private readonly ws = inject(WebsocketService);
+  private readonly stateService = inject(StateService);
   constructor() {
     this.getDevices().then(() => {
     })
@@ -23,8 +24,13 @@ export class DashboardService {
     const call = this.http.get<Device[]>(environment.restBaseUrl + "/device")
     const response = await firstValueFrom<Device[]>(call);
     response.forEach(device => {
-      this.devices.set(device.mac, device);
+      this.stateService.devices.set(device.mac, device);
+      this.getBmeData(device.mac);
     })
-    return this.devices;
+    return response;
+  }
+
+  async getBmeData(mac: string) {
+    this.ws.send(JSON.stringify(new ClientStartsListeningToDevice({mac: mac})));
   }
 }

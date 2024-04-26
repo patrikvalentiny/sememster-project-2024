@@ -21,4 +21,19 @@ public class DataRepository(DbDataSource dataSource)
         using var conn = dataSource.OpenConnection();
         return conn.QueryFirst<BmeDataDto>(sql, new { mac, data.TemperatureC, data.Humidity, data.Pressure });
     }
+
+    public IEnumerable<BmeData> GetLastData(string requestMac)
+    {
+        var sql = $@"SELECT 
+                        temperature_c as {nameof(BmeData.TemperatureC)},
+                        humidity as {nameof(BmeData.Humidity)},
+                        pressure as {nameof(BmeData.Pressure)},
+                        utc_time as {nameof(BmeData.CreatedAt)}
+                    FROM climate_ctrl.bme_data
+                    WHERE device_mac = @requestMac
+                    ORDER BY utc_time DESC
+                    LIMIT 10";
+        using var conn = dataSource.OpenConnection();
+        return conn.Query<BmeData>(sql, new { requestMac });
+    }
 }

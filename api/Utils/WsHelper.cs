@@ -30,7 +30,9 @@ public static class WsHelper
     {
         var dto = JsonConvert.DeserializeObject<BaseDto>(message, new JsonSerializerSettings
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            DateFormatHandling = DateFormatHandling.IsoDateFormat,
+            DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
         });
         
         if (dto == null) throw new NullReferenceException("Could not deserialize BaseDto");

@@ -3,13 +3,12 @@ import {environment} from "../../environments/environment";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {ServerSendsNotification} from './events/server-sends-notification';
 import {HotToastService} from "@ngxpert/hot-toast";
-import {Device} from "../models/device";
 import {ServerDeviceOnline} from "./events/server/server-device-online";
-import {DashboardService} from "./dashboard.service";
 import {BaseDto} from "./events/base-dto";
 import { ServerDeviceBmeData } from './events/server/server-device-bme-data';
 import {BmeData} from "../models/bme-data";
-import {BmeDataDto} from "./events/server/bme-data-dto";
+import { ServerSendsDeviceBaseDataDto } from './events/server/server-sends-device-base-data-dto';
+import {StateService} from "./state.service";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +17,7 @@ export class WebsocketService {
   online: boolean = false;
   private readonly rws: ReconnectingWebSocket = new ReconnectingWebSocket(environment.wsBaseUrl);
   private readonly toast = inject(HotToastService);
-  private readonly dashboardService = inject(DashboardService);
+  private readonly stateService = inject(StateService);
 
   constructor() {
     this.rws.addEventListener("open", () => {
@@ -65,17 +64,19 @@ export class WebsocketService {
   }
 
   private ServerDeviceOnline(data: ServerDeviceOnline) {
-    this.dashboardService.devices.set(data.device!.mac, data.device!);
+    this.stateService.devices.set(data.device!.mac, data.device!);
     this.toast.info(`Device ${data.device!.name} is online`);
   }
 
   private ServerDeviceBmeData(data: ServerDeviceBmeData) {
     const bmeData = data.data!;
-    bmeData.createdAt = new Date(Date.parse(bmeData!.createdAt!.toString() + "Z"))
-
-    const bmeDataList = (this.dashboardService.bmeData.get(bmeData.deviceMac!) ?? []).slice(0, 12);
+    const bmeDataList = (this.stateService.bmeData.get(bmeData.deviceMac!) ?? []).slice(0, 12);
     bmeDataList.unshift(bmeData as BmeData);
-    this.dashboardService.bmeData.set(bmeData.deviceMac!, bmeDataList);
+    this.stateService.bmeData.set(bmeData.deviceMac!, bmeDataList);
+  }
+
+  private ServerSendsDeviceBaseData(data: ServerSendsDeviceBaseDataDto){
+    this.stateService.bmeData.set(data.mac!, data.data!);
   }
 
 }
