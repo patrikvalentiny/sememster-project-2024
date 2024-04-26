@@ -18,7 +18,7 @@
       <p>Temperature: {{bmeData?.temperatureC ?? 0}} °C</p>
       <p>Humidity: {{bmeData?.humidity ?? 0 }} %</p>
       <p>Pressure: {{((bmeData?.pressure ?? 0) / 1000).toFixed(4)}} kPa</p>
-      <p>Created At: {{bmeData?.createdAt | date:"fullTime" : "utc"}}</p>
+      <p>Created At: {{bmeData?.createdAt | date:"long"}}</p>
 
     </div>
   </div>

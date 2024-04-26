@@ -9,6 +9,7 @@ import {DashboardService} from "./dashboard.service";
 import {BaseDto} from "./events/base-dto";
 import { ServerDeviceBmeData } from './events/server/server-device-bme-data';
 import {BmeData} from "../models/bme-data";
+import {BmeDataDto} from "./events/server/bme-data-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -69,9 +70,12 @@ export class WebsocketService {
   }
 
   private ServerDeviceBmeData(data: ServerDeviceBmeData) {
-    //TODO fucking time conversions
     const bmeData = data.data!;
-    this.dashboardService.bmeData.set(bmeData.deviceMac!, bmeData as BmeData);
+    bmeData.createdAt = new Date(Date.parse(bmeData!.createdAt!.toString() + "Z"))
+
+    const bmeDataList = (this.dashboardService.bmeData.get(bmeData.deviceMac!) ?? []).slice(0, 12);
+    bmeDataList.unshift(bmeData as BmeData);
+    this.dashboardService.bmeData.set(bmeData.deviceMac!, bmeDataList);
   }
 
 }

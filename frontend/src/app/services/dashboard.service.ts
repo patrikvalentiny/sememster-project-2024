@@ -10,7 +10,7 @@ import {BmeData} from "../models/bme-data";
 })
 export class DashboardService {
   devices:Map<string, Device> = new Map<string, Device>();
-  bmeData:Map<string, BmeData> = new Map<string, BmeData>();
+  bmeData:Map<string, BmeData[]> = new Map<string, BmeData[]>();
   private readonly http: HttpClient = inject(HttpClient);
 
   constructor() {

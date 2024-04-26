@@ -30,10 +30,9 @@ main:
 
 
 
-  task:: send-bme-data client
-  
-send-bme-data client:
-  delay-s /int := 5
+  task:: send-bme-data-periodically client 5  
+send-bme-data-periodically client minutes /int:
+  delay-s /int := minutes * 60
   // create BME280 sensor instance
   bme ::= BME
 
