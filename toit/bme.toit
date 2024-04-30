@@ -1,9 +1,13 @@
 import gpio
 import i2c
 import bme280
+import encoding.json
+import .utils
 
 class BME:
   driver_ /bme280.Driver := ?
+  mac_ /string ::= Utils.MAC
+  topic-prefix_ /string ::= Utils.TOPIC_PREFIX
 
   constructor alt-address = false:
     bus := i2c.Bus
@@ -26,3 +30,31 @@ class BME:
     return driver_.read_pressure
   get-humidity-percent -> float:
     return driver_.read_humidity 
+  
+  get-json -> ByteArray:
+    return json.encode{
+        "temperatureC": get-temp-c,
+        "pressure": get-pressure-pa,
+        "humidity": get-humidity-percent
+    }
+
+  send-bme-data-periodically client minutes /int:
+    delay-s /int := minutes * 60
+    task::
+      while true: 
+        // send BME280 data to MQTT broker
+        client.publish "$topic-prefix_/devices/$mac_/bmedata" get-json
+        sleep --ms=delay-s * 1000
+
+  live_ /bool := false
+  start-rtc client:
+    live_ = true
+    task::
+      while true:
+        if live_:      
+          // send BME280 data to MQTT broker
+          client.publish "$topic-prefix_/devices/$mac_/bmedata/rtc" get-json --qos=0
+          sleep --ms=1000
+
+  stop-rtc:
+    live_ = false

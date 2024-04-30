@@ -15,7 +15,7 @@ public class MqttDeviceDataClient(MqttClientGenerator clientGenerator, DataServi
 {
     public async Task CommunicateWithBroker()
     {
-        var mqttClient = await clientGenerator.CreateMqttClient("/data/+/bmedata");
+        var mqttClient = await clientGenerator.CreateMqttClient("/devices/+/bmedata");
         mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
             try
