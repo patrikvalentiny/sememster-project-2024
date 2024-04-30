@@ -6,8 +6,6 @@ import .utils
 
 class BME:
   driver_ /bme280.Driver := ?
-  mac_ /string ::= Utils.MAC
-  topic-prefix_ /string ::= Utils.TOPIC_PREFIX
 
   constructor alt-address = false:
     bus := i2c.Bus
@@ -43,18 +41,17 @@ class BME:
     task::
       while true: 
         // send BME280 data to MQTT broker
-        client.publish "$topic-prefix_/devices/$mac_/bmedata" get-json
+        client.publish "$TOPIC-PREFIX/devices/$MAC/bmedata" get-json
         sleep --ms=delay-s * 1000
 
   live_ /bool := false
   start-rtc client:
     live_ = true
     task::
-      while true:
-        if live_:      
-          // send BME280 data to MQTT broker
-          client.publish "$topic-prefix_/devices/$mac_/bmedata/rtc" get-json --qos=0
-          sleep --ms=1000
+      while live_:     
+        // send BME280 data to MQTT broker
+        client.publish "$TOPIC-PREFIX/devices/$MAC/bmedata/rtc" get-json --qos=0
+        sleep --ms=1000
 
   stop-rtc:
     live_ = false

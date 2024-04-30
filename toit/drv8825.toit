@@ -1,11 +1,10 @@
 import gpio
 import .secrets-dev as secrets
 import encoding.json
-import .utils show Utils
+import .utils
 
 class DRV8825:
   reversed_ ::= false
-  static MAC ::= Utils.get-mac-string
   static DIR_PIN_ ::= 17
   static STEP_PIN_ ::= 16
 
@@ -13,7 +12,6 @@ class DRV8825:
   static STEP ::= gpio.Pin STEP_PIN_ --output
   static DELAY ::= 1
 
-  topic-prefix /string := secrets.TOPIC-PREFIX
   MQTT-CLIENT ::= ?
 
   constructor client reversed /bool = false:
@@ -66,7 +64,7 @@ class DRV8825:
     payload := json.encode {"position": position}
     // print "Pos: $payload.to-string"
     // print "Topic: $topic-prefix/devices/$MAC/motor"
-    MQTT-CLIENT.publish "$topic-prefix/devices/$MAC/motor/data" payload 
+    MQTT-CLIENT.publish "$TOPIC-PREFIX/devices/$MAC/motor/data" payload 
 
  
       
