@@ -1,7 +1,6 @@
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Device} from "../models/device";
 import {BmeData} from "../models/bme-data";
-import {DashboardService} from "./dashboard.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +8,7 @@ import {DashboardService} from "./dashboard.service";
 export class StateService {
   devices:Map<string, Device> = new Map<string, Device>();
   bmeData:Map<string, BmeData[]> = new Map<string, BmeData[]>();
+  motorPosition:Map<string, number> = new Map<string, number>();
   constructor() {
 
   }

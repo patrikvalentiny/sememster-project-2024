@@ -9,6 +9,7 @@ import { ServerDeviceBmeData } from './events/server/server-device-bme-data';
 import {BmeData} from "../models/bme-data";
 import { ServerSendsDeviceBaseDataDto } from './events/server/server-sends-device-base-data-dto';
 import {StateService} from "./state.service";
+import {ServerSendsMotorDataDto} from "./events/server/server-sends-motor-data-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,9 @@ export class WebsocketService {
 
   send(message: string) {
     this.rws.send(message);
+  }
+  sendJson(message: object) {
+    this.rws.send(JSON.stringify(message));
   }
 
   private handleEvent(event: MessageEvent) {
@@ -77,6 +81,10 @@ export class WebsocketService {
 
   private ServerSendsDeviceBaseData(data: ServerSendsDeviceBaseDataDto){
     this.stateService.bmeData.set(data.mac!, data.data!);
+  }
+
+  private ServerSendsMotorData(data: ServerSendsMotorDataDto){
+    this.stateService.motorPosition.set(data.mac!, data.position!);
   }
 
 }
