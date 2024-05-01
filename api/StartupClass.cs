@@ -79,6 +79,8 @@ public static class StartupClass
         builder.Services.AddSingleton<MqttDeviceDataClient>();
         builder.Services.AddSingleton<DataService>();
         builder.Services.AddSingleton<DataRepository>();
+        builder.Services.AddSingleton<ConfigService>();
+        builder.Services.AddSingleton<ConfigRepository>();
 
         WsHelper.InitBaseDtos(types);
 

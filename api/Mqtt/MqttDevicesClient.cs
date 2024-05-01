@@ -13,7 +13,7 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, MqttClientGenerator clientGenerator)
+public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, MqttClientGenerator clientGenerator, ConfigService configService)
 {
     public async Task CommunicateWithBroker()
     {
@@ -29,7 +29,8 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
                 Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, topic);
                 var payload = JsonConvert.DeserializeObject<Device>(message)!;
                 var device = deviceService.InsertDevice(payload.Mac);
-                var config = new DeviceConfig{MaxMotorPosition = 500 , LastMotorPosition = 100};
+                
+                var config = JsonConvert.SerializeObject(configService.GetDeviceConfig(device.Mac));
                 await mqttClient.PublishStringAsync($"/devices/{device.Mac}/config", config);
 
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
