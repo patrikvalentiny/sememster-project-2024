@@ -26,7 +26,7 @@ public static class WsHelper
             }
     }
 
-    public static Task InvokeBaseDtoHandler(this IWebSocketConnection ws, string message, IMediator mediator)
+    public static async Task InvokeBaseDtoHandler(this IWebSocketConnection ws, string message, IMediator mediator)
     {
         var dto = JsonConvert.DeserializeObject<BaseDto>(message, new JsonSerializerSettings
         {
@@ -60,10 +60,10 @@ public static class WsHelper
         }
         
         // Send the request to the mediator
-        var response = mediator.Send(request);
-        if (response.Exception != null) throw new HandlerException(response.Exception.Message);
+        var response = await mediator.Send(request);
         // If the response is null, return a completed task otherwise send the response
-        return response.Result == null ? Task.CompletedTask : ws.SendJson(response.Result);
+        if (response!.GetType() != MediatR.Unit.Value.GetType()) 
+            await ws.SendJson(response);
     }
 
     public static Task SendJson<T>(this IWebSocketConnection ws, T obj)

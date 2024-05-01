@@ -30,4 +30,21 @@ public class MqttClientGenerator(MqttFactory mqttFactory)
         return mqttClient;
     }
 
+    public async Task<IMqttClient> CreateMqttClient()
+    {
+        var mqttClient = mqttFactory.CreateMqttClient();
+
+        var mqttClientOptions = new MqttClientOptionsBuilder()
+            .WithTcpServer("mqtt.flespi.io", 1883)
+            .WithCredentials(Environment.GetEnvironmentVariable("ASPNETCORE_Flespi__Username"), "")
+            .WithProtocolVersion(MqttProtocolVersion.V500)
+            .Build();
+
+        var connectResult = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+        if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
+            throw new Exception($"Failed to connect to MQTT broker: {connectResult.ResultCode}");
+        
+        return mqttClient;
+    }
+
 }
