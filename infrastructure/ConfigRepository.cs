@@ -6,7 +6,7 @@ namespace infrastructure;
 
 public class ConfigRepository(DbDataSource dataSource)
 {
-    public DeviceConfig GetDeviceConfig(string mac)
+    public DeviceConfig? GetDeviceConfig(string mac)
     {
         var sql = $@"SELECT 
                         last_motor_position as {nameof(DeviceConfig.LastMotorPosition)},
@@ -14,6 +14,6 @@ public class ConfigRepository(DbDataSource dataSource)
                     FROM climate_ctrl.device_config
                     WHERE mac = @mac";
         using var conn = dataSource.OpenConnection();
-        return conn.QueryFirst<DeviceConfig>(sql, new { mac });
+        return conn.QueryFirstOrDefault<DeviceConfig>(sql, new { mac });
     }
 }

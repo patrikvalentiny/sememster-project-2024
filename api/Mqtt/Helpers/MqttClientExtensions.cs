@@ -9,7 +9,7 @@ namespace api.Mqtt.Helpers;
 public static class MqttClientExtensions
 {
         
-    public static async Task<MqttClientPublishResult> PublishStringAsync(this IMqttClient mqttClient, string topic, object payload)
+    public static async Task<MqttClientPublishResult> PublishJsonAsync(this IMqttClient mqttClient, string topic, object? payload)
     {
         var jsonSerializerSettings = new JsonSerializerSettings
         {

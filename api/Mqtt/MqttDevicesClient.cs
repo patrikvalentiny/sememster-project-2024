@@ -29,21 +29,26 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
                 Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, topic);
                 var payload = JsonConvert.DeserializeObject<Device>(message)!;
                 var device = deviceService.InsertDevice(payload.Mac);
-                
-                var config = JsonConvert.SerializeObject(configService.GetDeviceConfig(device.Mac));
-                await mqttClient.PublishStringAsync($"/devices/{device.Mac}/config", config);
 
+                var config = configService.GetDeviceConfig(device.Mac);
+                
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
                     try
                     {
                         await socket.SendJson(new ServerDeviceOnline { Device = device });
+                        if (config == null)
+                        {
+                            //TODO: send notification to client to setup device
+                        }
                     }
                     catch (Exception exc)
                     {
                         Log.Error(exc, "Error sending message to client");
                     }
                 });
+                if (config != null)
+                    await mqttClient.PublishJsonAsync($"/devices/{device.Mac}/config", config);
             }
             catch (Exception exc)
             {
