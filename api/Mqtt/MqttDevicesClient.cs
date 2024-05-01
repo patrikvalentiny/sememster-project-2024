@@ -1,7 +1,9 @@
-﻿using api.Mqtt.Helpers;
+﻿using System.Reflection.PortableExecutable;
+using api.Mqtt.Helpers;
 using api.ServerEvents;
 using api.Utils;
 using infrastructure;
+using infrastructure.Models;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
@@ -25,13 +27,16 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
                 var topic = m.Topic;
                 var message = m.ConvertPayloadToString();
                 Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, topic);
-                var device = deviceService.InsertDevice(JsonConvert.DeserializeObject<Device>(message)!.Mac);
+                var payload = JsonConvert.DeserializeObject<Device>(message)!;
+                var device = deviceService.InsertDevice(payload.Mac);
+                var config = new DeviceConfig{MaxMotorPosition = 500 , LastMotorPosition = 100};
+                await mqttClient.PublishStringAsync($"/devices/{device.Mac}/config", config);
 
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
                     try
                     {
-                        await socket.SendJson(new ServerDeviceOnline{Device = device});
+                        await socket.SendJson(new ServerDeviceOnline { Device = device });
                     }
                     catch (Exception exc)
                     {

@@ -2,6 +2,8 @@ import gpio
 import .secrets-dev as secrets
 import encoding.json
 import .utils
+import .config
+import .flespi-mqtt
 
 class DRV8825:
   reversed_ ::= false
@@ -12,20 +14,27 @@ class DRV8825:
   static STEP ::= gpio.Pin STEP_PIN_ --output
   static DELAY ::= 1
 
+  position := ?
+  max-position := ? 
+
   MQTT-CLIENT ::= ?
+  
 
-  constructor client reversed /bool = false:
-    
+  constructor reversed /bool = false:
     reversed_ = reversed
-    MQTT-CLIENT = client
+    MQTT-CLIENT = Flespi-MQTT.get-instance.get-client
 
-  position := 0
+    config /Config := Config.origin
+    position = config.LAST-MOTOR-POSITION
+    max-position = config.MAX-MOTOR-POSITION
+  
 
   step steps /int:
     // pos +
     if steps > 0:
+      if position + steps > max-position:
+        steps = max-position - position
       stepCW steps
-    
     // pos -
     else:
       if position + steps < 0:

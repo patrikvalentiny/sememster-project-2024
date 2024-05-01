@@ -1,6 +1,7 @@
 ﻿using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
+using MQTTnet.Protocol;
 
 namespace api.Mqtt.Helpers;
 
@@ -28,4 +29,5 @@ public class MqttClientGenerator(MqttFactory mqttFactory)
         await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
         return mqttClient;
     }
+
 }
