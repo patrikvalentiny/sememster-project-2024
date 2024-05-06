@@ -155,7 +155,7 @@ public static class StartupClass
             socket.OnClose = () =>
             {
                 Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id);
-                webSocketStateService.Connections.TryRemove(socket.ConnectionInfo.Id, out _);
+                webSocketStateService.CloseSocket(socket);
             };
             socket.OnMessage = async message =>
             {

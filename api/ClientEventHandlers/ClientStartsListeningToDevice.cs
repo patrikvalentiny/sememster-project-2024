@@ -24,7 +24,17 @@ public class ClientStartsListeningToDevice(WebSocketStateService stateService, D
     public Task<ServerSendsDeviceBaseDataDto> Handle(ClientStartsListeningToDeviceDto request, CancellationToken cancellationToken)
     {
         var socket = request.Socket!;
-        stateService.MacToConnectionId.TryAdd(request.Mac, socket.ConnectionInfo.Id);
+        
+        if (stateService.MacToConnectionId.TryGetValue(request.Mac, out var connectionIdList))
+        {
+            if (!connectionIdList.Contains(socket.ConnectionInfo.Id))
+                connectionIdList.Add(socket.ConnectionInfo.Id);
+        }
+        else
+        {
+            stateService.MacToConnectionId.TryAdd(request.Mac, [socket.ConnectionInfo.Id]);
+        }
+        
         foreach (var keyValuePair in stateService.MacToConnectionId)
         {
             Log.Debug("Mac: {Mac}, ConnectionId: {ConnectionId}", keyValuePair.Key, keyValuePair.Value);

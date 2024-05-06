@@ -19,7 +19,7 @@ public class MqttDeviceMotorPosition(MqttClientGenerator mqttClientGenerator, We
             var m = e.ApplicationMessage;
             var message = m.ConvertPayloadToString();
             var position = JsonConvert.DeserializeObject<ServerSendsMotorDataDto>(message)!.Position;
-            Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, m.Topic);
+            // Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, m.Topic);
             var mac = m.Topic.Split('/')[2];
             if(webSocketStateService.MotorMacToConnectionId.TryGetValue(mac, out var connectionIdList))
             {

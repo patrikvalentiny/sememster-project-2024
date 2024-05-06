@@ -85,6 +85,7 @@ export class WebsocketService {
 
   private ServerSendsMotorData(data: ServerSendsMotorDataDto){
     this.stateService.motorPosition.set(data.mac!, data.position!);
+    this.stateService.motorMoving.set(data.mac!, false);
   }
 
 }

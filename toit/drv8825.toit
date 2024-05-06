@@ -43,10 +43,6 @@ class DRV8825:
 
   stepCW steps /int:
     moving:= true
-    //TODO race condition
-    task::
-      while moving:
-        sleep --ms= 250
     DIR.set (reversed_ ? 0 : 1)
     print "CW"
     steps.repeat:
@@ -55,15 +51,13 @@ class DRV8825:
       sleep --ms= DELAY
       STEP.set 0
       sleep --ms= DELAY
+      
     send-position
     moving = false
 
 
   stepACW steps /int:
     moving:= true
-    task::
-      while moving:
-        sleep --ms=250
     DIR.set (reversed_ ? 1 : 0)
     print "ACW"
     steps.repeat:
@@ -72,7 +66,7 @@ class DRV8825:
       sleep --ms= DELAY
       STEP.set 0
       sleep --ms= DELAY
-
+      
     send-position
     moving = false
 
@@ -80,14 +74,14 @@ class DRV8825:
   go-to-position pos /int:
     steps := pos - position
     step steps
-    
+
   reset-start:
     position = 0
 
   //send position to mqtt
   send-position:
     payload := json.encode {"position": position}
-    print position
+    // print position
     // print "Pos: $payload.to-string"
     // print "Topic: $topic-prefix/devices/$MAC/motor"
     MQTT-CLIENT.publish "$TOPIC-PREFIX/devices/$MAC/motor/data" payload 

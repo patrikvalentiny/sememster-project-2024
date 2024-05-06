@@ -1,6 +1,7 @@
 import .utils
 import encoding.json
 import .flespi-mqtt
+import mqtt
 
 class Config:
   static INSTANCE /Config? := null
@@ -22,12 +23,13 @@ class Config:
       print "Config loaded; lastMotorPosition: $LAST-MOTOR-POSITION, maxMotorPosition: $MAX-MOTOR-POSITION"
       
   get-config:
-    client := Flespi-MQTT.get-instance.get-client
+    client /mqtt.Client := Flespi-MQTT.get-instance.get-client
     //TODO: wait for response
     client.subscribe "$TOPIC-PREFIX/devices/$MAC/config" :: |topic /string payload /ByteArray|
       json := json.decode payload
       print "Received config message on topic: $topic with payload: $json"
       INSTANCE = Config.from-json json
+      client.unsubscribe "$TOPIC-PREFIX/devices/$MAC/config"
 
     while INSTANCE == null:
       // get device MAC address and publish to devices topic

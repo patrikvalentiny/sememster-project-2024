@@ -22,14 +22,14 @@ public class ClientControlsMotor(MqttClientGenerator mqttClientGenerator, WebSoc
     public async Task Handle(ClientControlsMotorDto request, CancellationToken cancellationToken)
     {
         var mqttClient = await mqttClientGenerator.CreateMqttClient();
-        await mqttClient.PublishJsonAsync($"/devices/{request.Mac}/motor/controls", new { Position = request.Position });
+        await mqttClient.PublishJsonAsync($"/devices/{request.Mac}/motor/controls", new { request.Position });
         if (webSocketStateService.MotorMacToConnectionId.TryGetValue(request.Mac, out var connectionIdList))
         {
             if (!connectionIdList.Contains(request.Socket!.ConnectionInfo.Id))
                 connectionIdList.Add(request.Socket!.ConnectionInfo.Id);
         } else
         {
-            webSocketStateService.MotorMacToConnectionId.TryAdd(request.Mac, new List<Guid> { request.Socket!.ConnectionInfo.Id });
+            webSocketStateService.MotorMacToConnectionId.TryAdd(request.Mac, [request.Socket!.ConnectionInfo.Id]);
         }
         
         mqttClient.Dispose();
