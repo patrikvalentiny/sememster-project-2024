@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {WebsocketService} from "../../services/websocket.service";
 import {ClientControlsMotor} from "../../services/events/client/client-controls-motor";
 import {StateService} from "../../services/state.service";
@@ -13,13 +13,11 @@ import {StateService} from "../../services/state.service";
 export class MotorControlComponent {
   ws = inject(WebsocketService);
   state = inject(StateService);
-  previousValue = 0;
-  mac: string = "083af23e5a64";
+  @Input() mac: string = "083af23e5a64";
 
 
   move(val: any) {
     const value : number= val.value;
-    this.ws.sendJson(new ClientControlsMotor({steps: value - this.previousValue, mac:this.mac}));
-    this.previousValue = value;
+    this.ws.sendJson(new ClientControlsMotor({position: value, mac:this.mac}));
   }
 }

@@ -46,7 +46,6 @@ class DRV8825:
     //TODO race condition
     task::
       while moving:
-        send-position
         sleep --ms= 250
     DIR.set (reversed_ ? 0 : 1)
     print "CW"
@@ -56,7 +55,7 @@ class DRV8825:
       sleep --ms= DELAY
       STEP.set 0
       sleep --ms= DELAY
-    
+    send-position
     moving = false
 
 
@@ -64,7 +63,6 @@ class DRV8825:
     moving:= true
     task::
       while moving:
-        send-position
         sleep --ms=250
     DIR.set (reversed_ ? 1 : 0)
     print "ACW"
@@ -74,8 +72,15 @@ class DRV8825:
       sleep --ms= DELAY
       STEP.set 0
       sleep --ms= DELAY
+
+    send-position
     moving = false
 
+
+  go-to-position pos /int:
+    steps := pos - position
+    step steps
+    
   reset-start:
     position = 0
 

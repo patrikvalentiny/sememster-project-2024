@@ -45,13 +45,13 @@ class BME:
         sleep --ms=delay-s * 1000
 
   live_ /bool := false
-  start-rtc client:
+  start-rtc client --s=1000:
     live_ = true
     task::
       while live_:     
         // send BME280 data to MQTT broker
         client.publish "$TOPIC-PREFIX/devices/$MAC/bmedata/rtc" get-json --qos=0
-        sleep --ms=1000
+        sleep --ms=s * 1000
 
   stop-rtc:
     live_ = false

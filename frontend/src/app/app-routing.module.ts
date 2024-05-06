@@ -9,7 +9,7 @@ const routes: Routes = [
     component: DashboardComponent
   },
   {
-    path: 'motor',
+    path: 'motor/:mac',
     component: MotorControlComponent
   }
 ];

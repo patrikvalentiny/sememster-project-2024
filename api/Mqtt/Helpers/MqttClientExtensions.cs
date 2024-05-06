@@ -23,7 +23,7 @@ public static class MqttClientExtensions
             .WithTopic((environment == "Development" ? "climatectrl-dev" : "climatectrl") + topic)
             .WithPayload(JsonConvert.SerializeObject(payload, jsonSerializerSettings))
             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-            .WithRetainFlag()
+            // .WithRetainFlag()
             .Build();
 
        return await mqttClient.PublishAsync(message);
