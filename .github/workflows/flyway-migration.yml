@@ -34,7 +34,7 @@ on:
 
 env:
   FLYWAY_VERSION: 10.12.0
-  DB_NAME: climate_ctrl
+  DB_NAME: postgres
 
 jobs:
   build:
