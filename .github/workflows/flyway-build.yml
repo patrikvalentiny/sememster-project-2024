@@ -76,7 +76,6 @@ jobs:
           FLYWAY_SCHEMAS: public,climate_ctrl
         run: >-
           flyway check \
-            -code \
             -baselineOnMigrate=true -outOfOrder=true -connectRetries=10 \
             -check.buildUrl="jdbc:postgresql://postgres:5432/postgres" \
             -check.buildUser="postgres" \
