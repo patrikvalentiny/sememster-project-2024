@@ -61,7 +61,7 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     container: 
-        image: flyway/flyway
+        image: flyway/flyway:latest
         volumes:
           - .:/flyway/sql
     steps:
@@ -79,7 +79,7 @@ jobs:
           FLYWAY_SCHEMAS: public,climate_ctrl
           FLYWAY_LOCATIONS: filesystem:/flyway/sql
         run: |
-          migrate
+          flyway migrate
 #
 #      - name: Flyway info and write result to file
 #        env:
