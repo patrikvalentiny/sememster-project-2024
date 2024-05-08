@@ -65,10 +65,24 @@ jobs:
             FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
             FLYWAY_SCHEMAS: public,climate_ctrl
         run: |
-          flyway info 
+          flyway info
+          
+      - name: Flyway Check
+        env:
+          FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
+          FLYWAY_USER: ${{ secrets.PROD_DB_USER }}
+          FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          FLYWAY_SCHEMAS: public,climate_ctrl
+        run: >-
+          flyway check \
+            -baselineOnMigrate=true -changes -drift -dryrun -outOfOrder=true -connectRetries=10 \
+            -check.buildUrl="jdbc:postgresql://postgres:5432/postgres" \
+            -check.buildUser="postgres" \
+            -check.buildPassword="postgres" \
+            -reportFilename="/flyway/reports/report.html"
         
       - name: Upload report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Database Report
           path: reports/
