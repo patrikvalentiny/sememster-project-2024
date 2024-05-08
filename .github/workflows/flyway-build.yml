@@ -52,11 +52,12 @@ jobs:
 
       - name: Continuous Integration Flyway Clean Migrate
         run: |
-          flyway clean migrate
+          flyway migrate
           
       - name: Flyway Info
         run: |
           flyway info
+          
       - name: Flyway Info Production
         env:
             FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
