@@ -16,13 +16,13 @@ import {NgClass} from "@angular/common";
 export class MotorControlComponent {
   ws = inject(WebsocketService);
   state = inject(StateService);
-  @Input() mac: string = "083af23e5a64";
+  @Input() mac?: string
   value: number = 0;
 
 
   async move(val: any) {
     this.value = val.value;
-    this.state.motorMoving.set(this.mac, true);
+    this.state.motorMoving.set(this.mac!, true);
     this.ws.sendJson(new ClientControlsMotor({position: this.value, mac:this.mac}));
   }
 }
