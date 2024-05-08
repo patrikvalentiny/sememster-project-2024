@@ -10,6 +10,7 @@ on:
   workflow_dispatch:
     
 env:
+  SQLFLUFF_DIALECT: postgres
   DB_NAME: postgres
   FLYWAY_URL: jdbc:postgresql://postgres:5432/postgres
   FLYWAY_USER: postgres
@@ -75,7 +76,8 @@ jobs:
           FLYWAY_SCHEMAS: public,climate_ctrl
         run: >-
           flyway check \
-            -baselineOnMigrate=true -changes -drift -dryrun -outOfOrder=true -connectRetries=10 \
+            -code \
+            -baselineOnMigrate=true -outOfOrder=true -connectRetries=10 \
             -check.buildUrl="jdbc:postgresql://postgres:5432/postgres" \
             -check.buildUser="postgres" \
             -check.buildPassword="postgres" \
