@@ -6,7 +6,7 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("api/v1/device")]
-public class DeviceController(DeviceService deviceService, ConfigService configService) : Controller
+public class DeviceController(DeviceService deviceService, ConfigService configService, MotorService motorService) : Controller
 {
     [HttpGet]
     public IActionResult GetDevices()
@@ -32,6 +32,20 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error getting device config");
+            throw;
+        }
+    }
+    
+    [HttpGet("{mac}/motor")]
+    public IActionResult GetMotorPosition(string mac)
+    {
+        try
+        {
+            return Ok(motorService.GetMotorPosition(mac));
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error getting motor position");
             throw;
         }
     }

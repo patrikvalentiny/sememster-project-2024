@@ -8,4 +8,9 @@ public class MotorService(MotorRepository motorRepository)
     {
         return motorRepository.SetMotorPosition(mac, position);
     }
+    
+    public int GetMotorPosition(string mac)
+    {
+        return motorRepository.GetMotorPosition(mac);
+    }
 }

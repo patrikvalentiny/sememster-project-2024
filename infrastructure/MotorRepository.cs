@@ -13,4 +13,13 @@ public class MotorRepository(DbDataSource dataSource)
         using var conn = dataSource.OpenConnection();
         return conn.Execute(sql, new { mac, position });
     }
+    
+    public int GetMotorPosition(string mac)
+    {
+        var sql = $@"SELECT last_motor_position
+                    FROM climate_ctrl.device_config
+                    WHERE mac = @mac";
+        using var conn = dataSource.OpenConnection();
+        return conn.QueryFirst<int>(sql, new { mac });
+    }
 }
