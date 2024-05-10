@@ -83,6 +83,8 @@ public static class StartupClass
         builder.Services.AddSingleton<DataRepository>();
         builder.Services.AddSingleton<ConfigService>();
         builder.Services.AddSingleton<ConfigRepository>();
+        builder.Services.AddSingleton<MotorService>();
+        builder.Services.AddSingleton<MotorRepository>();
 
         WsHelper.InitBaseDtos(types);
 

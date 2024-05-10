@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Dapper;
+using infrastructure.Models;
 
 namespace infrastructure;
 
@@ -30,14 +31,4 @@ public class DeviceRepository(DbDataSource dataSource)
         using var conn = dataSource.OpenConnection();
         return conn.Query<Device>(sql);
     }
-}
-
-public class Device
-{
-    public required int Id { get; init; }
-    public required string Mac { get; init; }
-    public string? Name { get; init; }
-    public int? StatusId { get; init; }
-    public string Status { get; init; } = "online";
-
 }

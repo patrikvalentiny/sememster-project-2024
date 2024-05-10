@@ -1,5 +1,6 @@
 ﻿using api.Utils;
 using infrastructure;
+using infrastructure.Models;
 
 namespace api.ServerEvents;
 

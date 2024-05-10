@@ -8,7 +8,7 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDeviceMotorPosition(MqttClientGenerator mqttClientGenerator, WebSocketStateService webSocketStateService)
+public class MqttDeviceMotorPosition(MqttClientGenerator mqttClientGenerator, WebSocketStateService webSocketStateService, MotorService motorService)
 {
     public async Task CommunicateWithBroker()
     {
@@ -20,6 +20,9 @@ public class MqttDeviceMotorPosition(MqttClientGenerator mqttClientGenerator, We
             var message = m.ConvertPayloadToString();
             var position = JsonConvert.DeserializeObject<ServerSendsMotorDataDto>(message)!.Position;
             var mac = m.Topic.Split('/')[2];
+            
+            motorService.SetMotorPosition(mac, position);
+            
             if(webSocketStateService.MotorMacToConnectionId.TryGetValue(mac, out var connectionIdList))
             {
                 foreach (var socketGuid in connectionIdList)
