@@ -49,4 +49,18 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
             throw;
         }
     }
+    
+    [HttpPost("{mac}/motor")]
+    public IActionResult SetMaxMotorPosition(string mac, int position)
+    {
+        try
+        {
+            return Ok(motorService.SetMaxMotorPosition(mac, position));
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error setting motor position");
+            throw;
+        }
+    }
 }

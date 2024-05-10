@@ -22,4 +22,13 @@ public class MotorRepository(DbDataSource dataSource)
         using var conn = dataSource.OpenConnection();
         return conn.QueryFirst<int>(sql, new { mac });
     }
+
+    public int SetMaxMotorPosition(string mac, int position)
+    {
+        var sql = $@"UPDATE climate_ctrl.device_config
+                    SET max_motor_position = @position
+                    WHERE mac = @mac";
+        using var conn = dataSource.OpenConnection();
+        return conn.QueryFirst<int>(sql, new { mac, position });
+    }
 }

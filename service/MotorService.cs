@@ -13,4 +13,9 @@ public class MotorService(MotorRepository motorRepository)
     {
         return motorRepository.GetMotorPosition(mac);
     }
+
+    public int SetMaxMotorPosition(string mac, int position)
+    {
+        return motorRepository.SetMaxMotorPosition(mac, position);
+    }
 }

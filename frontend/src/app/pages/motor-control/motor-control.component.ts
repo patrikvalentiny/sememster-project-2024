@@ -15,10 +15,10 @@ import {MotorService} from "../../services/motor.service";
   styleUrl: './motor-control.component.css'
 })
 export class MotorControlComponent implements OnInit{
-
   ws = inject(WebsocketService);
   state = inject(StateService);
   motorService = inject(MotorService);
+
   @Input() mac?: string
   value: number = 0;
 
@@ -31,6 +31,4 @@ export class MotorControlComponent implements OnInit{
     this.state.motorMoving.set(this.mac!, true);
     this.ws.sendJson(new ClientControlsMotor({position: this.value, mac:this.mac}));
   }
-
-
 }
