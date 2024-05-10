@@ -29,7 +29,7 @@ main:
 
   bme ::= BME
   // start BME280 data sending task
-  bme.send-bme-data-periodically client 5  
+  bme.send-bme-data-periodically client 60  
 
   client.subscribe "$TOPIC-PREFIX/devices/$MAC/commands/bmertc" :: |topic/string payload /ByteArray|    
     catch --trace:

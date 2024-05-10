@@ -77,24 +77,24 @@ public static class WsHelper
     }
     
 
-    public static void SendNotification(this IWebSocketConnection socket, string message)
+    public static async Task SendNotification(this IWebSocketConnection socket, string message)
     {
-        socket.SendJson(new ServerSendsNotificationDto(message));
+        await socket.SendJson(new ServerSendsNotificationDto(message));
     }
 
-    public static void SendError(this IWebSocketConnection socket, string message)
+    public static async Task SendError(this IWebSocketConnection socket, string message)
     {
-        socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Error));
+        await socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Error));
     }
 
-    public static void SendSuccess(this IWebSocketConnection socket, string message)
+    public static async Task SendSuccess(this IWebSocketConnection socket, string message)
     {
-        socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Success));
+        await socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Success));
     }
 
-    public static void SendWarning(this IWebSocketConnection socket, string message)
+    public static async Task SendWarning(this IWebSocketConnection socket, string message)
     {
-        socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Warning));
+        await socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Warning));
     }
 
     public static void Handle(this Exception ex, IWebSocketConnection ws)

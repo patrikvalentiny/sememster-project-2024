@@ -1,16 +1,33 @@
 <div class="flex flex-col p-6 w-full gap-6">
-  <div [ngClass]="{'hidden':!state.motorMoving.get(mac!)}" class="flex flex-row justify-center items-center w-full h-full">
-    <div class="flex flex-row items-center">
-    <span class="loading loading-ring loading-lg" ></span>
-    <p>Moving motor</p>
+  <div class="flex flex-col gap-6 w-full">
+    <div [ngClass]="{'hidden':!state.motorMoving.get(mac!)}"
+         class="flex flex-row justify-center items-center w-full h-full">
+      <div class="flex flex-row items-center">
+        <span class="loading loading-ring loading-lg"></span>
+        <p>Moving motor</p>
+      </div>
+    </div>
+    <div class="flex justify-center items-center w-full">
+      <input type="range" min="0" max="{{max}}" value="{{value}}" step="{{step}}" class="range w-full"
+             (change)="move($event.target)"/>
+    </div>
+    <div class="flex flex-col w-full">
+      <progress class="progress progress-secondary w-full" value="{{state.motorPosition.get(mac!)}}"
+                max="{{max}}"></progress>
+      <p class="text-secondary">{{ state.motorPosition.get(mac!) }}</p>
     </div>
   </div>
-  <div class="flex justify-center items-center w-full">
-  <input type="range" min="0" max="500" value="{{value}}" step="20" class="range w-full" (change)="move($event.target)"/>
-  </div>
-  <div class="flex flex-col w-full">
-    <progress class="progress progress-secondary w-full" value="{{state.motorPosition.get(mac!)}}" max="500"></progress>
-    <p class="text-secondary">{{state.motorPosition.get(mac!)}}</p>
+  <div class="flex flex-col gap-6">
+    <div class="form-control">
+      <label class="label cursor-pointer">
+        <span class="label-text">Remember me</span>
+        <input type="checkbox" class="toggle" (change)="editMaxPosition()" />
+      </label>
+    </div>
+    <div>
+      <button class="btn btn-neutral" (click)="reduceMax()">- Max</button>
+      <button class="btn btn-neutral" (click)="increaseMax()">+ Max</button>
+    </div>
   </div>
 </div>
 

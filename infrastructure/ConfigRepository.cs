@@ -10,7 +10,8 @@ public class ConfigRepository(DbDataSource dataSource)
     {
         var sql = $@"SELECT 
                         last_motor_position as {nameof(DeviceConfig.LastMotorPosition)},
-                        max_motor_position as {nameof(DeviceConfig.MaxMotorPosition)}
+                        max_motor_position as {nameof(DeviceConfig.MaxMotorPosition)},
+                        motor_reversed as {nameof(DeviceConfig.MotorReversed)}
                     FROM climate_ctrl.device_config
                     WHERE mac = @mac";
         using var conn = dataSource.OpenConnection();

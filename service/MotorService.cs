@@ -9,9 +9,13 @@ public class MotorService(MotorRepository motorRepository)
         return motorRepository.SetMotorPosition(mac, position);
     }
     
-    public int GetMotorPosition(string mac)
+    public MotorPositionDto GetMotorPosition(string mac)
     {
-        return motorRepository.GetMotorPosition(mac);
+        var positions =  motorRepository.GetMotorPosition(mac);
+        if (positions.MaxMotorPosition >= positions.LastMotorPosition) return positions;
+        positions.MaxMotorPosition = positions.LastMotorPosition;
+        SetMaxMotorPosition(mac, positions.MaxMotorPosition);
+        return positions;
     }
 
     public int SetMaxMotorPosition(string mac, int position)

@@ -39,7 +39,7 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
                         await socket.SendJson(new ServerDeviceOnline { Device = device });
                         if (config == null)
                         {
-                            //TODO: send notification to client to setup device
+                            await socket.SendWarning($"Device {device.Mac} is online and needs to be setup");
                         }
                     }
                     catch (Exception exc)

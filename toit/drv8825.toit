@@ -20,11 +20,11 @@ class DRV8825:
   MQTT-CLIENT ::= ?
   
 
-  constructor reversed /bool = false:
-    reversed_ = reversed
+  constructor:
     MQTT-CLIENT = Flespi-MQTT.get-instance.get-client
 
     config /Config := Config.origin
+    reversed_ = config.MOTOR-REVERSED
     position = config.LAST-MOTOR-POSITION
     max-position = config.MAX-MOTOR-POSITION
   
@@ -44,7 +44,7 @@ class DRV8825:
   stepCW steps /int:
     moving:= true
     DIR.set (reversed_ ? 0 : 1)
-    print "CW"
+    // print "CW"
     steps.repeat:
       position += 1
       STEP.set 1
@@ -59,7 +59,8 @@ class DRV8825:
   stepACW steps /int:
     moving:= true
     DIR.set (reversed_ ? 1 : 0)
-    print "ACW"
+    // print "ACW"
+    // print "Steps: $steps"
     steps.repeat:
       position -= 1
       STEP.set 1
@@ -72,6 +73,8 @@ class DRV8825:
 
 
   go-to-position pos /int:
+    if pos > max-position:
+      max-position = pos
     steps := pos - position
     step steps
 

@@ -7,6 +7,7 @@ class Config:
   static INSTANCE /Config? := null
   LAST_MOTOR_POSITION /int? := 0
   MAX_MOTOR_POSITION /int? := 1000
+  MOTOR_REVERSED /bool := false
 
   constructor:
     get-config
@@ -20,6 +21,7 @@ class Config:
     catch:
       LAST-MOTOR-POSITION = json["lastMotorPosition"]
       MAX-MOTOR-POSITION = json["maxMotorPosition"]
+      MOTOR-REVERSED = json["motorReversed"]
       print "Config loaded; lastMotorPosition: $LAST-MOTOR-POSITION, maxMotorPosition: $MAX-MOTOR-POSITION"
       
   get-config:

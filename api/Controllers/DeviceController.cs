@@ -50,8 +50,8 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         }
     }
     
-    [HttpPost("{mac}/motor")]
-    public IActionResult SetMaxMotorPosition(string mac, int position)
+    [HttpPut("{mac}/motor")]
+    public IActionResult SetMaxMotorPosition(string mac, [FromBody] int position)
     {
         try
         {
