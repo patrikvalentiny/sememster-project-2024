@@ -2,11 +2,9 @@
 using System.Reflection;
 using api.Mqtt;
 using api.Utils;
-using commons;
 using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
-using infrastructure.Mqtt;
 using MediatR;
 using MQTTnet;
 using Serilog;
@@ -85,7 +83,6 @@ public static class StartupClass
         builder.Services.AddSingleton<ConfigRepository>();
         builder.Services.AddSingleton<MotorService>();
         builder.Services.AddSingleton<MotorRepository>();
-        builder.Services.AddSingleton<MqttDeviceCommandsRepository>();
 
         WsHelper.InitBaseDtos(types);
 

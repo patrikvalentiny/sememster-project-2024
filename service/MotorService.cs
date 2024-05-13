@@ -9,10 +9,10 @@ public class MotorService(MotorRepository motorRepository)
     {
         return motorRepository.SetMotorPosition(mac, position);
     }
-    
+
     public async Task<MotorPositionDto> GetMotorPosition(string mac)
     {
-        var positions =  motorRepository.GetMotorPosition(mac);
+        var positions = motorRepository.GetMotorPosition(mac);
         if (positions.MaxMotorPosition >= positions.LastMotorPosition) return positions;
         positions.MaxMotorPosition = positions.LastMotorPosition;
         await SetMaxMotorPosition(mac, positions.MaxMotorPosition);

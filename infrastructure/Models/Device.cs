@@ -7,5 +7,4 @@ public class Device
     public string? Name { get; init; }
     public int? StatusId { get; init; }
     public string Status { get; init; } = "online";
-
 }

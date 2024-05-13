@@ -6,7 +6,8 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("api/v1/device")]
-public class DeviceController(DeviceService deviceService, ConfigService configService, MotorService motorService) : ControllerBase
+public class DeviceController(DeviceService deviceService, ConfigService configService, MotorService motorService)
+    : ControllerBase
 {
     [HttpGet]
     public IActionResult GetDevices()
@@ -21,7 +22,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpGet("{mac}/config")]
     public IActionResult GetDeviceConfig(string mac)
     {
@@ -35,7 +36,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpGet("{mac}/motor")]
     public IActionResult GetMotorPosition(string mac)
     {
@@ -49,7 +50,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpPut("{mac}/motor")]
     public IActionResult SetMaxMotorPosition(string mac, [FromBody] int position)
     {
@@ -63,7 +64,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpPut("{mac}/motor-direction")]
     public IActionResult SetMotorDirection(string mac, [FromBody] bool direction)
     {
@@ -77,7 +78,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpGet("{mac}/motor-direction")]
     public IActionResult GetMotorDirection(string mac)
     {

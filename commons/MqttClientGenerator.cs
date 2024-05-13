@@ -10,13 +10,15 @@ public static class MqttClientGenerator
 
 {
     private static readonly MqttFactory MqttFactory = new();
+
     public static async Task<IMqttClient> CreateMqttClient(string topic)
     {
         var mqttClient = await CreateMqttClient();
-        
+
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var mqttSubscribeOptions = MqttFactory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter(f => f.WithTopic((environment == "Development" ? "climatectrl-dev" : "climatectrl") + topic))
+            .WithTopicFilter(f =>
+                f.WithTopic((environment == "Development" ? "climatectrl-dev" : "climatectrl") + topic))
             .Build();
 
         await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
@@ -37,15 +39,15 @@ public static class MqttClientGenerator
         {
             var connectResult = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
             if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
-                throw new MqttConnectingFailedException($"Failed to connect to MQTT broker: {connectResult.ResultCode}", new HttpRequestException(),connectResult);
+                throw new MqttConnectingFailedException($"Failed to connect to MQTT broker: {connectResult.ResultCode}",
+                    new HttpRequestException(), connectResult);
         }
         catch (Exception e)
         {
             Log.Error(e.Message);
         }
-        
-        
+
+
         return mqttClient;
     }
-
 }

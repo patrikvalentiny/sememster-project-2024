@@ -1,19 +1,18 @@
-﻿using System.Reflection.PortableExecutable;
-using api.ServerEvents;
+﻿using api.ServerEvents;
 using api.Utils;
 using commons;
-using infrastructure;
 using infrastructure.Models;
 using MQTTnet;
-using MQTTnet.Client;
-using MQTTnet.Formatter;
 using Newtonsoft.Json;
 using Serilog;
 using service;
 
 namespace api.Mqtt;
 
-public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, ConfigService configService)
+public class MqttDevicesClient(
+    WebSocketStateService webSocketStateService,
+    DeviceService deviceService,
+    ConfigService configService)
 {
     public async Task CommunicateWithBroker()
     {
@@ -31,16 +30,14 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
                 var device = deviceService.InsertDevice(payload.Mac);
 
                 var config = configService.GetDeviceConfig(device.Mac);
-                
+
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
                     try
                     {
                         await socket.SendJson(new ServerDeviceOnline { Device = device });
                         if (config == null)
-                        {
                             await socket.SendWarning($"Device {device.Mac} is online and needs to be setup");
-                        }
                     }
                     catch (Exception exc)
                     {

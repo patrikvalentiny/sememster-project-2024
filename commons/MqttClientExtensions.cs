@@ -8,8 +8,7 @@ namespace commons;
 
 public static class MqttClientExtensions
 {
-        
-    public static async Task<MqttClientPublishResult> PublishJsonAsync(this IMqttClient mqttClient, string topic, object? payload)
+    public static async Task PublishJsonAsync(this IMqttClient mqttClient, string topic, object? payload)
     {
         var jsonSerializerSettings = new JsonSerializerSettings
         {
@@ -26,6 +25,6 @@ public static class MqttClientExtensions
             // .WithRetainFlag()
             .Build();
 
-       return await mqttClient.PublishAsync(message);
+        await mqttClient.PublishAsync(message);
     }
 }

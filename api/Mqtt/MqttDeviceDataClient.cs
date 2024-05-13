@@ -2,7 +2,6 @@
 using api.Utils;
 using commons;
 using commons.Models;
-using infrastructure;
 using infrastructure.Models;
 using MQTTnet;
 using Newtonsoft.Json;
@@ -11,7 +10,7 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDeviceDataClient( DataService dataService, WebSocketStateService webSocketStateService)
+public class MqttDeviceDataClient(DataService dataService, WebSocketStateService webSocketStateService)
 {
     public async Task CommunicateWithBroker()
     {
@@ -42,7 +41,6 @@ public class MqttDeviceDataClient( DataService dataService, WebSocketStateServic
                 Log.Error(exc, "Error handling message");
             }
         };
-
     }
 
     private async Task SendDataToClients(string mac, BmeDataDto insertedData)

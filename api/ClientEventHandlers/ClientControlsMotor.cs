@@ -17,8 +17,6 @@ public class ServerSendsMotorDataDto : BaseDto
     public required int Position { get; set; }
 }
 
-
-
 public class ClientControlsMotor : IRequestHandler<ClientControlsMotorDto>
 {
     public async Task Handle(ClientControlsMotorDto request, CancellationToken cancellationToken)
@@ -34,18 +32,15 @@ public class ClientStartsListeningToMotorDto : BaseDto, IRequest
     public required string Mac { get; set; }
 }
 
-public class ClientStartsListeningToMotor(WebSocketStateService webSocketStateService) : IRequestHandler<ClientStartsListeningToMotorDto>
+public class ClientStartsListeningToMotor(WebSocketStateService webSocketStateService)
+    : IRequestHandler<ClientStartsListeningToMotorDto>
 {
     public Task Handle(ClientStartsListeningToMotorDto request, CancellationToken cancellationToken)
     {
         if (webSocketStateService.MotorMacToConnectionId.TryGetValue(request.Mac, out var connectionIdSet))
-        {
             connectionIdSet.Add(request.Socket!.ConnectionInfo.Id);
-        }
         else
-        {
             webSocketStateService.MotorMacToConnectionId.TryAdd(request.Mac, [request.Socket!.ConnectionInfo.Id]);
-        }
 
         return Task.CompletedTask;
     }

@@ -32,9 +32,9 @@ public static class WsHelper
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
-            DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
+            DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
         });
-        
+
         if (dto == null) throw new NullReferenceException("Could not deserialize BaseDto");
 
         // Remove the "dto" suffix from the event type and convert to lowercase
@@ -45,7 +45,7 @@ public static class WsHelper
 
         // Get the type from the dictionary
         if (!BaseDtos.TryGetValue(eventType, out var type)) throw new NullReferenceException("Could not find type");
-        
+
         // Deserialize the message to the type
         var request = JsonConvert.DeserializeObject(message, type);
 
@@ -58,11 +58,11 @@ public static class WsHelper
                 baseDto.Socket = ws;
                 break;
         }
-        
+
         // Send the request to the mediator
         var response = await mediator.Send(request);
         // If the response is null, return a completed task otherwise send the response
-        if (response!.GetType() != MediatR.Unit.Value.GetType()) 
+        if (response!.GetType() != Unit.Value.GetType())
             await ws.SendJson(response);
     }
 
@@ -75,7 +75,7 @@ public static class WsHelper
         Log.Debug("Sending: {json}", json);
         return ws.Send(json);
     }
-    
+
 
     public static async Task SendNotification(this IWebSocketConnection socket, string message)
     {
