@@ -6,7 +6,7 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("api/v1/device")]
-public class DeviceController(DeviceService deviceService, ConfigService configService, MotorService motorService) : Controller
+public class DeviceController(DeviceService deviceService, ConfigService configService, MotorService motorService) : ControllerBase
 {
     [HttpGet]
     public IActionResult GetDevices()
