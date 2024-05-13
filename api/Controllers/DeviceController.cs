@@ -18,7 +18,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error getting devices");
-            throw;
+            return BadRequest(e.Message);
         }
     }
     
@@ -32,7 +32,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error getting device config");
-            throw;
+            return BadRequest(e.Message);
         }
     }
     
@@ -46,7 +46,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error getting motor position");
-            throw;
+            return BadRequest(e.Message);
         }
     }
     
@@ -60,7 +60,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error setting motor position");
-            throw;
+            return BadRequest(e.Message);
         }
     }
     
@@ -74,7 +74,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error setting motor position");
-            throw;
+            return BadRequest(e.Message);
         }
     }
     
@@ -88,7 +88,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
         catch (Exception e)
         {
             Log.Error(e, "Error getting motor position");
-            throw;
+            return BadRequest(e.Message);
         }
     }
 }
