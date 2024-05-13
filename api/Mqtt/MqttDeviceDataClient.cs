@@ -35,7 +35,7 @@ public class MqttDeviceDataClient( DataService dataService, WebSocketStateServic
 
                 var insertedData = dataService.InsertData(data, mac);
                 Log.Debug("Inserted data: {Data}", JsonConvert.SerializeObject(insertedData));
-                SendDataToClients(mac, insertedData);
+                await SendDataToClients(mac, insertedData);
             }
             catch (Exception exc)
             {
