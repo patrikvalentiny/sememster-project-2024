@@ -41,7 +41,7 @@ bootstrapApplication(AppComponent, {
         }
       }
     )
-  ,
+    ,
     provideRouter(routes,
       withComponentInputBinding()
     ),

@@ -14,6 +14,7 @@ export class DashboardService {
   private readonly http: HttpClient = inject(HttpClient);
   private readonly ws = inject(WebsocketService);
   private readonly stateService = inject(StateService);
+
   constructor() {
     this.getDevices().then(() => {
     })

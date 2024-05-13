@@ -24,6 +24,7 @@ export interface ThemeColors {
   error: string;
   errorContent: string;
 }
+
 export function extractThemeColorsFromDOM(): ThemeColors {
   const computedStyles = getComputedStyle(document.querySelector(':root')!);
   return {
@@ -54,12 +55,12 @@ export function extractThemeColorsFromDOM(): ThemeColors {
   };
 }
 
-export const colors:ThemeColors = extractThemeColorsFromDOM();
-export const chartColors :string[]= [colors.primary, colors.secondary, colors.accent];
+export const colors: ThemeColors = extractThemeColorsFromDOM();
+export const chartColors: string[] = [colors.primary, colors.secondary, colors.accent];
 
 export const sharedChartOptions = {
   colors: chartColors,
-  chart:{
+  chart: {
     foreColor: colors.baseContent,
   }
 };

@@ -31,28 +31,28 @@ export type ChartOptions = {
     DatePipe
   ],
   template: `
-    <div  id="chart">
+    <div id="chart">
       <apx-chart #chart
-        [series]="chartOptions.series"
-        [chart]="chartOptions.chart"
-        [xaxis]="chartOptions.xaxis"
-        [dataLabels]="chartOptions.dataLabels"
-        [grid]="chartOptions.grid"
-        [stroke]="chartOptions.stroke"
-        [colors]="sharedChartOptions.colors"
+                 [series]="chartOptions.series"
+                 [chart]="chartOptions.chart"
+                 [xaxis]="chartOptions.xaxis"
+                 [dataLabels]="chartOptions.dataLabels"
+                 [grid]="chartOptions.grid"
+                 [stroke]="chartOptions.stroke"
+                 [colors]="sharedChartOptions.colors"
       ></apx-chart>
 
     </div>`,
   styles: ''
 })
-export class CardLineChartComponent{
+export class CardLineChartComponent {
 
   @ViewChild("chart", {static: false}) chart!: ChartComponent;
   public chartOptions: ChartOptions;
   @Input() mac: string = "";
   @Input() data: WritableSignal<BmeData[]> | undefined;
   bmeData: BmeData[] = [];
-
+  protected readonly sharedChartOptions = sharedChartOptions;
 
   constructor() {
     effect(() => {
@@ -63,18 +63,22 @@ export class CardLineChartComponent{
           [
             {
               name: "Temperature",
-              data: this.bmeData.map(data => {return {x:new Date(data.createdAt).getTime(), y:data.temperatureC}})
+              data: this.bmeData.map(data => {
+                return {x: new Date(data.createdAt).getTime(), y: data.temperatureC}
+              })
             },
             {
               name: "Humidity",
-              data: this.bmeData.map(data => {return {x:new Date(data.createdAt).getTime(), y:data.humidity}})
+              data: this.bmeData.map(data => {
+                return {x: new Date(data.createdAt).getTime(), y: data.humidity}
+              })
             },
             // {
             //   name: "Pressure",
             //   data: this.bmeData.map(data => [new Date(data.createdAt).getTime(), data.pressure])
             // }
           ]
-        , true);
+          , true);
       }
     });
 
@@ -110,11 +114,15 @@ export class CardLineChartComponent{
       series: [
         {
           name: "Temperature",
-          data: this.bmeData.map(data => {return {x:new Date(data.createdAt).getTime(), y:data.temperatureC}})
+          data: this.bmeData.map(data => {
+            return {x: new Date(data.createdAt).getTime(), y: data.temperatureC}
+          })
         },
         {
           name: "Humidity",
-          data: this.bmeData.map(data => {return {x:new Date(data.createdAt).getTime(), y:data.humidity}})
+          data: this.bmeData.map(data => {
+            return {x: new Date(data.createdAt).getTime(), y: data.humidity}
+          })
         },
         // {
         //   name: "Pressure",
@@ -123,6 +131,4 @@ export class CardLineChartComponent{
       ],
     };
   }
-
-  protected readonly sharedChartOptions = sharedChartOptions;
 }

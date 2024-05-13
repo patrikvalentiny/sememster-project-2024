@@ -28,7 +28,7 @@ export class MotorService {
 
   public async setMaxPosition(mac: string, position: number) {
     try {
-      const call = this.http.put<number>(`${environment.restBaseUrl}/device/${mac}/motor`, position, {headers:{'Content-Type': 'application/json'}})
+      const call = this.http.put<number>(`${environment.restBaseUrl}/device/${mac}/motor`, position, {headers: {'Content-Type': 'application/json'}})
       const response = await firstValueFrom<number>(call);
       this.stateService.motorPosition.set(mac, response);
       return response;

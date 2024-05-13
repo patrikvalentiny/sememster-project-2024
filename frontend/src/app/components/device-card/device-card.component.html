@@ -1,4 +1,4 @@
-<div class="card bg-base-100 shadow-xl h-full" >
+<div class="card bg-base-100 shadow-xl h-full">
   <div class="card-body flex flex-col justify-between h-full">
     <div class="flex flex-row w-full justify-between items-center">
 
@@ -27,12 +27,12 @@
         <!--      <p>Pressure: {{(bmeData.pressure  / 1000).toFixed(4)}} kPa</p>-->
         <!--      <p>Created At: {{bmeData.createdAt | date:"long"}}</p>-->
         <!--    </div>-->
-        <app-card-line-chart class="h-fit" [mac]="device.mac" [data]="bmeData"></app-card-line-chart>
+      <app-card-line-chart class="h-fit" [mac]="device.mac" [data]="bmeData"></app-card-line-chart>
     }
 
     <div class="card-actions justify-end">
-      <button class="btn btn-secondary btn-outline" (click)="motorControlNavigation()">View Data</button>
-      <button class="btn btn-primary" (click)="motorControlNavigation()">Control Blinds</button>
+      <button (click)="motorControlNavigation()" class="btn btn-secondary btn-outline">View Data</button>
+      <button (click)="motorControlNavigation()" class="btn btn-primary">Control Blinds</button>
     </div>
   </div>
 </div>
