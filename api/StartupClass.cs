@@ -77,7 +77,6 @@ public static class StartupClass
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
         builder.Services.AddSingleton<MqttFactory>();
-        builder.Services.AddSingleton<MqttClientGenerator>();
         builder.Services.AddSingleton<MqttDeviceDataClient>();
         builder.Services.AddSingleton<MqttDeviceMotorPosition>();
         builder.Services.AddSingleton<DataService>();
@@ -170,7 +169,7 @@ public static class StartupClass
                 }
                 catch (Exception e)
                 {
-                    e.Handle(socket);
+                    await e.Handle(socket);
                 }
             };
         });

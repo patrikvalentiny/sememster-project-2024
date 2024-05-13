@@ -53,7 +53,7 @@ public static class WsHelper
         switch (request)
         {
             case null:
-                throw new NullReferenceException("Could not deserialize to type");
+                throw new ArgumentNullException(nameof(ws));
             case BaseDto baseDto:
                 baseDto.Socket = ws;
                 break;
@@ -97,9 +97,9 @@ public static class WsHelper
         await socket.SendJson(new ServerSendsNotificationDto(message, NotificationType.Warning));
     }
 
-    public static void Handle(this Exception ex, IWebSocketConnection ws)
+    public static async Task Handle(this Exception ex, IWebSocketConnection ws)
     {
-        ws.SendError(ex.Message);
+        await ws.SendError(ex.Message);
         Log.Error(ex, ex.Message);
     }
 
