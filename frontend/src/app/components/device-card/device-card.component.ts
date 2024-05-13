@@ -24,4 +24,8 @@ export class DeviceCardComponent {
   async motorControlNavigation() {
     await this.router.navigate(["/motor", this.device.mac]);
   }
+
+  async dataNavigation() {
+    await this.router.navigate(["/data", this.device.mac]);
+  }
 }

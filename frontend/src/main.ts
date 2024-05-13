@@ -7,7 +7,7 @@ import {provideRouter, Routes, withComponentInputBinding} from "@angular/router"
 import {DashboardComponent} from "./app/pages/home/dashboard/dashboard.component";
 import {MotorControlComponent} from "./app/pages/motor-control/motor-control.component";
 import {ErrorHttpInterceptor} from "./app/interceptors/error-http-interceptor";
-import {CardLineChartComponent} from "./app/charts/card-line-chart/card-line-chart.component";
+import {HistoricDataComponent} from "./app/pages/historic-data/historic-data.component";
 
 const routes: Routes = [
   {
@@ -19,8 +19,8 @@ const routes: Routes = [
     component: MotorControlComponent
   },
   {
-    path: 'chart',
-    component: CardLineChartComponent
+    path: 'data/:mac',
+    component: HistoricDataComponent
   },
   {
     path: '**',

@@ -1,4 +1,4 @@
-import {Component, effect, Input, ViewChild, WritableSignal} from '@angular/core';
+import {Component, effect, inject, Input, ViewChild, WritableSignal} from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -12,6 +12,7 @@ import {
 import {colors, sharedChartOptions} from "../chart-options";
 import {BmeData} from "../../models/bme-data";
 import {DatePipe} from "@angular/common";
+import {StateService} from "../../services/state.service";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -49,7 +50,6 @@ export class CardLineChartComponent {
 
   @ViewChild("chart", {static: false}) chart!: ChartComponent;
   public chartOptions: ChartOptions;
-  @Input() mac: string = "";
   @Input() data: WritableSignal<BmeData[]> | undefined;
   bmeData: BmeData[] = [];
   protected readonly sharedChartOptions = sharedChartOptions;

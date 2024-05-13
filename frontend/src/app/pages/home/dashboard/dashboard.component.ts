@@ -17,6 +17,7 @@ export class DashboardComponent implements OnInit {
   dashboardService = inject(DashboardService);
 
   async ngOnInit(): Promise<void> {
+    await this.dashboardService.getAllBmeData();
   }
 
 

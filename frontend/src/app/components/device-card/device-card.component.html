@@ -27,11 +27,15 @@
         <!--      <p>Pressure: {{(bmeData.pressure  / 1000).toFixed(4)}} kPa</p>-->
         <!--      <p>Created At: {{bmeData.createdAt | date:"long"}}</p>-->
         <!--    </div>-->
-      <app-card-line-chart class="h-fit" [mac]="device.mac" [data]="bmeData"></app-card-line-chart>
+      <div class="flex flex-col w-full items-end py-2">
+        <app-card-line-chart class="w-full" [data]="bmeData"></app-card-line-chart>
+        <p class="italic text-xs">Latest Pressure: {{ (bmeData().at(0)!.pressure / 100).toFixed(2) }} hPa </p>
+      </div>
+
     }
 
     <div class="card-actions justify-end">
-      <button (click)="motorControlNavigation()" class="btn btn-secondary btn-outline">View Data</button>
+      <button (click)="dataNavigation()" class="btn btn-secondary btn-outline">View Data</button>
       <button (click)="motorControlNavigation()" class="btn btn-primary">Control Blinds</button>
     </div>
   </div>

@@ -19,7 +19,7 @@ import {ClientStartsListeningToMotor} from "../../services/events/client/client-
   styleUrl: './motor-control.component.css'
 })
 export class MotorControlComponent implements OnInit {
-  @Input() mac?: string
+  @Input() mac?: string;
 
   ws = inject(WebsocketService);
   state = inject(StateService);

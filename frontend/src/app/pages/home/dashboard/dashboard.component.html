@@ -5,7 +5,10 @@
         <app-device-card class="w-full h-full" [device]="device"
                          [bmeData]="this.stateService.bmeData.get(device.mac)"></app-device-card>
       } @else {
-        <span class="loading loading-spinner loading-md"></span>
+        <div class="flex flex-row justify-center w-full h-24">
+          <span class="loading loading-spinner loading-md"></span>
+        </div>
+
       }
     }
   </div>

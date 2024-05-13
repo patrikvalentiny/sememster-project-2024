@@ -76,7 +76,7 @@ export class WebsocketService {
   private ServerDeviceBmeData(data: ServerDeviceBmeData) {
     const bmeData = data.data!;
     const bmeDataList = this.stateService.bmeData.get(bmeData.deviceMac!)!;
-    bmeDataList.update(value => [...value.slice(0, 24), bmeData as BmeData]);
+    bmeDataList.update(value => [bmeData as BmeData, ...value.slice(0, 24)]);
     // this.stateService.bmeData.set(bmeData.deviceMac!, bmeDataList);
   }
 
