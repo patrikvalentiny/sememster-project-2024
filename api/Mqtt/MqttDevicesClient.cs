@@ -1,37 +1,22 @@
 ﻿using api.ServerEvents;
 using api.Utils;
-using infrastructure;
+using commons;
+using infrastructure.Models;
 using MQTTnet;
-using MQTTnet.Client;
-using MQTTnet.Formatter;
 using Newtonsoft.Json;
 using Serilog;
 using service;
 
 namespace api.Mqtt;
 
-public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, MqttFactory mqttFactory)
+public class MqttDevicesClient(
+    WebSocketStateService webSocketStateService,
+    DeviceService deviceService,
+    ConfigService configService)
 {
     public async Task CommunicateWithBroker()
     {
-        var mqttClient = mqttFactory.CreateMqttClient();
-
-        var mqttClientOptions = new MqttClientOptionsBuilder()
-            .WithTcpServer("mqtt.flespi.io", 1883)
-            .WithCredentials(Environment.GetEnvironmentVariable("ASPNETCORE_Flespi__Username"), "")
-            .WithProtocolVersion(MqttProtocolVersion.V500)
-            .Build();
-
-        var connectResult = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-        if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
-            throw new Exception($"Failed to connect to MQTT broker: {connectResult.ResultCode}");
-
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter(f => f.WithTopic((environment == "Development" ? "climatectrl-dev" : "climatectrl") + "/devices"))
-            .Build();
-
-        await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
+        var mqttClient = await MqttClientGenerator.CreateMqttClient("/devices");
 
         mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
@@ -41,19 +26,26 @@ public class MqttDevicesClient(WebSocketStateService webSocketStateService, Devi
                 var topic = m.Topic;
                 var message = m.ConvertPayloadToString();
                 Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, topic);
-                var device = deviceService.InsertDevice(JsonConvert.DeserializeObject<Device>(message)!.Mac);
+                var payload = JsonConvert.DeserializeObject<Device>(message)!;
+                var device = deviceService.InsertDevice(payload.Mac);
+
+                var config = configService.GetDeviceConfig(device.Mac);
 
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
                     try
                     {
-                        await socket.SendJson(new ServerDeviceOnline{Device = device});
+                        await socket.SendJson(new ServerDeviceOnline { Device = device });
+                        if (config == null)
+                            await socket.SendWarning($"Device {device.Mac} is online and needs to be setup");
                     }
                     catch (Exception exc)
                     {
                         Log.Error(exc, "Error sending message to client");
                     }
                 });
+                if (config != null)
+                    await mqttClient.PublishJsonAsync($"/devices/{device.Mac}/config", config);
             }
             catch (Exception exc)
             {

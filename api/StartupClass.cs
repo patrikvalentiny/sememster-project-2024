@@ -33,6 +33,8 @@ public static class StartupClass
 
         // MQTT
         _ = app.Services.GetRequiredService<MqttDevicesClient>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDeviceDataClient>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDeviceMotorPosition>().CommunicateWithBroker();
 
         // Initialize the proxy
         tcpProxy.Start();
@@ -73,6 +75,14 @@ public static class StartupClass
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
         builder.Services.AddSingleton<MqttFactory>();
+        builder.Services.AddSingleton<MqttDeviceDataClient>();
+        builder.Services.AddSingleton<MqttDeviceMotorPosition>();
+        builder.Services.AddSingleton<DataService>();
+        builder.Services.AddSingleton<DataRepository>();
+        builder.Services.AddSingleton<ConfigService>();
+        builder.Services.AddSingleton<ConfigRepository>();
+        builder.Services.AddSingleton<MotorService>();
+        builder.Services.AddSingleton<MotorRepository>();
 
         WsHelper.InitBaseDtos(types);
 
@@ -145,7 +155,7 @@ public static class StartupClass
             socket.OnClose = () =>
             {
                 Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id);
-                webSocketStateService.Connections.TryRemove(socket.ConnectionInfo.Id, out _);
+                webSocketStateService.CloseSocket(socket);
             };
             socket.OnMessage = async message =>
             {
@@ -156,7 +166,7 @@ public static class StartupClass
                 }
                 catch (Exception e)
                 {
-                    e.Handle(socket);
+                    await e.Handle(socket);
                 }
             };
         });

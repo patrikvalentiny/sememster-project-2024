@@ -27,7 +27,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\commons\commons.csproj"/>
         <ProjectReference Include="..\service\service.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Mqtt\Helpers\"/>
     </ItemGroup>
 
 </Project>

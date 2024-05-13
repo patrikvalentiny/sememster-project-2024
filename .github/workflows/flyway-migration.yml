@@ -1,16 +1,48 @@
-name: Migrate Prod database
-'on':
+name: Flyway Prod Migrations
+
+on:
   push:
     branches:
       - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+env:
+  FLYWAY_VERSION: 10.12.0
+  DB_NAME: postgres
+
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
+    
+    container: 
+        image: flyway/flyway:latest
+        volumes:
+          - .:/flyway/sql
     steps:
       - uses: actions/checkout@v4
-      - uses: joshuaavalon/flyway-action@v3.0.0
+
+      - name: Run Flyway Migrations
+        env:
+          FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
+          FLYWAY_USER: ${{ secrets.PROD_DB_USER }}
+          FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          FLYWAY_SCHEMAS: public,climate_ctrl
+          FLYWAY_LOCATIONS: filesystem:/flyway/sql
+        run: |
+          flyway migrate
+#
+      - name: Flyway info and write result to file
+        env:
+          FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
+          FLYWAY_USER: ${{ secrets.PROD_DB_USER }}
+          FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          FLYWAY_SCHEMAS: public,climate_ctrl
+        run: |
+          flyway info > ./migration-status/$(date -u +"%Y-%m-%d|%H:%M:%S")-${{ inputs.env }}.txt
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
         with:
-          url: ${{ secrets.PROD_DB_URL }}
-          user: ${{ secrets.PROD_DB_USER }}
-          password: ${{ secrets.PROD_DB_PASSWORD }}
-      - run: echo 'testing'
+          add: './migration-status/*-${{ inputs.env }}.txt'
