@@ -12,7 +12,6 @@ class BME:
 
   constructor alt-address = false:
     MQTT-CLIENT_ = Flespi-MQTT.get-instance.get-client
-
     bus := i2c.Bus
       --sda=gpio.Pin 21
       --scl=gpio.Pin 22
@@ -24,6 +23,9 @@ class BME:
     address := alt-address ? bme280.I2C_ADDRESS_ALT : bme280.I2C_ADDRESS
     device := bus.device address
     driver_ = bme280.Driver device
+
+    subscribe-rtc
+
 
   get-temp-c -> float:
     return driver_.read_temperature  
@@ -52,6 +54,7 @@ class BME:
 
   live_ /bool := false
   start-rtc --s=1000:
+    if live_: return
     live_ = true
     task::
       while live_:     
