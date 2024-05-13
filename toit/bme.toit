@@ -3,11 +3,16 @@ import i2c
 import bme280
 import encoding.json
 import .utils
+import .flespi-mqtt
+import mqtt
 
 class BME:
   driver_ /bme280.Driver := ?
+  MQTT-CLIENT_ /mqtt.Client := ?
 
   constructor alt-address = false:
+    MQTT-CLIENT_ = Flespi-MQTT.get-instance.get-client
+
     bus := i2c.Bus
       --sda=gpio.Pin 21
       --scl=gpio.Pin 22
@@ -36,22 +41,33 @@ class BME:
         "humidity": get-humidity-percent
     }
 
-  send-bme-data-periodically client minutes /int:
+  send-bme-data-periodically minutes /int:
     delay-s /int := minutes * 60
     task::
       while true: 
         // send BME280 data to MQTT broker
-        client.publish "$TOPIC-PREFIX/devices/$MAC/bmedata" get-json
+        MQTT-CLIENT_.publish "$TOPIC-PREFIX/devices/$MAC/bmedata" get-json
         sleep --ms=delay-s * 1000
 
+
   live_ /bool := false
-  start-rtc client --s=1000:
+  start-rtc --s=1000:
     live_ = true
     task::
       while live_:     
         // send BME280 data to MQTT broker
-        client.publish "$TOPIC-PREFIX/devices/$MAC/bmedata/rtc" get-json --qos=0
+        MQTT-CLIENT_.publish "$TOPIC-PREFIX/devices/$MAC/bmedata/rtc" get-json --qos=0
         sleep --ms=s * 1000
 
   stop-rtc:
     live_ = false
+
+  subscribe-rtc:
+    MQTT-CLIENT_.subscribe "$TOPIC-PREFIX/devices/$MAC/commands/bmertc" :: |topic/string payload /ByteArray|    
+      catch --trace:
+        message := json.decode payload
+        print "Received command message on topic: $topic with payload: $message"
+        if message["command"] == "start":
+          start-rtc --s=5
+        else if message["command"] == "stop":
+          stop-rtc

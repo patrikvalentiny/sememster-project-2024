@@ -18,7 +18,8 @@ public class MotorRepository(DbDataSource dataSource)
     {
         var sql = $@"SELECT 
                     last_motor_position as {nameof(MotorPositionDto.LastMotorPosition)}, 
-                    max_motor_position as {nameof(MotorPositionDto.MaxMotorPosition)}
+                    max_motor_position as {nameof(MotorPositionDto.MaxMotorPosition)},
+                    motor_reversed as {nameof(MotorPositionDto.MotorReversed)}
                     FROM climate_ctrl.device_config
                     WHERE mac = @mac";
         using var conn = dataSource.OpenConnection();
@@ -34,10 +35,30 @@ public class MotorRepository(DbDataSource dataSource)
         using var conn = dataSource.OpenConnection();
         return conn.QueryFirst<int>(sql, new { mac, position });
     }
+    
+    public bool SetMotorReversed(string mac, bool reversed)
+    {
+        var sql = $@"UPDATE climate_ctrl.device_config
+                    SET motor_reversed = @reversed
+                    WHERE mac = @mac
+                    RETURNING motor_reversed";
+        using var conn = dataSource.OpenConnection();
+        return conn.QueryFirst<bool>(sql, new { mac, reversed });
+    }
+    
+    public bool GetMotorReversed(string mac)
+    {
+        var sql = $@"SELECT motor_reversed
+                    FROM climate_ctrl.device_config
+                    WHERE mac = @mac";
+        using var conn = dataSource.OpenConnection();
+        return conn.QueryFirst<bool>(sql, new { mac });
+    }
 }
 
 public class MotorPositionDto
 {
     public int LastMotorPosition { get; set; }
     public int MaxMotorPosition { get; set; }
+    public bool MotorReversed { get; set; }
 }

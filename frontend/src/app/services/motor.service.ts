@@ -3,7 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {StateService} from "./state.service";
-import {HotToastService} from "@ngxpert/hot-toast";
 import {MotorPositionDto} from "../models/motor-position-dto";
 
 @Injectable({
@@ -11,7 +10,6 @@ import {MotorPositionDto} from "../models/motor-position-dto";
 })
 export class MotorService {
   private readonly http = inject(HttpClient);
-  private readonly toast = inject(HotToastService);
   private readonly stateService = inject(StateService);
 
   constructor() {
@@ -24,19 +22,35 @@ export class MotorService {
       this.stateService.motorPosition.set(mac, response.lastMotorPosition);
       return response;
     } catch (e) {
-      this.toast.error("Failed to get motor position");
       throw e;
     }
   }
 
   public async setMaxPosition(mac: string, position: number) {
     try {
-      const call = this.http.put<number>(`${environment.restBaseUrl}/device/${mac}/motor`, position)
+      const call = this.http.put<number>(`${environment.restBaseUrl}/device/${mac}/motor`, position, {headers:{'Content-Type': 'application/json'}})
       const response = await firstValueFrom<number>(call);
       this.stateService.motorPosition.set(mac, response);
       return response;
     } catch (e) {
-      this.toast.error("Failed to set max position");
+      throw e;
+    }
+  }
+
+  public async getMotorDirection(mac: string) {
+    try {
+      const call = this.http.get<boolean>(`${environment.restBaseUrl}/device/${mac}/motor-direction`)
+      return await firstValueFrom<boolean>(call);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  public async setMotorDirection(mac: string, direction: boolean) {
+    try {
+      const call = this.http.put<boolean>(`${environment.restBaseUrl}/device/${mac}/motor-direction`, direction)
+      return await firstValueFrom<boolean>(call);
+    } catch (e) {
       throw e;
     }
   }

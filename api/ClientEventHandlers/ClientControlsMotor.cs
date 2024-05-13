@@ -1,5 +1,5 @@
-﻿using api.Mqtt.Helpers;
-using api.Utils;
+﻿using api.Utils;
+using commons;
 using MediatR;
 using service;
 
@@ -17,21 +17,36 @@ public class ServerSendsMotorDataDto : BaseDto
     public required int Position { get; set; }
 }
 
-public class ClientControlsMotor(MqttClientGenerator mqttClientGenerator, WebSocketStateService webSocketStateService) : IRequestHandler<ClientControlsMotorDto>
+
+
+public class ClientControlsMotor : IRequestHandler<ClientControlsMotorDto>
 {
     public async Task Handle(ClientControlsMotorDto request, CancellationToken cancellationToken)
     {
-        var mqttClient = await mqttClientGenerator.CreateMqttClient();
+        var mqttClient = await MqttClientGenerator.CreateMqttClient();
         await mqttClient.PublishJsonAsync($"/devices/{request.Mac}/motor/controls", new { request.Position });
-        if (webSocketStateService.MotorMacToConnectionId.TryGetValue(request.Mac, out var connectionIdList))
+        mqttClient.Dispose();
+    }
+}
+
+public class ClientStartsListeningToMotorDto : BaseDto, IRequest
+{
+    public required string Mac { get; set; }
+}
+
+public class ClientStartsListeningToMotor(WebSocketStateService webSocketStateService) : IRequestHandler<ClientStartsListeningToMotorDto>
+{
+    public Task Handle(ClientStartsListeningToMotorDto request, CancellationToken cancellationToken)
+    {
+        if (webSocketStateService.MotorMacToConnectionId.TryGetValue(request.Mac, out var connectionIdSet))
         {
-            if (!connectionIdList.Contains(request.Socket!.ConnectionInfo.Id))
-                connectionIdList.Add(request.Socket!.ConnectionInfo.Id);
-        } else
+            connectionIdSet.Add(request.Socket!.ConnectionInfo.Id);
+        }
+        else
         {
             webSocketStateService.MotorMacToConnectionId.TryAdd(request.Mac, [request.Socket!.ConnectionInfo.Id]);
         }
-        
-        mqttClient.Dispose();
+
+        return Task.CompletedTask;
     }
 }

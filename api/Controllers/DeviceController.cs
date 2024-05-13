@@ -41,7 +41,7 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
     {
         try
         {
-            return Ok(motorService.GetMotorPosition(mac));
+            return Ok(motorService.GetMotorPosition(mac).Result);
         }
         catch (Exception e)
         {
@@ -55,11 +55,39 @@ public class DeviceController(DeviceService deviceService, ConfigService configS
     {
         try
         {
-            return Ok(motorService.SetMaxMotorPosition(mac, position));
+            return Ok(motorService.SetMaxMotorPosition(mac, position).Result);
         }
         catch (Exception e)
         {
             Log.Error(e, "Error setting motor position");
+            throw;
+        }
+    }
+    
+    [HttpPut("{mac}/motor-direction")]
+    public IActionResult SetMotorDirection(string mac, [FromBody] bool direction)
+    {
+        try
+        {
+            return Ok(motorService.SetMotorDirection(mac, direction).Result);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error setting motor position");
+            throw;
+        }
+    }
+    
+    [HttpGet("{mac}/motor-direction")]
+    public IActionResult GetMotorDirection(string mac)
+    {
+        try
+        {
+            return Ok(motorService.GetMotorReversed(mac));
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error getting motor position");
             throw;
         }
     }

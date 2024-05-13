@@ -1,6 +1,6 @@
-﻿using api.Mqtt.Helpers;
-using api.ServerEvents;
+﻿using api.ServerEvents;
 using api.Utils;
+using commons;
 using commons.Models;
 using infrastructure;
 using infrastructure.Models;
@@ -11,11 +11,11 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDeviceDataClient(MqttClientGenerator clientGenerator, DataService dataService, WebSocketStateService webSocketStateService)
+public class MqttDeviceDataClient( DataService dataService, WebSocketStateService webSocketStateService)
 {
     public async Task CommunicateWithBroker()
     {
-        var mqttClient = await clientGenerator.CreateMqttClient("/devices/+/bmedata");
+        var mqttClient = await MqttClientGenerator.CreateMqttClient("/devices/+/bmedata");
         mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
             try

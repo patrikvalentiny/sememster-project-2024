@@ -1,15 +1,16 @@
 ﻿using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
-using MQTTnet.Protocol;
 
-namespace api.Mqtt.Helpers;
+namespace commons;
 
-public class MqttClientGenerator(MqttFactory mqttFactory)
+public class MqttClientGenerator
+
 {
-    public async Task<IMqttClient> CreateMqttClient(string topic)
+    private static MqttFactory _mqttFactory = new MqttFactory();
+    public static async Task<IMqttClient> CreateMqttClient(string topic)
     {
-        var mqttClient = mqttFactory.CreateMqttClient();
+        var mqttClient = _mqttFactory.CreateMqttClient();
 
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)
@@ -22,7 +23,7 @@ public class MqttClientGenerator(MqttFactory mqttFactory)
             throw new Exception($"Failed to connect to MQTT broker: {connectResult.ResultCode}");
 
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
+        var mqttSubscribeOptions = _mqttFactory.CreateSubscribeOptionsBuilder()
             .WithTopicFilter(f => f.WithTopic((environment == "Development" ? "climatectrl-dev" : "climatectrl") + topic))
             .Build();
 
@@ -30,9 +31,9 @@ public class MqttClientGenerator(MqttFactory mqttFactory)
         return mqttClient;
     }
 
-    public async Task<IMqttClient> CreateMqttClient()
+    public static async Task<IMqttClient> CreateMqttClient()
     {
-        var mqttClient = mqttFactory.CreateMqttClient();
+        var mqttClient = _mqttFactory.CreateMqttClient();
 
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)

@@ -1,6 +1,6 @@
 ﻿using api.ClientEventHandlers;
-using api.Mqtt.Helpers;
 using api.Utils;
+using commons;
 using MQTTnet;
 using Newtonsoft.Json;
 using Serilog;
@@ -8,11 +8,11 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDeviceMotorPosition(MqttClientGenerator mqttClientGenerator, WebSocketStateService webSocketStateService, MotorService motorService)
+public class MqttDeviceMotorPosition(WebSocketStateService webSocketStateService, MotorService motorService)
 {
     public async Task CommunicateWithBroker()
     {
-        var mqttClient = await mqttClientGenerator.CreateMqttClient($"/devices/+/motor/data");
+        var mqttClient = await MqttClientGenerator.CreateMqttClient($"/devices/+/motor/data");
 
         mqttClient.ApplicationMessageReceivedAsync += async e =>
         {

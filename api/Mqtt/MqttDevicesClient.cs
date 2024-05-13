@@ -1,7 +1,7 @@
 ﻿using System.Reflection.PortableExecutable;
-using api.Mqtt.Helpers;
 using api.ServerEvents;
 using api.Utils;
+using commons;
 using infrastructure;
 using infrastructure.Models;
 using MQTTnet;
@@ -13,11 +13,11 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, MqttClientGenerator clientGenerator, ConfigService configService)
+public class MqttDevicesClient(WebSocketStateService webSocketStateService, DeviceService deviceService, ConfigService configService)
 {
     public async Task CommunicateWithBroker()
     {
-        var mqttClient = await clientGenerator.CreateMqttClient("/devices");
+        var mqttClient = await MqttClientGenerator.CreateMqttClient("/devices");
 
         mqttClient.ApplicationMessageReceivedAsync += async e =>
         {

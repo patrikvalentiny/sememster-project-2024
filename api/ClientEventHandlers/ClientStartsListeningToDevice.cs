@@ -27,8 +27,7 @@ public class ClientStartsListeningToDevice(WebSocketStateService stateService, D
         
         if (stateService.MacToConnectionId.TryGetValue(request.Mac, out var connectionIdList))
         {
-            if (!connectionIdList.Contains(socket.ConnectionInfo.Id))
-                connectionIdList.Add(socket.ConnectionInfo.Id);
+            connectionIdList.Add(socket.ConnectionInfo.Id);
         }
         else
         {

@@ -31,4 +31,8 @@
         <ProjectReference Include="..\service\service.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Mqtt\Helpers\" />
+    </ItemGroup>
+
 </Project>

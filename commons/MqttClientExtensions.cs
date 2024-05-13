@@ -4,7 +4,7 @@ using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace api.Mqtt.Helpers;
+namespace commons;
 
 public static class MqttClientExtensions
 {
