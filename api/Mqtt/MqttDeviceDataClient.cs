@@ -45,7 +45,7 @@ public class MqttDeviceDataClient( DataService dataService, WebSocketStateServic
 
     }
 
-    private async void SendDataToClients(string mac, BmeDataDto insertedData)
+    private async Task SendDataToClients(string mac, BmeDataDto insertedData)
     {
         if (!webSocketStateService.MacToConnectionId.TryGetValue(mac, out var connectionIdList)) return;
         foreach (var connectionId in connectionIdList)
