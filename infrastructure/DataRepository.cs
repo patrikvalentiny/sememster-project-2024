@@ -32,7 +32,7 @@ public class DataRepository(DbDataSource dataSource)
                     FROM climate_ctrl.bme_data
                     WHERE device_mac = @requestMac
                     ORDER BY utc_time DESC
-                    LIMIT 10";
+                    LIMIT 24";
         using var conn = dataSource.OpenConnection();
         return conn.Query<BmeData>(sql, new { requestMac });
     }

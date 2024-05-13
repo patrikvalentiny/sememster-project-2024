@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {environment} from "../../environments/environment";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {ServerSendsNotification} from './events/server-sends-notification';
@@ -74,13 +74,13 @@ export class WebsocketService {
 
   private ServerDeviceBmeData(data: ServerDeviceBmeData) {
     const bmeData = data.data!;
-    const bmeDataList = (this.stateService.bmeData.get(bmeData.deviceMac!) ?? []).slice(0, 12);
-    bmeDataList.unshift(bmeData as BmeData);
-    this.stateService.bmeData.set(bmeData.deviceMac!, bmeDataList);
+    const bmeDataList = this.stateService.bmeData.get(bmeData.deviceMac!)!;
+    bmeDataList.update(value => [...value.slice(0,24), bmeData as BmeData]);
+    // this.stateService.bmeData.set(bmeData.deviceMac!, bmeDataList);
   }
 
   private ServerSendsDeviceBaseData(data: ServerSendsDeviceBaseDataDto){
-    this.stateService.bmeData.set(data.mac!, data.data!);
+    this.stateService.bmeData.set(data.mac!, signal(data.data!));
   }
 
   private ServerSendsMotorData(data: ServerSendsMotorDataDto){

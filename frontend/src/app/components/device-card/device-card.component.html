@@ -1,5 +1,5 @@
-<div class="card bg-base-100 shadow-xl h-80 hover:bg-base-200">
-  <div class="card-body flex flex-col justify-between">
+<div class="card bg-base-100 shadow-xl h-full" >
+  <div class="card-body flex flex-col justify-between h-full">
     <div class="flex flex-row w-full justify-between items-center">
 
       <div class="flex flex-col gap-2">
@@ -16,19 +16,19 @@
     </div>
     @if (bmeData === undefined) {
       <span class="loading loading-spinner loading-md"></span>
-    } @else if (bmeData === null) {
+    } @else if (bmeData().length === 0) {
       <div class="flex flex-col gap-2">
         <p class="italic text-sm">No data available</p>
       </div>
+    } @else {
+      <!--    <div>-->
+        <!--      <p>Temperature: {{bmeData.temperatureC}} °C</p>-->
+        <!--      <p>Humidity: {{bmeData.humidity }} %</p>-->
+        <!--      <p>Pressure: {{(bmeData.pressure  / 1000).toFixed(4)}} kPa</p>-->
+        <!--      <p>Created At: {{bmeData.createdAt | date:"long"}}</p>-->
+        <!--    </div>-->
+        <app-card-line-chart class="h-fit" [mac]="device.mac" [data]="bmeData"></app-card-line-chart>
     }
-  @else{
-    <div>
-      <p>Temperature: {{bmeData.temperatureC}} °C</p>
-      <p>Humidity: {{bmeData.humidity }} %</p>
-      <p>Pressure: {{(bmeData.pressure  / 1000).toFixed(4)}} kPa</p>
-      <p>Created At: {{bmeData.createdAt | date:"long"}}</p>
-    </div>
-  }
 
     <div class="card-actions justify-end">
       <button class="btn btn-secondary btn-outline" (click)="motorControlNavigation()">View Data</button>
