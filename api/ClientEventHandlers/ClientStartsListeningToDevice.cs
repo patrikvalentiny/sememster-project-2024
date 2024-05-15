@@ -30,7 +30,7 @@ public class ClientStartsListeningToDevice(WebSocketStateService stateService, D
         else
             stateService.MacToConnectionId.TryAdd(request.Mac, [socket.ConnectionInfo.Id]);
         
-        var data = dataService.GetLastData(request.Mac);
+        var data = dataService.GetLatestData(request.Mac);
         return Task.FromResult(new ServerSendsDeviceBaseDataDto { Mac = request.Mac, Data = data });
     }
 }

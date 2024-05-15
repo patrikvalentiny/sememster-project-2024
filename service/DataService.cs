@@ -11,8 +11,8 @@ public class DataService(DataRepository dataRepository, WebSocketStateService we
         return dataRepository.InsertData(data, mac);
     }
 
-    public IEnumerable<BmeData> GetLastData(string requestMac)
+    public IEnumerable<BmeData> GetLatestData(string requestMac)
     {
-        return dataRepository.GetLastData(requestMac);
+        return dataRepository.GetLatestData(requestMac);
     }
 }
