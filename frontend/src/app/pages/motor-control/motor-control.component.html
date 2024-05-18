@@ -1,12 +1,6 @@
 <div class="flex flex-col p-6 w-full gap-6">
   <div class="flex flex-col gap-6 w-full">
-    <div [ngClass]="{'hidden':!state.motorMoving.get(mac!)}"
-         class="flex flex-row justify-center items-center w-full h-full">
-      <div class="flex flex-row items-center">
-        <span class="loading loading-ring loading-lg"></span>
-        <p>Moving motor</p>
-      </div>
-    </div>
+
     <div class="flex justify-center items-center w-full">
       <input (change)="move($event.target)" class="range w-full" max="{{max}}" min="0" step="{{step}}"
              type="range"
@@ -27,8 +21,18 @@
     </div>
     <div class="flex w-full justify-end gap-2">
       <button (click)="setMaxToCurrent()" class="btn btn-neutral">Set Max to Current Position</button>
-      <button (click)="increaseMax()" class="btn btn-neutral">+ Max</button>
+      <button (click)="increaseMax()" [disabled]="state.motorMoving.get(mac!)" class="btn btn-neutral">+ Max</button>
     </div>
   </div>
+  @if (state.motorMoving.get(mac!)) {
+    <div class="flex flex-row justify-center items-center w-full h-full">
+
+      <!--    [ngClass]="{'hidden':!state.motorMoving.get(mac!)}"-->
+      <div class="flex flex-row items-center">
+        <span class="loading loading-ring loading-lg"></span>
+        <p>Moving motor</p>
+      </div>
+    </div>
+  }
 </div>
 

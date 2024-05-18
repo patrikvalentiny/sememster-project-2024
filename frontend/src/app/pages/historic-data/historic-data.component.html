@@ -1,1 +1,12 @@
-<p>historic-data works!</p>
+<div class="flex flex-col w-full h-full px-6 py-2">
+  <div class="flex flex-row gap-2 p-2 w-full justify-center">
+    <button class="btn " (click)="getBmeData(1)" [ngClass]="{'btn-accent' : days === 1}" >1 Day</button>
+    <button class="btn " (click)="getBmeData(7)" [ngClass]="{'btn-accent' : days === 7}">1 Week</button>
+    <button class="btn " (click)="getBmeData(31)" [ngClass]="{'btn-accent' : days === 31}">1 Month</button>
+    <button class="btn " (click)="getBmeData(3*31)" [ngClass]="{'btn-accent' : days === 3*31}">3 Months</button>
+    <button class="btn " (click)="getBmeData(6*31)" [ngClass]="{'btn-accent' : days === 6*31}">6 Months</button>
+    <button class="btn " (click)="getBmeData(12*31)" [ngClass]="{'btn-accent' : days === 12*31 }">1 Year</button>
+    <button class="btn " (click)="getBmeData(24*31)" [ngClass]="{'btn-accent' : days === 24*31}">2 Years</button>
+  </div>
+<app-historic-data-chart class="w-full h-full" [bmeData]="bmeData"></app-historic-data-chart>
+</div>

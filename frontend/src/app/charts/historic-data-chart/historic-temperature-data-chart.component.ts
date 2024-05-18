@@ -1,4 +1,4 @@
-import {Component, effect, inject, Input, ViewChild, WritableSignal} from '@angular/core';
+import {Component, effect, inject, Input, signal, ViewChild, WritableSignal} from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -8,10 +8,10 @@ import {
   ApexXAxis,
   ChartComponent,
   NgApexchartsModule
-} from 'ng-apexcharts';
+} from "ng-apexcharts";
 import {colors, sharedChartOptions} from "../chart-options";
 import {BmeData} from "../../models/bme-data";
-import {DatePipe} from "@angular/common";
+import {NgClass} from "@angular/common";
 
 type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -24,13 +24,14 @@ type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-card-line-chart',
+  selector: 'app-historic-data-chart',
   standalone: true,
   imports: [
     NgApexchartsModule,
-    DatePipe
+    NgClass
   ],
   template: `
+
     <div id="chart">
       <apx-chart #chart
                  [series]="chartOptions.series"
@@ -45,54 +46,25 @@ type ChartOptions = {
     </div>`,
   styles: ''
 })
-export class CardLineChartComponent {
-
+export class HistoricTemperatureDataChartComponent {
+  @Input() bmeData: WritableSignal<BmeData[]> = signal([]);
   @ViewChild("chart", {static: false}) chart!: ChartComponent;
   public chartOptions: ChartOptions;
-  @Input() data: WritableSignal<BmeData[]> | undefined;
-  bmeData: BmeData[] = [];
   protected readonly sharedChartOptions = sharedChartOptions;
 
   constructor() {
     effect(() => {
-      if (this.data) {
-        this.bmeData = this.data();
-        if (!this.bmeData || !this.chart) return;
-        this.chart.updateSeries(
-          [
-            {
-              name: "Temperature",
-              data: this.bmeData.map(data => this.formatData(data))
-            },
-            // {
-            //   name: "Humidity",
-            //   data: this.bmeData.map(data => {
-            //     return {x: new Date(data.createdAt).getTime(), y: data.humidity}
-            //   })
-            // },
-            // {
-            //   name: "Pressure",
-            //   data: this.bmeData.map(data => [new Date(data.createdAt).getTime(), data.pressure])
-            // }
-          ]
-          );
-      }
+      this.updateSeries(this.bmeData()).then();
     });
-
     this.chartOptions = {
       chart: {
-        animations:{
-          enabled: true,
-          easing: 'easeout',
-          dynamicAnimation: {
-            speed: 250
-          }
-        },
         foreColor: sharedChartOptions.chart.foreColor,
         height: 300,
         type: "line",
         zoom: {
-          enabled: false
+          enabled: true,
+          type: "x",
+          autoScaleYaxis: true
         }
       },
       dataLabels: {
@@ -112,13 +84,14 @@ export class CardLineChartComponent {
         }
       },
       xaxis: {
-        type: "datetime",
-        range: 144*1000
+        type: "datetime"
       },
       series: [
         {
           name: "Temperature",
-          data: this.bmeData.map(data => this.formatData(data))
+          data: this.bmeData().map(data => {
+            return {x: new Date(data.createdAt).getTime(), y: data.temperatureC}
+          })
         },
         // {
         //   name: "Humidity",
@@ -134,9 +107,27 @@ export class CardLineChartComponent {
     };
   }
 
-  formatData(data: BmeData) {
-    const decimalPlaces:number = 3;
-    const decimalMultiplier = Math.pow(10, decimalPlaces);
-    return {x: new Date(data.createdAt).getTime(), y: Math.round(data.temperatureC *decimalMultiplier)/decimalMultiplier}
+
+  async updateSeries(data: BmeData[]) {
+    this.chart.updateSeries(
+      [
+        {
+          name: "Temperature",
+          data: data.map(data => {
+            return {x: new Date(data.createdAt).getTime(), y: data.temperatureC}
+          })
+        },
+        // {
+        //   name: "Humidity",
+        //   data: this.bmeData.map(data => {
+        //     return {x: new Date(data.createdAt).getTime(), y: data.humidity}
+        //   })
+        // },
+        // {
+        //   name: "Pressure",
+        //   data: this.bmeData.map(data => data.pressure)
+        // }
+      ]
+    );
   }
 }

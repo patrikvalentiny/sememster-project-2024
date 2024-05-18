@@ -15,4 +15,9 @@ public class DataService(DataRepository dataRepository, WebSocketStateService we
     {
         return dataRepository.GetLatestData(requestMac);
     }
+    
+    public IEnumerable<BmeData> GetDeviceDataInLastXDays(string requestMac, int days)
+    {
+        return dataRepository.GetDeviceDataInLastXDays(requestMac, days);
+    }
 }

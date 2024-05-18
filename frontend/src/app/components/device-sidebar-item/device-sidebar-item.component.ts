@@ -13,8 +13,8 @@ export class DeviceSidebarItemComponent {
   private readonly router = inject(Router);
   @Input() device!: Device ;
 
-  viewData() {
-
+  async viewData() {
+    await this.router.navigate(["/data", this.device.mac]);
   }
 
   async controlMotor() {
