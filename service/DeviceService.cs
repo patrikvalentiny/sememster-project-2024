@@ -3,7 +3,14 @@ using infrastructure.Models;
 
 namespace service;
 
-public class DeviceService(DeviceRepository deviceRepository)
+public interface IDeviceService
+{
+    Device InsertDevice(string mac);
+    IEnumerable<Device> GetDevices();
+}
+
+
+public class DeviceService(DeviceRepository deviceRepository) : IDeviceService
 {
     public Device InsertDevice(string mac)
     {
