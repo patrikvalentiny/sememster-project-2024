@@ -11,7 +11,7 @@ public interface IDataService
     IEnumerable<BmeData> GetDeviceDataInLastXDays(string requestMac, int days);
 }
 
-public class DataService(DataRepository dataRepository, WebSocketStateService webSocketStateService) : IDataService
+public class DataService(DataRepository dataRepository) : IDataService
 {
     public BmeDataDto InsertData(BmeData data, string mac)
     {

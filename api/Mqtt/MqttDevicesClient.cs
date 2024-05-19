@@ -10,9 +10,9 @@ using service;
 namespace api.Mqtt;
 
 public class MqttDevicesClient(
-    WebSocketStateService webSocketStateService,
-    DeviceService deviceService,
-    ConfigService configService)
+    IWebSocketStateService webSocketStateService,
+    IDeviceService deviceService,
+    IConfigService configService)
 {
     public async Task CommunicateWithBroker()
     {
