@@ -7,7 +7,7 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("api/v1/data")]
-public class DataController(DataService dataService) : ControllerBase
+public class DataController(IDataService dataService) : ControllerBase
 {
     [HttpGet("{mac}")]
     public IActionResult GetData([Length(12,12)] string mac,[Required][Range(1, 731)][FromQuery] int days = 1)

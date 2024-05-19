@@ -4,7 +4,14 @@ using infrastructure.Models;
 
 namespace service;
 
-public class DataService(DataRepository dataRepository, WebSocketStateService webSocketStateService)
+public interface IDataService
+{
+    BmeDataDto InsertData(BmeData data, string mac);
+    IEnumerable<BmeData> GetLatestData(string requestMac);
+    IEnumerable<BmeData> GetDeviceDataInLastXDays(string requestMac, int days);
+}
+
+public class DataService(DataRepository dataRepository, WebSocketStateService webSocketStateService) : IDataService
 {
     public BmeDataDto InsertData(BmeData data, string mac)
     {

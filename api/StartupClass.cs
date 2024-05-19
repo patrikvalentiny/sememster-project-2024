@@ -77,7 +77,7 @@ public static class StartupClass
         builder.Services.AddSingleton<MqttFactory>();
         builder.Services.AddSingleton<MqttDeviceDataClient>();
         builder.Services.AddSingleton<MqttDeviceMotorPosition>();
-        builder.Services.AddSingleton<DataService>();
+        builder.Services.AddSingleton<IDataService, DataService>();
         builder.Services.AddSingleton<DataRepository>();
         builder.Services.AddSingleton<IConfigService, ConfigService>();
         builder.Services.AddSingleton<ConfigRepository>();
