@@ -58,7 +58,7 @@ public class MotorRepository(DbDataSource dataSource)
 
 public class MotorPositionDto
 {
-    public int LastMotorPosition { get; set; }
+    public int LastMotorPosition { get; init; }
     public int MaxMotorPosition { get; set; }
-    public bool MotorReversed { get; set; }
+    public bool MotorReversed { get; init; }
 }
