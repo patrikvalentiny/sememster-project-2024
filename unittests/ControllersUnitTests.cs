@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using service;
 
-namespace unit_tests;
+namespace UnitTests;
 
 public class Tests
 {

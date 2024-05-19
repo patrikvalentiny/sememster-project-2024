@@ -17,7 +17,7 @@ public class ServerSendsDeviceBaseDataDto : BaseDto
     public required IEnumerable<BmeData> Data { get; set; }
 }
 
-public class ClientStartsListeningToDevice(WebSocketStateService stateService, DataService dataService)
+public class ClientStartsListeningToDevice(WebSocketStateService stateService, IDataService dataService)
     : IRequestHandler<ClientStartsListeningToDeviceDto, ServerSendsDeviceBaseDataDto>
 {
     public Task<ServerSendsDeviceBaseDataDto> Handle(ClientStartsListeningToDeviceDto request,

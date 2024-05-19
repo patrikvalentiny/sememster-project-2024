@@ -10,7 +10,7 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDeviceDataClient(DataService dataService, WebSocketStateService webSocketStateService)
+public class MqttDeviceDataClient(IDataService dataService, WebSocketStateService webSocketStateService)
 {
     public async Task CommunicateWithBroker()
     {
