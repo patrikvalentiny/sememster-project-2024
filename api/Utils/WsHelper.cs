@@ -28,6 +28,7 @@ public static class WsHelper
 
     public static async Task InvokeBaseDtoHandler(this IWebSocketConnection ws, string message, IMediator mediator)
     {
+        if (BaseDtos.IsEmpty) InitBaseDtos(Assembly.GetExecutingAssembly());
         var dto = JsonConvert.DeserializeObject<BaseDto>(message, new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -47,17 +48,10 @@ public static class WsHelper
         if (!BaseDtos.TryGetValue(eventType, out var type)) throw new NullReferenceException("Could not find type");
 
         // Deserialize the message to the type
-        var request = JsonConvert.DeserializeObject(message, type);
+        var request = JsonConvert.DeserializeObject(message, type)!;
 
         // Set the socket property
-        switch (request)
-        {
-            case null:
-                throw new ArgumentNullException(nameof(ws));
-            case BaseDto baseDto:
-                baseDto.Socket = ws;
-                break;
-        }
+        if (request is BaseDto baseDto) baseDto.Socket = ws;
 
         // Send the request to the mediator
         var response = await mediator.Send(request);

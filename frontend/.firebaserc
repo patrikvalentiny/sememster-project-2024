@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "climate-ctrl"
-  }
+    "default": "climate-ctrl",
+    "staging": "climate-ctrl-staging"
+  },
+  "targets": {},
+  "etags": {}
 }

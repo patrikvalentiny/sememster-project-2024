@@ -1,3 +1,4 @@
 using api;
 
-StartupClass.Startup(args);
+var app = StartupClass.Startup(args);
+app.Run();

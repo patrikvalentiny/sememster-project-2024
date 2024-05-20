@@ -18,31 +18,31 @@ import {ClientStartsListeningToMotor} from "../../services/events/client/client-
   templateUrl: './motor-control.component.html',
   styleUrl: './motor-control.component.css'
 })
-export class MotorControlComponent implements OnInit{
-  @Input() mac?: string
+export class MotorControlComponent implements OnInit {
+  @Input() mac?: string;
 
   ws = inject(WebsocketService);
   state = inject(StateService);
   motorService = inject(MotorService);
 
-  max:number = 500
-  step:number = 20
+  max: number = 500
+  step: number = 20
   value: number = 0;
   directionToggle = new FormControl(false);
 
   async ngOnInit(): Promise<void> {
-    const response =  await this.motorService.getMotorPosition(this.mac!);
+    const response = await this.motorService.getMotorPosition(this.mac!);
     this.value = response.lastMotorPosition;
     this.max = response.maxMotorPosition;
     this.directionToggle.setValue(response.motorReversed);
-    this.ws.sendJson(new ClientStartsListeningToMotor({mac:this.mac}));
+    this.ws.sendJson(new ClientStartsListeningToMotor({mac: this.mac}));
 
   }
 
   async move(val: any) {
     this.value = val.value;
     this.state.motorMoving.set(this.mac!, true);
-    this.ws.sendJson(new ClientControlsMotor({position: this.value, mac:this.mac}));
+    this.ws.sendJson(new ClientControlsMotor({position: this.value, mac: this.mac}));
   }
 
   async changeDirection() {
@@ -52,11 +52,12 @@ export class MotorControlComponent implements OnInit{
   async setMaxToCurrent() {
     this.max = await this.motorService.setMaxPosition(this.mac!, this.value);
   }
-  async increaseMax(){
+
+  async increaseMax() {
     this.max += this.step;
     this.value = this.max;
     this.state.motorMoving.set(this.mac!, true);
     await this.motorService.setMaxPosition(this.mac!, this.max);
-    this.ws.sendJson(new ClientControlsMotor({position: this.value, mac:this.mac}));
+    this.ws.sendJson(new ClientControlsMotor({position: this.value, mac: this.mac}));
   }
 }

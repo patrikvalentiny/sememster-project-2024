@@ -1,26 +1,24 @@
-﻿name: Flyway Build Migrations
-
+﻿name: Staging PR
 
 on:
-  pull_request:
+  pull_request: 
     branches:
-      - dev
       - staging
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     
 env:
   DB_NAME: postgres
+  ASPNETCORE_ConnectionStrings__Postgres: postgresql://postgres:postgres@localhost:5432/climate_ctrl
+  ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
   FLYWAY_URL: jdbc:postgresql://postgres:5432/postgres
   FLYWAY_USER: postgres
   FLYWAY_PASSWORD: postgres
   FLYWAY_SCHEMAS: public,climate_ctrl
-  
+
+
 jobs:
-  Continuous-Integration-Build:
-    name: Continuous Integration Build
-    runs-on: ubuntu-20.04
-    
+  
+  run_integration_tests:
     container:
       image: flyway/flyway:latest
       volumes:
@@ -45,25 +43,30 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-          
+     
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+      
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Continuous Integration Flyway Clean Migrate
+      - uses: actions/checkout@v4
+      - name: Run Flyway Migration
+        env:
+          FLYWAY_LOCATIONS: filesystem:/flyway/sql
         run: |
           flyway migrate
-          
-      - name: Flyway Info
+
+      - name: Flyway info and write result to file
         run: |
           flyway info
           
-      - name: Flyway Info Production
-        env:
-            FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
-            FLYWAY_USER: ${{ secrets.PROD_DB_USER }}
-            FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
-            FLYWAY_SCHEMAS: public, climate_ctrl
+     
+      - name: Run Integration Tests
         run: |
-          flyway info
-        
+          cd api
+          dotnet run
+          sleep 10
+          &
+          cd ../IntegrationTests
+          dotnet test
+   
+

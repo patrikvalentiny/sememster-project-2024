@@ -3,7 +3,15 @@ using infrastructure.Models;
 
 namespace service;
 
-public class DeviceService(DeviceRepository deviceRepository)
+public interface IDeviceService
+{
+    Device InsertDevice(string mac);
+    IEnumerable<Device> GetDevices();
+    DeviceConfig? GetDeviceConfig(string mac);
+}
+
+
+public class DeviceService(DeviceRepository deviceRepository, ConfigRepository configRepository) : IDeviceService
 {
     public Device InsertDevice(string mac)
     {
@@ -13,5 +21,10 @@ public class DeviceService(DeviceRepository deviceRepository)
     public IEnumerable<Device> GetDevices()
     {
         return deviceRepository.GetDevices();
+    }
+    
+    public DeviceConfig? GetDeviceConfig(string mac)
+    {
+        return configRepository.GetDeviceConfig(mac);
     }
 }

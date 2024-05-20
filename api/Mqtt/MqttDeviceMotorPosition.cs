@@ -7,7 +7,7 @@ using service;
 
 namespace api.Mqtt;
 
-public class MqttDeviceMotorPosition(WebSocketStateService webSocketStateService, MotorService motorService)
+public class MqttDeviceMotorPosition(IWebSocketStateService webSocketStateService, IMotorService motorService)
 {
     public async Task CommunicateWithBroker()
     {

@@ -44,7 +44,7 @@ class BME:
     }
 
   send-bme-data-periodically minutes /int:
-    delay-s /int := minutes * 60
+    delay-s /int := (minutes * 60).to-int
     task::
       while true: 
         // send BME280 data to MQTT broker

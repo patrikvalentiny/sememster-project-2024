@@ -7,6 +7,7 @@ import {provideRouter, Routes, withComponentInputBinding} from "@angular/router"
 import {DashboardComponent} from "./app/pages/home/dashboard/dashboard.component";
 import {MotorControlComponent} from "./app/pages/motor-control/motor-control.component";
 import {ErrorHttpInterceptor} from "./app/interceptors/error-http-interceptor";
+import {HistoricDataComponent} from "./app/pages/historic-data/historic-data.component";
 
 const routes: Routes = [
   {
@@ -16,7 +17,16 @@ const routes: Routes = [
   {
     path: 'motor/:mac',
     component: MotorControlComponent
-  }
+  },
+  {
+    path: 'data/:mac',
+    component: HistoricDataComponent
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  },
+
 ];
 
 bootstrapApplication(AppComponent, {
@@ -31,7 +41,7 @@ bootstrapApplication(AppComponent, {
         }
       }
     )
-  ,
+    ,
     provideRouter(routes,
       withComponentInputBinding()
     ),

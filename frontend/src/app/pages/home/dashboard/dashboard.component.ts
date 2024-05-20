@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {DashboardService} from "../../../services/dashboard.service";
 import {DeviceCardComponent} from "../../../components/device-card/device-card.component";
 import {StateService} from "../../../services/state.service";
@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
   dashboardService = inject(DashboardService);
 
   async ngOnInit(): Promise<void> {
+    await this.dashboardService.getAllBmeData();
   }
-
 
 }

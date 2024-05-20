@@ -32,7 +32,7 @@ public class ClientStartsListeningToMotorDto : BaseDto, IRequest
     public required string Mac { get; set; }
 }
 
-public class ClientStartsListeningToMotor(WebSocketStateService webSocketStateService)
+public class ClientStartsListeningToMotor(IWebSocketStateService webSocketStateService)
     : IRequestHandler<ClientStartsListeningToMotorDto>
 {
     public Task Handle(ClientStartsListeningToMotorDto request, CancellationToken cancellationToken)

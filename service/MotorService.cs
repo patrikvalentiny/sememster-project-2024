@@ -3,7 +3,16 @@ using infrastructure.Mqtt;
 
 namespace service;
 
-public class MotorService(MotorRepository motorRepository)
+public interface IMotorService
+{
+    int SetMotorPosition(string mac, int position);
+    Task<MotorPositionDto> GetMotorPosition(string mac);
+    Task<int> SetMaxMotorPosition(string mac, int position);
+    bool GetMotorReversed(string mac);
+    Task<bool> SetMotorDirection(string mac, bool reversed);
+}
+
+public class MotorService(MotorRepository motorRepository) : IMotorService
 {
     public int SetMotorPosition(string mac, int position)
     {

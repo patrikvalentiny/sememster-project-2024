@@ -22,7 +22,7 @@ public class DataRepository(DbDataSource dataSource)
         return conn.QueryFirst<BmeDataDto>(sql, new { mac, data.TemperatureC, data.Humidity, data.Pressure });
     }
 
-    public IEnumerable<BmeData> GetLastData(string requestMac)
+    public IEnumerable<BmeData> GetLatestData(string requestMac)
     {
         var sql = $@"SELECT 
                         temperature_c as {nameof(BmeData.TemperatureC)},
@@ -30,9 +30,24 @@ public class DataRepository(DbDataSource dataSource)
                         pressure as {nameof(BmeData.Pressure)},
                         utc_time as {nameof(BmeData.CreatedAt)}
                     FROM climate_ctrl.bme_data
-                    WHERE device_mac = @requestMac
+                    WHERE device_mac = @requestMac 
+                    --and utc_time >  (now() at time zone 'utc') - interval '1 day'
                     ORDER BY utc_time DESC
-                    LIMIT 10";
+                    LIMIT 25";
+        using var conn = dataSource.OpenConnection();
+        return conn.Query<BmeData>(sql, new { requestMac });
+    }
+
+    public IEnumerable<BmeData> GetDeviceDataInLastXDays(string requestMac, int days)
+    {
+        var sql = $@"SELECT 
+                        temperature_c as {nameof(BmeData.TemperatureC)},
+                        humidity as {nameof(BmeData.Humidity)},
+                        pressure as {nameof(BmeData.Pressure)},
+                        utc_time as {nameof(BmeData.CreatedAt)}
+                    FROM climate_ctrl.bme_data
+                    WHERE device_mac = @requestMac and utc_time >  (now() at time zone 'utc') - interval '{days} day'
+                    ORDER BY utc_time DESC";
         using var conn = dataSource.OpenConnection();
         return conn.Query<BmeData>(sql, new { requestMac });
     }

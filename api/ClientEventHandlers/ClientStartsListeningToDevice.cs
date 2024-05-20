@@ -17,7 +17,7 @@ public class ServerSendsDeviceBaseDataDto : BaseDto
     public required IEnumerable<BmeData> Data { get; set; }
 }
 
-public class ClientStartsListeningToDevice(WebSocketStateService stateService, DataService dataService)
+public class ClientStartsListeningToDevice(IWebSocketStateService stateService, IDataService dataService)
     : IRequestHandler<ClientStartsListeningToDeviceDto, ServerSendsDeviceBaseDataDto>
 {
     public Task<ServerSendsDeviceBaseDataDto> Handle(ClientStartsListeningToDeviceDto request,
@@ -29,10 +29,8 @@ public class ClientStartsListeningToDevice(WebSocketStateService stateService, D
             connectionIdList.Add(socket.ConnectionInfo.Id);
         else
             stateService.MacToConnectionId.TryAdd(request.Mac, [socket.ConnectionInfo.Id]);
-
-        foreach (var keyValuePair in stateService.MacToConnectionId)
-            Log.Debug("Mac: {Mac}, ConnectionId: {ConnectionId}", keyValuePair.Key, keyValuePair.Value);
-        var data = dataService.GetLastData(request.Mac);
+        
+        var data = dataService.GetLatestData(request.Mac);
         return Task.FromResult(new ServerSendsDeviceBaseDataDto { Mac = request.Mac, Data = data });
     }
 }
