@@ -16,7 +16,6 @@ env:
 
 
 jobs:
-  
   run_integration_tests:
     container:
       image: flyway/flyway:latest
@@ -43,7 +42,7 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
      
-     
+    
     name: Run Integration Tests
     runs-on: ubuntu-latest 
     steps:
@@ -65,12 +64,13 @@ jobs:
           
       - name: Run Integration Tests
         run: |
+          npm install kill-port
           cd api
           dotnet run &
           sleep 5   
           cd ../IntegrationTests
           dotnet test
-          sudo kill -9 $(lsof -t -i:8080)
+          kill-port 8080
         env:
           ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
           ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
