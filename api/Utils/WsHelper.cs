@@ -28,22 +28,22 @@ public static class WsHelper
 
     public static async Task InvokeBaseDtoHandler(this IWebSocketConnection ws, string message, IMediator mediator)
     {
-        if (BaseDtos.IsEmpty) InitBaseDtos(Assembly.GetExecutingAssembly());
+        if (BaseDtos.IsEmpty) InitBaseDtos(Assembly.GetExecutingAssembly()); Log.Error("Basedtos is empty");
         var dto = JsonConvert.DeserializeObject<BaseDto>(message, new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
             DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
         });
-
+        Log.Error(message);
         if (dto == null) throw new NullReferenceException("Could not deserialize BaseDto");
-
+        Log.Error(dto.EventType);
         // Remove the "dto" suffix from the event type and convert to lowercase
         var eventType = (dto.EventType.EndsWith("dto", StringComparison.OrdinalIgnoreCase)
             ? dto.EventType.Substring(0, dto.EventType.Length - 3)
             : dto.EventType).ToLower();
 
-
+        Log.Error(eventType);
         // Get the type from the dictionary
         if (!BaseDtos.TryGetValue(eventType, out var type)) throw new NullReferenceException("Could not find type");
 
