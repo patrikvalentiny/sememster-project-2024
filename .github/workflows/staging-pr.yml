@@ -69,7 +69,8 @@ jobs:
           sleep 5   
           cd ../IntegrationTests
           dotnet test
-          kill -9 $(sudo lsof -t -i:8080)
+          apt-get install lsof
+          kill -9 $(lsof -t -i:8080)
         env:
           ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
           ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
