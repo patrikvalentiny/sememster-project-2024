@@ -37,13 +37,14 @@ export class WebsocketService {
   }
 
   sendJson(message: object) {
+    console.log("Sending: " + JSON.stringify(message));
     this.rws.send(JSON.stringify(message));
   }
 
   private handleEvent(event: MessageEvent) {
-    if (!environment.production) {
-      console.log("Message: " + event.data);
-    }
+    // if (!environment.production) {
+    console.log("Received: " + event.data);
+    // }
     const data = JSON.parse(event.data) as BaseDto<any>;
     //@ts-ignore
     this[data.eventType].call(this, data);
