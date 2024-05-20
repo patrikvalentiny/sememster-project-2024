@@ -11,8 +11,7 @@ namespace api.Mqtt;
 
 public class MqttDevicesClient(
     IWebSocketStateService webSocketStateService,
-    IDeviceService deviceService,
-    IConfigService configService)
+    IDeviceService deviceService)
 {
     public async Task CommunicateWithBroker()
     {
@@ -29,7 +28,7 @@ public class MqttDevicesClient(
                 var payload = JsonConvert.DeserializeObject<Device>(message)!;
                 var device = deviceService.InsertDevice(payload.Mac);
 
-                var config = configService.GetDeviceConfig(device.Mac);
+                var config = deviceService.GetDeviceConfig(device.Mac);
 
                 webSocketStateService.Connections.Values.ToList().ForEach(async socket =>
                 {
