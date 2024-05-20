@@ -10,5 +10,5 @@ main:
   // setup MQTT client  
   bme ::= BME
   // start BME280 data sending task
-  bme.send-bme-data-periodically 30
+  bme.send-bme-data-periodically 1
 

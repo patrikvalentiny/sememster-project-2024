@@ -31,9 +31,8 @@ public class DataRepository(DbDataSource dataSource)
                         utc_time as {nameof(BmeData.CreatedAt)}
                     FROM climate_ctrl.bme_data
                     WHERE device_mac = @requestMac 
-                    --and utc_time >  (now() at time zone 'utc') - interval '1 day'
-                    ORDER BY utc_time DESC
-                    LIMIT 25";
+                    and utc_time >  (now() at time zone 'utc') - interval '1 day'
+                    ORDER BY utc_time DESC";
         using var conn = dataSource.OpenConnection();
         return conn.Query<BmeData>(sql, new { requestMac });
     }

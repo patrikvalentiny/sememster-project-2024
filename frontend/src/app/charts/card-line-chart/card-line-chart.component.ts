@@ -113,7 +113,7 @@ export class CardLineChartComponent {
       },
       xaxis: {
         type: "datetime",
-        range: 24 * 60 * 60 * 1000,
+        // range: 24 * 60 * 60 * 1000,
         labels: {
           format: 'HH:mm',
           datetimeUTC: false
