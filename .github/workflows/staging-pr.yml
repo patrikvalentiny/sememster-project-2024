@@ -64,13 +64,12 @@ jobs:
           
       - name: Run Integration Tests
         run: |
-          npm install kill-port
           cd api
           dotnet run &
           sleep 5   
           cd ../IntegrationTests
           dotnet test
-          kill-port 8080
+          kill -9 $(sudo lsof -t -i:8080)
         env:
           ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
           ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
