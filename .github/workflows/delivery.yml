@@ -9,6 +9,7 @@ on:
 
 jobs:
   flyway_migrate:
+    name: Flyway Migrate to Production
     runs-on: ubuntu-latest
     
     container:
@@ -71,6 +72,7 @@ jobs:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           
   firebase_build_and_deploy:
+    name: Firebase Build and Deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

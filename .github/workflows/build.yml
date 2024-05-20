@@ -17,7 +17,7 @@ env:
 
 jobs:
   build:
-    name: Build and analyze
+    name: Sonar Build and analyze
     runs-on: windows-latest
     steps:
       - name: Set up JDK 17
@@ -48,7 +48,7 @@ jobs:
           dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
   flyway_migration_build:
-    name: Continuous Integration Build
+    name: Flyway Migration Build
     runs-on: ubuntu-20.04
 
     container:
