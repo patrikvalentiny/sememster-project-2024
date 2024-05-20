@@ -1,11 +1,10 @@
-import {Component, effect, inject, Input, signal, ViewChild, WritableSignal} from '@angular/core';
+import {Component, effect, Input, signal, ViewChild, WritableSignal} from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke,
-  ApexXAxis,
+  ApexStroke, ApexXAxis,
   ChartComponent,
   NgApexchartsModule
 } from "ng-apexcharts";
@@ -20,7 +19,6 @@ type ChartOptions = {
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
-  // title: ApexTitleSubtitle;
 };
 
 @Component({
@@ -41,6 +39,7 @@ type ChartOptions = {
                  [grid]="chartOptions.grid"
                  [stroke]="chartOptions.stroke"
                  [colors]="sharedChartOptions.colors"
+                 [theme]="sharedChartOptions.theme"
       ></apx-chart>
 
     </div>`,
@@ -59,6 +58,7 @@ export class HistoricTemperatureDataChartComponent {
     this.chartOptions = {
       chart: {
         foreColor: sharedChartOptions.chart.foreColor,
+        background: sharedChartOptions.chart.background,
         height: 300,
         type: "line",
         zoom: {
@@ -130,4 +130,5 @@ export class HistoricTemperatureDataChartComponent {
       ]
     );
   }
+
 }

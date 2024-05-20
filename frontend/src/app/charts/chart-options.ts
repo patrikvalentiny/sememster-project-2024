@@ -1,3 +1,5 @@
+import {ApexChart, ApexTheme} from "ng-apexcharts";
+
 export interface ThemeColors {
   primary: string;
   primaryFocus: string;
@@ -58,10 +60,26 @@ export function extractThemeColorsFromDOM(): ThemeColors {
 export const colors: ThemeColors = extractThemeColorsFromDOM();
 export const chartColors: string[] = [colors.primary, colors.secondary, colors.accent];
 
-export const sharedChartOptions = {
+export class SharedChartOptions {
+  colors: string[] = chartColors;
+  chart: ApexChart = {
+    type: "line",
+    foreColor: colors.baseContent
+  };
+  theme: ApexTheme = {
+    mode: 'dark'
+  };
+}
+
+export const sharedChartOptions:SharedChartOptions = {
   colors: chartColors,
   chart: {
+    type: 'line',
     foreColor: colors.baseContent,
+    background: 'transparent',
+  },
+  theme:{
+    mode: 'dark'
   }
 };
 

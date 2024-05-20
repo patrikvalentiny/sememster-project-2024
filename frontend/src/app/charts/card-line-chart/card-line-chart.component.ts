@@ -1,11 +1,10 @@
-import {Component, effect, inject, Input, ViewChild, WritableSignal} from '@angular/core';
+import {Component, effect, Input, ViewChild, WritableSignal} from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke,
-  ApexXAxis,
+  ApexStroke, ApexXAxis,
   ChartComponent,
   NgApexchartsModule
 } from 'ng-apexcharts';
@@ -20,7 +19,6 @@ type ChartOptions = {
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
-  // title: ApexTitleSubtitle;
 };
 
 @Component({
@@ -40,6 +38,7 @@ type ChartOptions = {
                  [grid]="chartOptions.grid"
                  [stroke]="chartOptions.stroke"
                  [colors]="sharedChartOptions.colors"
+                 [theme]="sharedChartOptions.theme"
       ></apx-chart>
 
     </div>`,
@@ -89,6 +88,7 @@ export class CardLineChartComponent {
           }
         },
         foreColor: sharedChartOptions.chart.foreColor,
+        background: sharedChartOptions.chart.background,
         height: 300,
         type: "line",
         zoom: {
@@ -114,6 +114,10 @@ export class CardLineChartComponent {
       xaxis: {
         type: "datetime",
         range: 24 * 60 * 60 * 1000,
+        labels: {
+          format: 'HH:mm',
+          datetimeUTC: false
+        }
       },
       series: [
         {
