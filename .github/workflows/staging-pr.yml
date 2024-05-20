@@ -8,8 +8,6 @@ on:
     
 env:
   DB_NAME: postgres
-  ASPNETCORE_ConnectionStrings__Postgres: postgresql://postgres:postgres@localhost:5432/climate_ctrl
-  ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
   FLYWAY_URL: jdbc:postgresql://postgres:5432/postgres
   FLYWAY_USER: postgres
   FLYWAY_PASSWORD: postgres
@@ -72,5 +70,9 @@ jobs:
           &
           cd ../IntegrationTests
           dotnet test
+          kill -9 $(lsof -t -i:8080)
+        env:
+          ASPNETCORE_ConnectionStrings__Postgres: postgresql://postgres:postgres@localhost:5432/climate_ctrl
+          ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
    
 
