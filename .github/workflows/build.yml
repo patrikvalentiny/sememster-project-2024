@@ -16,6 +16,28 @@ env:
 
 
 jobs:
+  unit_test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-incremental
+      - name: Test
+        env:
+          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
+          ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
+        run: |
+          cd ./unittests
+          dotnet test --no-build --verbosity normal
   build:
     name: Sonar Build and analyze
     runs-on: windows-latest
