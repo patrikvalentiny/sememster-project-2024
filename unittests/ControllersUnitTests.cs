@@ -10,7 +10,7 @@ using service;
 
 namespace UnitTests;
 
-public class Tests
+public class ControllersUnitTests
 {
     private readonly IMock<IDeviceService> _deviceService = new Mock<IDeviceService>();
     private readonly IMock<IConfigService> _configService = new Mock<IConfigService>();
