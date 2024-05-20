@@ -66,8 +66,7 @@ jobs:
       - name: Run Integration Tests
         run: |
           cd api
-          dotnet run
-          &
+          dotnet run &
           sleep 5   
           cd ../IntegrationTests
           dotnet test
