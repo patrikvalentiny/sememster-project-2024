@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     
 env:
-  DB_NAME: postgres
+  DB_NAME: climate_ctrl
   FLYWAY_URL: jdbc:postgresql://postgres:5432/postgres
   FLYWAY_USER: postgres
   FLYWAY_PASSWORD: postgres
@@ -72,7 +72,7 @@ jobs:
           dotnet test
           kill -9 $(lsof -t -i:8080)
         env:
-          ASPNETCORE_ConnectionStrings__Postgres: postgresql://postgres:postgres@localhost:5432/climate_ctrl
+          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
           ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
    
 
