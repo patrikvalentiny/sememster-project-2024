@@ -38,7 +38,7 @@ export class WebsocketService {
   }
 
   sendJson(message: object) {
-    this.rws.send(JSON.stringify(message));
+    this.send(JSON.stringify(message));
   }
 
   private handleEvent(event: MessageEvent) {
