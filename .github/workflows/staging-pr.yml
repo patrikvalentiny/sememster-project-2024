@@ -69,6 +69,8 @@ jobs:
           sleep 5   
           cd ../IntegrationTests
           dotnet test
+          apt update
+          apt install lsof
           lsof -t -i:8080
           kill -9 $(lsof -t -i:8080)
         env:
