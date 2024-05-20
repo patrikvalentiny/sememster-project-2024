@@ -9,6 +9,7 @@ WORKDIR /src
 COPY ["api/api.csproj", "api/"]
 COPY ["service/service.csproj", "service/"]
 COPY ["infrastructure/infrastructure.csproj", "infrastructure/"]
+COPY ["commons/commons.csproj", "commons/"]
 RUN dotnet restore "api/api.csproj"
 COPY . .
 WORKDIR "/src/api"

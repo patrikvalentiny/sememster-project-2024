@@ -1,0 +1,80 @@
+﻿name: Staging PR
+
+on:
+  pull_request: 
+    branches:
+      - staging
+  workflow_dispatch:
+    
+env:
+  DB_NAME: climate_ctrl
+  FLYWAY_URL: jdbc:postgresql://postgres:5432/postgres
+  FLYWAY_USER: postgres
+  FLYWAY_PASSWORD: postgres
+  FLYWAY_SCHEMAS: public,climate_ctrl
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+
+
+jobs:
+  run_integration_tests:
+    container:
+      image: flyway/flyway:latest
+      volumes:
+        - .:/flyway/sql
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        env:
+          POSTGRES_HOST: postgres
+          POSTGRES_USER: ${{ env.FLYWAY_USER }}
+          POSTGRES_PASSWORD: ${{ env.FLYWAY_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+     
+    
+    name: Run Integration Tests
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Flyway Migration
+        env:
+          FLYWAY_LOCATIONS: filesystem:/flyway/sql
+        run: |
+          flyway migrate
+
+      - name: Flyway info and write result to file
+        run: |
+          flyway info
+          
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Run Integration Tests
+        run: |
+          cd api
+          dotnet run &
+          sleep 5   
+          cd ../IntegrationTests
+          dotnet test
+          apt update
+          apt install lsof
+          lsof -t -i:8080
+          kill -9 $(lsof -t -i:8080)
+        env:
+          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
+          ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
+   
+

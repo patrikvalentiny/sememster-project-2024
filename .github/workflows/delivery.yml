@@ -1,4 +1,4 @@
-﻿name: Publish Docker image
+﻿name: Delivery
 
 on:
   push:
@@ -8,6 +8,36 @@ on:
 
 
 jobs:
+  flyway_migrate:
+    name: Flyway Migrate to Production
+    runs-on: ubuntu-latest
+    
+    container:
+      image: flyway/flyway:latest
+      volumes:
+        - .:/flyway/sql
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Flyway Migrations
+        env:
+          FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
+          FLYWAY_USER: ${{ secrets.PROD_DB_USER }}
+          FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          FLYWAY_SCHEMAS: public,climate_ctrl
+          FLYWAY_LOCATIONS: filesystem:/flyway/sql
+        run: |
+          flyway migrate
+          
+      - name: Flyway info and write result to file
+        env:
+          FLYWAY_URL: ${{ secrets.PROD_DB_URL }}
+          FLYWAY_USER: ${{ secrets.PROD_DB_USER }}
+          FLYWAY_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          FLYWAY_SCHEMAS: public,climate_ctrl
+        run: |
+          flyway info
+          
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
@@ -41,3 +71,19 @@ jobs:
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           
+  firebase_build_and_deploy:
+    name: Firebase Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cd ./frontend/
+          npm i 
+          npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          entryPoint: ./frontend/
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMATE_CTRL }}'
+          channelId: live
+          projectId: climate-ctrl  

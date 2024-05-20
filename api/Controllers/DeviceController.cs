@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using service;
 
 namespace api.Controllers;
 
 [ApiController]
 [Route("api/v1/device")]
-public class DeviceController(DeviceService deviceService) : Controller
+public class DeviceController(IDeviceService deviceService)
+    : ControllerBase
 {
     [HttpGet]
     public IActionResult GetDevices()
@@ -16,8 +18,24 @@ public class DeviceController(DeviceService deviceService) : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            Log.Error(e, "Error getting devices");
+            return BadRequest(e.Message);
         }
     }
+
+    [HttpGet("{mac}/config")]
+    public IActionResult GetDeviceConfig(string mac)
+    {
+        try
+        {
+            return Ok(deviceService.GetDeviceConfig(mac));
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error getting device config");
+            return BadRequest(e.Message);
+        }
+    }
+
+    
 }

@@ -6,6 +6,7 @@ using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
 using MediatR;
+using MQTTnet;
 using Serilog;
 using service;
 using WebSocketProxy;
@@ -15,7 +16,7 @@ namespace api;
 
 public static class StartupClass
 {
-    public static void Startup(string[] args)
+    public static WebApplication Startup(string[] args)
     {
         SetupLogger();
 
@@ -27,16 +28,18 @@ public static class StartupClass
 
         app.SetupApp();
 
-        using var tcpProxy = CreateProxy();
-        using var websocketServer = StartWebSocketServer(app.Services);
+        var task = Task.FromResult(CreateProxy());
+        var tcpProxy = task.Result;
+        tcpProxy.Start();
+        Task.FromResult(StartWebSocketServer(app.Services));
 
         // MQTT
-        _ = app.Services.GetRequiredService<MqttClientService>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDevicesClient>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDeviceDataClient>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttDeviceMotorPosition>().CommunicateWithBroker();
 
-        // Initialize the proxy
-        tcpProxy.Start();
-
-        app.Run();
+        // Initialize the proxy as task
+        return app;
     }
 
     private static void SetupLogger()
@@ -65,13 +68,21 @@ public static class StartupClass
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
             dataSourceBuilder =>
                 dataSourceBuilder.EnableParameterLogging());
-        builder.Services.AddSingleton<WebSocketStateService>();
-        builder.Services.AddSingleton<DeviceService>();
+        builder.Services.AddSingleton<IWebSocketStateService, WebSocketStateService>();
+        builder.Services.AddSingleton<IDeviceService, DeviceService>();
         builder.Services.AddSingleton<DeviceRepository>();
-        builder.Services.AddSingleton<MqttClientService>();
+        builder.Services.AddSingleton<MqttDevicesClient>();
+        builder.Services.AddSingleton<MqttFactory>();
+        builder.Services.AddSingleton<MqttDeviceDataClient>();
+        builder.Services.AddSingleton<MqttDeviceMotorPosition>();
+        builder.Services.AddSingleton<IDataService, DataService>();
+        builder.Services.AddSingleton<DataRepository>();
+        builder.Services.AddSingleton<ConfigRepository>();
+        builder.Services.AddSingleton<IMotorService, MotorService>();
+        builder.Services.AddSingleton<MotorRepository>();
+        
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
-
         WsHelper.InitBaseDtos(types);
 
         // Add services to the container.
@@ -130,7 +141,7 @@ public static class StartupClass
     private static IWebSocketServer StartWebSocketServer(IServiceProvider services)
     {
         var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
-        var webSocketStateService = services.GetRequiredService<WebSocketStateService>();
+        var webSocketStateService = services.GetRequiredService<IWebSocketStateService>();
         var mediatr = services.GetRequiredService<IMediator>();
         // Initialize Fleck
         websocketServer.Start(socket =>
@@ -143,7 +154,7 @@ public static class StartupClass
             socket.OnClose = () =>
             {
                 Log.Debug("Client disconnected: {Id}", socket.ConnectionInfo.Id);
-                webSocketStateService.Connections.TryRemove(socket.ConnectionInfo.Id, out _);
+                webSocketStateService.CloseSocket(socket);
             };
             socket.OnMessage = async message =>
             {
@@ -154,7 +165,7 @@ public static class StartupClass
                 }
                 catch (Exception e)
                 {
-                    e.Handle(socket);
+                    await e.Handle(socket);
                 }
             };
         });
