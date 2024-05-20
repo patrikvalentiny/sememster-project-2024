@@ -79,4 +79,5 @@ jobs:
           entryPoint: ./frontend/
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMATE_CTRL_STAGING }}
+          channelId: live
           projectId: climate-ctrl-staging
