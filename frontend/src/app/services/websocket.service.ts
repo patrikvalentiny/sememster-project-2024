@@ -33,11 +33,11 @@ export class WebsocketService {
   }
 
   send(message: string) {
+    console.log("Sending: " + JSON.stringify(message));
     this.rws.send(message);
   }
 
   sendJson(message: object) {
-    console.log("Sending: " + JSON.stringify(message));
     this.rws.send(JSON.stringify(message));
   }
 

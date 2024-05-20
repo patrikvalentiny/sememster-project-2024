@@ -39,6 +39,6 @@ export class DashboardService {
   }
 
   async getBmeData(mac: string) {
-    this.ws.send(JSON.stringify(new ClientStartsListeningToDevice({mac: mac})));
+    this.ws.sendJson(new ClientStartsListeningToDevice({mac: mac}));
   }
 }
