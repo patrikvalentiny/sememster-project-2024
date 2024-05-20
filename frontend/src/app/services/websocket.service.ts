@@ -33,7 +33,9 @@ export class WebsocketService {
   }
 
   send(message: string) {
-    console.log("Sending: " + JSON.stringify(message));
+    if (!environment.production) {
+      console.log("Sending: " + JSON.stringify(message));
+    }
     this.rws.send(message);
   }
 
@@ -42,9 +44,9 @@ export class WebsocketService {
   }
 
   private handleEvent(event: MessageEvent) {
-    // if (!environment.production) {
+    if (!environment.production) {
     console.log("Received: " + event.data);
-    // }
+    }
     const data = JSON.parse(event.data) as BaseDto<any>;
     //@ts-ignore
     this[data.eventType].call(this, data);

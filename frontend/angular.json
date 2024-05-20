@@ -60,6 +60,7 @@
           },
           "configurations": {
             "staging": {
+              "optimization": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -69,6 +70,7 @@
               "outputHashing": "all"
             },
             "production": {
+              "optimization": false,
               "budgets": [
                 {
                   "type": "initial",
