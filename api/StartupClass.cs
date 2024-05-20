@@ -109,7 +109,7 @@ public static class StartupClass
         app.MapControllers();
         string[] allowedOrigins = app.Environment.IsDevelopment()
             ? ["http://localhost:4200", "http://localhost:5000"]
-            : ["https://climate-ctrl.web.app", "https://climate-ctrl.firebaseapp.com"];
+            : ["https://climate-ctrl.web.app", "https://climate-ctrl.firebaseapp.com", "https://climate-ctrl-staging.web.app/", "https://climate-ctrl-staging.firebaseapp.com"];
 
         app.UseCors(corsPolicyBuilder => corsPolicyBuilder.WithOrigins(allowedOrigins)
             .AllowAnyMethod().AllowAnyHeader());

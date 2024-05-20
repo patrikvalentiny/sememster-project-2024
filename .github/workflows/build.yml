@@ -33,7 +33,7 @@ jobs:
         run: dotnet build --no-incremental
       - name: Test
         env:
-          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
+          ASPNETCORE_ConnectionStrings__Postgres: postgres://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
           ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
         run: |
           cd ./unittests
