@@ -65,7 +65,7 @@ jobs:
       - uses: azure/webapps-deploy@v3
         with:
           app-name: 'climate-ctrl-staging'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_STAGING_PUBLISH_PROFILE }}
 #      - name: Invoke deployment hook
 #        uses: distributhor/workflow-webhook@v3
 #        with:
