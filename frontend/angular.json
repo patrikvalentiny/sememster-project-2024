@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "portfolio": {
+    "climatectrl": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
@@ -59,7 +59,18 @@
             "scripts": []
           },
           "configurations": {
+            "staging": {
+              "optimization": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "production": {
+              "optimization": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -91,11 +102,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
+            "staging": {
+              "buildTarget": "climatectrl:build:staging"
+            },
             "production": {
-              "buildTarget": "portfolio:build:production"
+              "buildTarget": "climatectrl:build:production"
             },
             "development": {
-              "buildTarget": "portfolio:build:development"
+              "buildTarget": "climatectrl:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -103,7 +117,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "portfolio:build"
+            "buildTarget": "climatectrl:build"
           }
         },
         "test": {
@@ -121,7 +135,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+            ]
           }
         }
       }

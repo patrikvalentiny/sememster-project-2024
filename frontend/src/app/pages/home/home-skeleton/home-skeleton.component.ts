@@ -6,13 +6,17 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {WebsocketService} from "../../../services/websocket.service";
+import {StateService} from "../../../services/state.service";
+import {DeviceSidebarItemComponent} from "../../../components/device-sidebar-item/device-sidebar-item.component";
+import {DashboardService} from "../../../services/dashboard.service";
 
 @Component({
   selector: 'app-home-skeleton',
   standalone: true,
   imports: [
     NgClass,
-    RouterOutlet
+    RouterOutlet,
+    DeviceSidebarItemComponent
   ],
   templateUrl: './home-skeleton.component.html',
   styleUrl: './home-skeleton.component.css'
@@ -22,10 +26,12 @@ export class HomeSkeletonComponent implements OnInit {
   public hidden: boolean = false;
   private readonly toast: HotToastService = inject(HotToastService);
   private readonly http: HttpClient = inject(HttpClient);
+  private readonly dashboardService = inject(DashboardService);
+
+  stateService = inject(StateService);
 
   async ngOnInit(): Promise<void> {
     await this.checkStatus();
-    this.ws.send("Hello from client");
   }
 
   logout() {

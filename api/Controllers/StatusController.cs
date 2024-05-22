@@ -4,7 +4,7 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("api/v1/status")]
-public class StatusController : Controller
+public class StatusController : ControllerBase
 {
     [HttpGet]
     public IActionResult GetStatus()

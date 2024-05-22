@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Dapper;
+using infrastructure.Models;
 
 namespace infrastructure;
 
@@ -8,10 +9,12 @@ public class DeviceRepository(DbDataSource dataSource)
     public Device InsertDevice(string mac)
     {
         var sql = @$"INSERT INTO climate_ctrl.devices (mac) VALUES (@mac)
-                        ON CONFLICT (mac) DO UPDATE SET mac = EXCLUDED.mac
+                        ON CONFLICT (mac) DO UPDATE SET status_id = 1
                         RETURNING 
                             id as {nameof(Device.Id)}, 
-                            mac as {nameof(Device.Mac)};";
+                            mac as {nameof(Device.Mac)},
+                            device_name as {nameof(Device.Name)},
+                            status_id as {nameof(Device.StatusId)}";
 
         using var conn = dataSource.OpenConnection();
         return conn.QueryFirst<Device>(sql, new { mac });
@@ -19,15 +22,13 @@ public class DeviceRepository(DbDataSource dataSource)
 
     public IEnumerable<Device> GetDevices()
     {
-        var sql = @$"SELECT id as {nameof(Device.Id)},
-                            mac as {nameof(Device.Mac)},
-                            device_name as {nameof(Device.Name)},
-                            status_id as {nameof(Device.StatusId)},
-                            status as {nameof(Device.Status)}
-                            FROM climate_ctrl.device_status_full";
+        var sql = @$"SELECT d.id as {nameof(Device.Id)},
+                            d.mac as {nameof(Device.Mac)},
+                            d.device_name as {nameof(Device.Name)},
+                            d.status_id as {nameof(Device.StatusId)},
+                            ds.value as {nameof(Device.Status)}
+                            FROM climate_ctrl.devices d INNER JOIN climate_ctrl.device_status ds on ds.id = d.status_id ORDER BY d.id";
         using var conn = dataSource.OpenConnection();
         return conn.Query<Device>(sql);
     }
 }
-
-public record Device(int Id, string Mac, string Name, int StatusId, string Status);
