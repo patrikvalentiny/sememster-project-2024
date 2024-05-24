@@ -4,7 +4,8 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke, ApexXAxis,
+  ApexStroke,
+  ApexXAxis,
   ChartComponent,
   NgApexchartsModule
 } from "ng-apexcharts";

@@ -22,7 +22,7 @@ export class DashboardService {
 
 
   async getDevices() {
-    if ( this.stateService.devices.size > 0) return;
+    if (this.stateService.devices.size > 0) return;
     const call = this.http.get<Device[]>(environment.restBaseUrl + "/device")
     const response = await firstValueFrom<Device[]>(call);
     response.forEach(device => {
@@ -32,7 +32,7 @@ export class DashboardService {
   }
 
   async getAllBmeData() {
-    if ( this.stateService.devices.size === 0) {
+    if (this.stateService.devices.size === 0) {
       await this.getDevices();
     }
     this.stateService.devices.forEach((_, mac) => this.getBmeData(mac));

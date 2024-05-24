@@ -24,11 +24,10 @@ import {DashboardService} from "../../../services/dashboard.service";
 export class HomeSkeletonComponent implements OnInit {
   readonly ws = inject(WebsocketService);
   public hidden: boolean = false;
+  stateService = inject(StateService);
   private readonly toast: HotToastService = inject(HotToastService);
   private readonly http: HttpClient = inject(HttpClient);
   private readonly dashboardService = inject(DashboardService);
-
-  stateService = inject(StateService);
 
   async ngOnInit(): Promise<void> {
     await this.checkStatus();

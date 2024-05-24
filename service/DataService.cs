@@ -22,7 +22,7 @@ public class DataService(DataRepository dataRepository) : IDataService
     {
         return dataRepository.GetLatestData(requestMac);
     }
-    
+
     public IEnumerable<BmeData> GetDeviceDataInLastXDays(string requestMac, int days)
     {
         return dataRepository.GetDeviceDataInLastXDays(requestMac, days);

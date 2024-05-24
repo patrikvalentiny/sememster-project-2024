@@ -1,7 +1,6 @@
 ﻿using api.Utils;
 using commons.Models;
 using MediatR;
-using Serilog;
 using service;
 
 namespace api.ClientEventHandlers;
@@ -29,7 +28,7 @@ public class ClientStartsListeningToDevice(IWebSocketStateService stateService, 
             connectionIdList.Add(socket.ConnectionInfo.Id);
         else
             stateService.MacToConnectionId.TryAdd(request.Mac, [socket.ConnectionInfo.Id]);
-        
+
         var data = dataService.GetLatestData(request.Mac);
         return Task.FromResult(new ServerSendsDeviceBaseDataDto { Mac = request.Mac, Data = data });
     }

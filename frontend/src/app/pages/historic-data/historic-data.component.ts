@@ -1,5 +1,7 @@
 import {Component, effect, inject, input, InputSignal, signal, WritableSignal} from '@angular/core';
-import {HistoricTemperatureDataChartComponent} from "../../charts/historic-data-chart/historic-temperature-data-chart.component";
+import {
+  HistoricTemperatureDataChartComponent
+} from "../../charts/historic-data-chart/historic-temperature-data-chart.component";
 import {BmeData} from "../../models/bme-data";
 import {DataService} from "../../services/data.service";
 import {NgClass} from "@angular/common";
@@ -15,12 +17,11 @@ import {NgClass} from "@angular/common";
   templateUrl: './historic-data.component.html',
   styleUrl: './historic-data.component.css'
 })
-export class HistoricDataComponent{
+export class HistoricDataComponent {
+  mac: InputSignal<string> = input("", {alias: "mac"});
+  bmeData: WritableSignal<BmeData[]> = signal<BmeData[]>([]);
+  days: number = 7;
   private readonly dataService = inject(DataService);
-  mac:InputSignal<string> = input("", {alias:"mac"});
-  bmeData:WritableSignal<BmeData[]> = signal<BmeData[]>([]);
-  days:number = 7;
-
 
   constructor() {
     effect(() => {

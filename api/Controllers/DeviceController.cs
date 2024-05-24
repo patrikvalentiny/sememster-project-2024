@@ -38,6 +38,4 @@ public class DeviceController(IDeviceService deviceService)
             return BadRequest(e.Message);
         }
     }
-
-    
 }

@@ -4,7 +4,8 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke, ApexXAxis,
+  ApexStroke,
+  ApexXAxis,
   ChartComponent,
   NgApexchartsModule
 } from 'ng-apexcharts';
@@ -74,13 +75,13 @@ export class CardLineChartComponent {
             //   data: this.bmeData.map(data => [new Date(data.createdAt).getTime(), data.pressure])
             // }
           ]
-          );
+        );
       }
     });
 
     this.chartOptions = {
       chart: {
-        animations:{
+        animations: {
           enabled: true,
           easing: 'easeout',
           dynamicAnimation: {
@@ -139,8 +140,11 @@ export class CardLineChartComponent {
   }
 
   formatData(data: BmeData) {
-    const decimalPlaces:number = 3;
+    const decimalPlaces: number = 3;
     const decimalMultiplier = Math.pow(10, decimalPlaces);
-    return {x: new Date(data.createdAt).getTime(), y: Math.round(data.temperatureC *decimalMultiplier)/decimalMultiplier}
+    return {
+      x: new Date(data.createdAt).getTime(),
+      y: Math.round(data.temperatureC * decimalMultiplier) / decimalMultiplier
+    }
   }
 }

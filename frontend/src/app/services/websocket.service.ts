@@ -45,7 +45,7 @@ export class WebsocketService {
 
   private handleEvent(event: MessageEvent) {
     if (!environment.production) {
-    console.log("Received: " + event.data);
+      console.log("Received: " + event.data);
     }
     const data = JSON.parse(event.data) as BaseDto<any>;
     //@ts-ignore
