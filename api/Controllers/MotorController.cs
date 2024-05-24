@@ -9,6 +9,7 @@ namespace api.Controllers;
 public class MotorController(IMotorService motorService) : ControllerBase
 {
     [HttpGet("{mac}/motor")]
+    [ProducesResponseType(200)]
     public IActionResult GetMotorPosition(string mac)
     {
         try
@@ -23,6 +24,7 @@ public class MotorController(IMotorService motorService) : ControllerBase
     }
 
     [HttpPut("{mac}/motor")]
+    [ProducesResponseType(200)]
     public IActionResult SetMaxMotorPosition(string mac, [FromBody] int position)
     {
         try
@@ -37,6 +39,7 @@ public class MotorController(IMotorService motorService) : ControllerBase
     }
 
     [HttpPut("{mac}/motor-direction")]
+    [ProducesResponseType(200)]
     public IActionResult SetMotorDirection(string mac, [FromBody] bool direction)
     {
         try
@@ -51,6 +54,7 @@ public class MotorController(IMotorService motorService) : ControllerBase
     }
 
     [HttpGet("{mac}/motor-direction")]
+    [ProducesResponseType(200)]
     public IActionResult GetMotorDirection(string mac)
     {
         try

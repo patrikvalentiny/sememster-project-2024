@@ -11,6 +11,7 @@ using Fleck;
 using FluentAssertions;
 using infrastructure.Models;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Moq;
 using MQTTnet.Client;
 using service;
@@ -56,13 +57,16 @@ public class HandlersTests
         var stateService = new WebSocketStateService();
         if (set) stateService.MotorMacToConnectionId.TryAdd(dto.Mac, []);
         var handler = new ClientStartsListeningToMotor(stateService);
-        await handler.Handle(dto, default);
+        var act = async () => await handler.Handle(dto, default);
+        await act.Should().NotThrowAsync();
     }
 
     [Test]
     public void StartUpTest()
     {
-        StartupClass.Startup([]);
+        var app = StartupClass.Startup([]);
+        app.Should().NotBeNull();
+        app.Should().BeOfType<WebApplication>();
     }
     
 }

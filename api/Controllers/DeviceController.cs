@@ -10,6 +10,7 @@ public class DeviceController(IDeviceService deviceService)
     : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType(200)]
     public IActionResult GetDevices()
     {
         try
@@ -24,6 +25,7 @@ public class DeviceController(IDeviceService deviceService)
     }
 
     [HttpGet("{mac}/config")]
+    [ProducesResponseType(200)]
     public IActionResult GetDeviceConfig(string mac)
     {
         try
