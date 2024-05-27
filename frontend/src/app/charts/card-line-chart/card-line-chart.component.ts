@@ -4,7 +4,7 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke, ApexTitleSubtitle,
+  ApexStroke, ApexTitleSubtitle, ApexTooltip,
   ApexXAxis,
   ChartComponent,
   NgApexchartsModule
@@ -21,6 +21,7 @@ type ChartOptions = {
   grid: ApexGrid;
   stroke: ApexStroke;
   title:ApexTitleSubtitle;
+  tooltip:ApexTooltip;
 };
 
 @Component({
@@ -42,6 +43,7 @@ type ChartOptions = {
                  [colors]="sharedChartOptions.colors"
                  [theme]="sharedChartOptions.theme"
                  [title]="chartOptions.title"
+                 [tooltip]="chartOptions.tooltip"
       ></apx-chart>
 
     </div>`,
@@ -82,6 +84,15 @@ export class CardLineChartComponent {
     });
 
     this.chartOptions = {
+      tooltip:{
+        shared:true,
+        onDatasetHover:{
+          highlightDataSeries: true
+        },
+        x:{
+          format:"dd/MM/yy HH:mm"
+        }
+      },
       chart: {
         animations: {
           enabled: true,

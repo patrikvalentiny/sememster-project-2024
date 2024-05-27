@@ -12,7 +12,7 @@
         </label>
       </div>
       <div class="navbar-center lg:hidden">
-        <a class="btn btn-ghost text-xl" href="">HOME</a>
+        <button class="btn btn-ghost text-xl" (click)="navigateHome()">HOME</button>
       </div>
       <div class="navbar-end gap-2">
         <div class="badge"
@@ -46,7 +46,7 @@
       <ul class="menu px-4 pb-8 w-56 h-full bg-base-100 text-base-content justify-between">
         <div>
           <div class="h-16">
-            <a class="btn btn-ghost text-xl" href="">HOME</a>
+            <a class="btn btn-ghost text-xl" href="/">HOME</a>
           </div>
           <!-- Sidebar content here -->
           @for (device of this.stateService.devices.values(); track device.id) {

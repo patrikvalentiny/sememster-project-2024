@@ -4,7 +4,7 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke,
+  ApexStroke, ApexTooltip,
   ApexXAxis,
   ChartComponent,
   NgApexchartsModule
@@ -20,6 +20,7 @@ type ChartOptions = {
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
+  tooltip:ApexTooltip;
 };
 
 @Component({
@@ -42,6 +43,7 @@ type ChartOptions = {
                  [colors]="sharedChartOptions.colors"
                  [theme]="sharedChartOptions.theme"
                  [title]="{text: 'Temperature'}"
+                 [tooltip]="commonChartOptions.tooltip"
       ></apx-chart>
       <apx-chart #chart2
                  [series]="commonChartOptions.series"
@@ -53,6 +55,7 @@ type ChartOptions = {
                  [colors]="[sharedChartOptions.colors.at(1)]"
                  [theme]="sharedChartOptions.theme"
                  [title]="{text: 'Humidity'}"
+                 [tooltip]="commonChartOptions.tooltip"
       ></apx-chart>
       <apx-chart #chart3
                  [series]="commonChartOptions.series"
@@ -64,6 +67,7 @@ type ChartOptions = {
                  [colors]="[sharedChartOptions.colors.at(2)]"
                  [theme]="sharedChartOptions.theme"
                  [title]="{text: 'Pressure'}"
+                 [tooltip]="commonChartOptions.tooltip"
       ></apx-chart>
 
     </div>`,
@@ -87,6 +91,15 @@ export class HistoricTemperatureDataChartComponent {
     });
 
     this.commonChartOptions = {
+      tooltip:{
+        shared:true,
+        onDatasetHover:{
+          highlightDataSeries: true
+        },
+        x:{
+          format:"dd/MM/yy HH:mm"
+        }
+      },
       dataLabels: {
         enabled: false
       },
@@ -186,7 +199,7 @@ export class HistoricTemperatureDataChartComponent {
     this.chart2.updateSeries(
       [
         {
-          name: "Temperature",
+          name: "Humidity",
           data: data.map(data => {
             return {x: new Date(data.createdAt).getTime(), y: data.humidity}
           })
@@ -195,7 +208,7 @@ export class HistoricTemperatureDataChartComponent {
     this.chart3.updateSeries(
       [
         {
-          name: "Temperature",
+          name: "Pressure",
           data: data.map(data => {
             return {x: new Date(data.createdAt).getTime(), y: data.pressure}
           })

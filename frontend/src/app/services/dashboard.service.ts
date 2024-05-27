@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Device} from "../models/device";
 import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
@@ -40,5 +40,20 @@ export class DashboardService {
 
   async getBmeData(mac: string) {
     this.ws.sendJson(new ClientStartsListeningToDevice({mac: mac}));
+  }
+
+  async checkStatus() {
+    try {
+      const call = this.http.get<string>(environment.restBaseUrl + `/status`, {
+        observe: "response",
+        responseType: "text" as "json"
+      })
+      const response = await firstValueFrom<HttpResponse<string>>(call);
+      return response.status === 200;
+
+    } catch (e) {
+      return false;
+    }
+
   }
 }
