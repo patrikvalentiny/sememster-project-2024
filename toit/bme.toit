@@ -83,6 +83,7 @@ class BME-SIM implements BME:
   MQTT-CLIENT_ /mqtt.Client := ?
   constructor alt-address = false:
     MQTT-CLIENT_ = Flespi-MQTT.get-instance.get-client
+    subscribe-rtc
 
   temp /float := 25.0
   press := 101325.0

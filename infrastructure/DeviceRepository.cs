@@ -14,7 +14,9 @@ public class DeviceRepository(DbDataSource dataSource)
                             id as {nameof(Device.Id)}, 
                             mac as {nameof(Device.Mac)},
                             device_name as {nameof(Device.Name)},
-                            status_id as {nameof(Device.StatusId)}";
+                            status_id as {nameof(Device.StatusId)};
+                INSERT INTO climate_ctrl.device_config (mac, last_motor_position, max_motor_position) VALUES (@mac, 0, 1000)
+                        ON CONFLICT (mac) DO NOTHING;";
 
         using var conn = dataSource.OpenConnection();
         return conn.QueryFirst<Device>(sql, new { mac });
