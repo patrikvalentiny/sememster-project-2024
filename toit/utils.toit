@@ -15,9 +15,9 @@ class Utils:
   
   constructor:
     // set development mode 
-    // connect pin 13/D7 to 3V3 to enable development mode
-    dev-pin ::= gpio.Pin 13 --input --pull-down
-    DEV = dev-pin.get == 1 ? true : false
+    // connect pin 13/D7 to GND to enable development mode
+    dev-pin ::= gpio.Pin 13 --input --pull-up
+    DEV = dev-pin.get == 0 ? true : false
     if DEV:
       print "Development mode"
       // onboard led is on if in dev mode

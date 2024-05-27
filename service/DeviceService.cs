@@ -10,7 +10,6 @@ public interface IDeviceService
     DeviceConfig? GetDeviceConfig(string mac);
 }
 
-
 public class DeviceService(DeviceRepository deviceRepository, ConfigRepository configRepository) : IDeviceService
 {
     public Device InsertDevice(string mac)
@@ -22,7 +21,7 @@ public class DeviceService(DeviceRepository deviceRepository, ConfigRepository c
     {
         return deviceRepository.GetDevices();
     }
-    
+
     public DeviceConfig? GetDeviceConfig(string mac)
     {
         return configRepository.GetDeviceConfig(mac);

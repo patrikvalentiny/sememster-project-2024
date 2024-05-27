@@ -2,7 +2,6 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {environment} from "../../environments/environment";
-import {BmeDataDto} from "./events/server/bme-data-dto";
 import {BmeData} from "../models/bme-data";
 
 @Injectable({
@@ -11,9 +10,10 @@ import {BmeData} from "../models/bme-data";
 export class DataService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  constructor() { }
+  constructor() {
+  }
 
-  public async getDataPastXDays(mac:string, days:number){
+  public async getDataPastXDays(mac: string, days: number) {
     try {
       const call = this.http.get<BmeData[]>(`${environment.restBaseUrl}/data/${mac}?days=${days}`);
       return await firstValueFrom<BmeData[]>(call);

@@ -30,7 +30,13 @@ const routes: Routes = [
 ];
 
 bootstrapApplication(AppComponent, {
-  providers: [importProvidersFrom(BrowserModule), provideHttpClient(withFetch()),
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHttpInterceptor,
+      multi: true
+    },
+    importProvidersFrom(BrowserModule), provideHttpClient(withFetch()),
     provideHotToastConfig(
       {
         duration: 5000,
@@ -45,11 +51,6 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes,
       withComponentInputBinding()
     ),
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorHttpInterceptor,
-      multi: true
-    },
   ]
 })
   .catch(err => console.error(err));

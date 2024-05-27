@@ -8,7 +8,7 @@ main:
   //init motor driver
   driver /StepperDriver ::= DRV8825
   // setup MQTT client  
-  bme ::= BME
+  bme /BME ::= BME-SIM
   // start BME280 data sending task
   bme.send-bme-data-periodically 1
 

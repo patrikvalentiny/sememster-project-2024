@@ -12,51 +12,56 @@ public class WsHelperTests
     [Test]
     public async Task InvokeBaseDtoHandlerTest()
     {
-        
         var socketMock = new Mock<IWebSocketConnection>();
         var socket = socketMock.Object;
         const string dtoString = """{"eventType":"ClientSaysHello","message":"message"}""";
         var mediatr = new Mock<IMediator>();
-        mediatr.Setup(x => x.Send(It.IsAny<BaseDto>(), default)).ReturnsAsync(new ServerSaysHelloDto { Message = "Hello, message!" });
-        await socket.InvokeBaseDtoHandler(dtoString, mediatr.Object);
+        mediatr.Setup(x => x.Send(It.IsAny<BaseDto>(), default))
+            .ReturnsAsync(new ServerSaysHelloDto { Message = "Hello, message!" });
+        var act = async () => await socket.InvokeBaseDtoHandler(dtoString, mediatr.Object);
+        await act.Should().NotThrowAsync();
     }
-    
+
     [Test]
     public async Task InvokeBaseDtoHandlerTestWithInvalidDto()
     {
-        
         var socketMock = new Mock<IWebSocketConnection>();
         var socket = socketMock.Object;
         const string dtoString = """{"eventType":"Invalid","message":"message"}""";
         var mediatr = new Mock<IMediator>();
-        mediatr.Setup(x => x.Send(It.IsAny<BaseDto>(), default)).ReturnsAsync(new ServerSaysHelloDto { Message = "Hello, message!" });
+        mediatr.Setup(x => x.Send(It.IsAny<BaseDto>(), default))
+            .ReturnsAsync(new ServerSaysHelloDto { Message = "Hello, message!" });
         var act = async () => await socket.InvokeBaseDtoHandler(dtoString, mediatr.Object);
-        
+
         await act.Should().ThrowAsync<NullReferenceException>();
     }
-    
+
     [Test]
     public async Task ServerSendsNotificationTest()
     {
         var socketMock = new Mock<IWebSocketConnection>();
         var socket = socketMock.Object;
-        await socket.SendNotification("message");
-        await socket.SendSuccess("message");
-        await socket.SendError("message");
-        await socket.SendWarning("message");
+        var act = async () => await socket.SendNotification("message");
+        await act.Should().NotThrowAsync();
+        act = async () => await socket.SendSuccess("message");
+        await act.Should().NotThrowAsync();
+        act = async () => await socket.SendError("message");
+        await act.Should().NotThrowAsync();
+        act = async () => await socket.SendWarning("message");
+        await act.Should().NotThrowAsync();
     }
-    
+
     [Test]
     public async Task HandleExceptionTest()
     {
         var socketMock = new Mock<IWebSocketConnection>();
         var socket = socketMock.Object;
         var ex = new WsHelper.HandlerException("message");
-        await ex.Handle(socket);
+        var act = async () => await ex.Handle(socket);
+        await act.Should().NotThrowAsync();
     }
-    
-    
-    
+
+
     // [Test]
     // public async Task ClientControlsMotorTest()
     // {

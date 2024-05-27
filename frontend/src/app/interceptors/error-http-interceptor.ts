@@ -39,12 +39,11 @@ export class ErrorHttpInterceptor implements HttpInterceptor {
             break;
         }
       }
-
       throw e;
     }));
   }
 
   private async showError(message: string) {
-    return this.toastService.error(message)
+    return this.toastService.error(message);
   }
 }
