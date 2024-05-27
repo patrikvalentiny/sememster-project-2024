@@ -10,7 +10,8 @@ namespace api.Controllers;
 public class DataController(IDataService dataService) : ControllerBase
 {
     [HttpGet("{mac}")]
-    public IActionResult GetData([Length(12,12)] string mac,[Required][Range(1, 731)][FromQuery] int days = 1)
+    [ProducesResponseType(200)]
+    public IActionResult GetData([Length(12, 12)] string mac, [Required] [Range(1, 731)] [FromQuery] int days = 1)
     {
         try
         {

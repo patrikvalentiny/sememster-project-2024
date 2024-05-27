@@ -10,8 +10,8 @@ import {Router} from "@angular/router";
   styleUrl: './device-sidebar-item.component.css'
 })
 export class DeviceSidebarItemComponent {
+  @Input() device!: Device;
   private readonly router = inject(Router);
-  @Input() device!: Device ;
 
   async viewData() {
     await this.router.navigate(["/data", this.device.mac]);

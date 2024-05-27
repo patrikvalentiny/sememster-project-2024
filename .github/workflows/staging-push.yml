@@ -61,12 +61,15 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          
-      - name: Invoke deployment hook
-        uses: distributhor/workflow-webhook@v3
+          labels: ${{ steps.meta.outputs.labels }}       
+      - uses: azure/webapps-deploy@v3
         with:
-          webhook_url: ${{ secrets.WEBHOOK_STAGING_URL }}
+          app-name: 'climate-ctrl-staging'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_STAGING_PUBLISH_PROFILE }}
+#      - name: Invoke deployment hook
+#        uses: distributhor/workflow-webhook@v3
+#        with:
+#          webhook_url: ${{ secrets.WEBHOOK_STAGING_URL }}
 
   firebase_build_and_deploy:
     name: Firebase Build and Preview
@@ -79,4 +82,5 @@ jobs:
           entryPoint: ./frontend/
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMATE_CTRL_STAGING }}
+          channelId: live
           projectId: climate-ctrl-staging

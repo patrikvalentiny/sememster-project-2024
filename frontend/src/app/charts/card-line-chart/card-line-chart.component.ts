@@ -4,7 +4,8 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke, ApexXAxis,
+  ApexStroke, ApexTitleSubtitle, ApexTooltip,
+  ApexXAxis,
   ChartComponent,
   NgApexchartsModule
 } from 'ng-apexcharts';
@@ -19,6 +20,8 @@ type ChartOptions = {
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
+  title:ApexTitleSubtitle;
+  tooltip:ApexTooltip;
 };
 
 @Component({
@@ -39,6 +42,8 @@ type ChartOptions = {
                  [stroke]="chartOptions.stroke"
                  [colors]="sharedChartOptions.colors"
                  [theme]="sharedChartOptions.theme"
+                 [title]="chartOptions.title"
+                 [tooltip]="chartOptions.tooltip"
       ></apx-chart>
 
     </div>`,
@@ -74,13 +79,22 @@ export class CardLineChartComponent {
             //   data: this.bmeData.map(data => [new Date(data.createdAt).getTime(), data.pressure])
             // }
           ]
-          );
+        );
       }
     });
 
     this.chartOptions = {
+      tooltip:{
+        shared:true,
+        onDatasetHover:{
+          highlightDataSeries: true
+        },
+        x:{
+          format:"dd/MM/yy HH:mm"
+        }
+      },
       chart: {
-        animations:{
+        animations: {
           enabled: true,
           easing: 'easeout',
           dynamicAnimation: {
@@ -101,10 +115,10 @@ export class CardLineChartComponent {
       stroke: {
         curve: "smooth"
       },
-      // title: {
-      //   text: "Product Trends by Month",
-      //   align: "left"
-      // },
+      title: {
+        text: "Temperature last 24 hours",
+        align: "left"
+      },
       grid: {
         row: {
           colors: [colors.base100, "transparent"], // takes an array which will be repeated on columns
@@ -115,7 +129,7 @@ export class CardLineChartComponent {
         type: "datetime",
         range: 24 * 60 * 60 * 1000,
         labels: {
-          format: 'HH:mm',
+          format: "HH:mm",
           datetimeUTC: false
         }
       },
@@ -139,8 +153,11 @@ export class CardLineChartComponent {
   }
 
   formatData(data: BmeData) {
-    const decimalPlaces:number = 3;
+    const decimalPlaces: number = 3;
     const decimalMultiplier = Math.pow(10, decimalPlaces);
-    return {x: new Date(data.createdAt).getTime(), y: Math.round(data.temperatureC *decimalMultiplier)/decimalMultiplier}
+    return {
+      x: new Date(data.createdAt).getTime(),
+      y: Math.round(data.temperatureC * decimalMultiplier) / decimalMultiplier
+    }
   }
 }

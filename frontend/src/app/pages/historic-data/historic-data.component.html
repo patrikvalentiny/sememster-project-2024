@@ -1,14 +1,31 @@
 <div class="flex flex-col w-full h-full gap-8 px-6 py-2">
-  <div class="flex flex-col w-full h-full">
-    <div class="flex flex-row gap-2 p-2 w-full justify-center">
-      <button class="btn " (click)="getBmeData(1)" [ngClass]="{'btn-accent' : days === 1}">1 Day</button>
-      <button class="btn " (click)="getBmeData(7)" [ngClass]="{'btn-accent' : days === 7}">1 Week</button>
-      <button class="btn " (click)="getBmeData(31)" [ngClass]="{'btn-accent' : days === 31}">1 Month</button>
-      <button class="btn " (click)="getBmeData(3*31)" [ngClass]="{'btn-accent' : days === 3*31}">3 Months</button>
-      <button class="btn " (click)="getBmeData(6*31)" [ngClass]="{'btn-accent' : days === 6*31}">6 Months</button>
-      <button class="btn " (click)="getBmeData(12*31)" [ngClass]="{'btn-accent' : days === 12*31 }">1 Year</button>
-      <button class="btn " (click)="getBmeData(24*31)" [ngClass]="{'btn-accent' : days === 24*31}">2 Years</button>
+
+    <div class="flex flex-col w-full h-full">
+      <div class="flex flex-row flex-wrap gap-2 p-2 w-full justify-around">
+        <button (click)="startRtc()" [ngClass]="{'btn-accent' : rtcOn}" class="btn flex-1 shrink basis-full min-w-24 hidden ">Realtime
+        </button>
+        <button (click)="getBmeData(1)" [ngClass]="{'btn-accent' : days === 1}" class="btn flex-1 min-w-24 ">1 Day
+        </button>
+        <button (click)="getBmeData(7)" [ngClass]="{'btn-accent' : days === 7}" class="btn flex-1 min-w-24">1 Week
+        </button>
+        <button (click)="getBmeData(31)" [ngClass]="{'btn-accent' : days === 31}" class="btn flex-1 min-w-24">1 Month
+        </button>
+        <button (click)="getBmeData(3*31)" [ngClass]="{'btn-accent' : days === 3*31}" class="btn flex-1 min-w-24">3
+          Months
+        </button>
+        <button (click)="getBmeData(6*31)" [ngClass]="{'btn-accent' : days === 6*31}" class="btn flex-1 min-w-24">6
+          Months
+        </button>
+        <button (click)="getBmeData(12*31)" [ngClass]="{'btn-accent' : days === 12*31 }" class="btn flex-1 min-w-24 ">1
+          Year
+        </button>
+      </div>
+      @if(rtcOn) {
+        <p>rtc</p>
+      } @else {
+      <app-historic-data-chart [bmeData]="bmeData" class="w-full h-full"></app-historic-data-chart>
+      }
     </div>
-    <app-historic-data-chart class="w-full h-full" [bmeData]="bmeData"></app-historic-data-chart>
-  </div>
+
+
 </div>

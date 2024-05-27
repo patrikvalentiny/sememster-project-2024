@@ -13,6 +13,8 @@ env:
   FLYWAY_USER: postgres
   FLYWAY_PASSWORD: postgres
   FLYWAY_SCHEMAS: public,climate_ctrl
+  
+  
 
 
 jobs:

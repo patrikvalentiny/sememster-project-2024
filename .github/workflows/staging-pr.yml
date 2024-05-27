@@ -14,7 +14,6 @@ env:
   FLYWAY_SCHEMAS: public,climate_ctrl
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
 
-
 jobs:
   run_integration_tests:
     container:
@@ -71,10 +70,9 @@ jobs:
           dotnet test
           apt update
           apt install lsof
-          lsof -t -i:8080
           kill -9 $(lsof -t -i:8080)
         env:
-          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
+          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@postgres:5432/${{ env.DB_NAME }}
           ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
    
 

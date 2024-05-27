@@ -71,14 +71,14 @@ export class SharedChartOptions {
   };
 }
 
-export const sharedChartOptions:SharedChartOptions = {
+export const sharedChartOptions: SharedChartOptions = {
   colors: chartColors,
   chart: {
     type: 'line',
     foreColor: colors.baseContent,
     background: 'transparent',
   },
-  theme:{
+  theme: {
     mode: 'dark'
   }
 };

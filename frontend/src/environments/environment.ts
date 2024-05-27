@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  restBaseUrl: 'https://climatectrl.onrender.com/api/v1',
-  wsBaseUrl: 'wss://climatectrl.onrender.com',
+  restBaseUrl: 'https://climate-ctrl.azurewebsites.net/api/v1',
+  wsBaseUrl: 'wss://climate-ctrl.azurewebsites.net',
 };
