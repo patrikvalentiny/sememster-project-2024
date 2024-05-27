@@ -15,7 +15,7 @@ import {NgClass} from "@angular/common";
 
 type ChartOptions = {
   series: ApexAxisChartSeries;
-  chart: ApexChart;
+  // chart: ApexChart;
   xaxis: ApexXAxis;
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
@@ -31,16 +31,39 @@ type ChartOptions = {
   ],
   template: `
 
-    <div id="chart">
-      <apx-chart #chart
-                 [series]="chartOptions.series"
-                 [chart]="chartOptions.chart"
-                 [xaxis]="chartOptions.xaxis"
-                 [dataLabels]="chartOptions.dataLabels"
-                 [grid]="chartOptions.grid"
-                 [stroke]="chartOptions.stroke"
+    <div class="flex flex-col gap-2 w-full" id="chart">
+      <apx-chart #chart1
+                 [series]="commonChartOptions.series"
+                 [chart]="chart1Options"
+                 [xaxis]="commonChartOptions.xaxis"
+                 [dataLabels]="commonChartOptions.dataLabels"
+                 [grid]="commonChartOptions.grid"
+                 [stroke]="commonChartOptions.stroke"
                  [colors]="sharedChartOptions.colors"
                  [theme]="sharedChartOptions.theme"
+                 [title]="{text: 'Temperature'}"
+      ></apx-chart>
+      <apx-chart #chart2
+                 [series]="commonChartOptions.series"
+                 [chart]="chart2Options"
+                 [xaxis]="commonChartOptions.xaxis"
+                 [dataLabels]="commonChartOptions.dataLabels"
+                 [grid]="commonChartOptions.grid"
+                 [stroke]="commonChartOptions.stroke"
+                 [colors]="[sharedChartOptions.colors.at(1)]"
+                 [theme]="sharedChartOptions.theme"
+                 [title]="{text: 'Humidity'}"
+      ></apx-chart>
+      <apx-chart #chart3
+                 [series]="commonChartOptions.series"
+                 [chart]="chart3Options"
+                 [xaxis]="commonChartOptions.xaxis"
+                 [dataLabels]="commonChartOptions.dataLabels"
+                 [grid]="commonChartOptions.grid"
+                 [stroke]="commonChartOptions.stroke"
+                 [colors]="[sharedChartOptions.colors.at(2)]"
+                 [theme]="sharedChartOptions.theme"
+                 [title]="{text: 'Pressure'}"
       ></apx-chart>
 
     </div>`,
@@ -48,36 +71,28 @@ type ChartOptions = {
 })
 export class HistoricTemperatureDataChartComponent {
   @Input() bmeData: WritableSignal<BmeData[]> = signal([]);
-  @ViewChild("chart", {static: false}) chart!: ChartComponent;
-  public chartOptions: ChartOptions;
+  @ViewChild("chart1", {static: false}) chart1!: ChartComponent;
+  @ViewChild("chart2", {static: false}) chart2!: ChartComponent;
+  @ViewChild("chart3", {static: false}) chart3!: ChartComponent;
+
+  public commonChartOptions: ChartOptions;
+  public chart1Options: ApexChart;
+  public chart2Options: ApexChart;
+  public chart3Options: ApexChart;
   protected readonly sharedChartOptions = sharedChartOptions;
 
   constructor() {
     effect(() => {
       this.updateSeries(this.bmeData()).then();
     });
-    this.chartOptions = {
-      chart: {
-        foreColor: sharedChartOptions.chart.foreColor,
-        background: sharedChartOptions.chart.background,
-        height: 300,
-        type: "line",
-        zoom: {
-          enabled: true,
-          type: "x",
-          autoScaleYaxis: true
-        }
-      },
+
+    this.commonChartOptions = {
       dataLabels: {
         enabled: false
       },
       stroke: {
         curve: "smooth"
       },
-      // title: {
-      //   text: "Product Trends by Month",
-      //   align: "left"
-      // },
       grid: {
         row: {
           colors: [colors.base100, "transparent"], // takes an array which will be repeated on columns
@@ -85,32 +100,80 @@ export class HistoricTemperatureDataChartComponent {
         }
       },
       xaxis: {
-        type: "datetime"
+        type: "datetime",
+        labels: {
+          format: "dd/MM/yy HH:mm",
+          datetimeUTC: false
+        }
       },
-      series: [
-        {
-          name: "Temperature",
-          data: this.bmeData().map(data => {
-            return {x: new Date(data.createdAt).getTime(), y: data.temperatureC}
-          })
-        },
-        // {
-        //   name: "Humidity",
-        //   data: this.bmeData.map(data => {
-        //     return {x: new Date(data.createdAt).getTime(), y: data.humidity}
-        //   })
-        // },
-        // {
-        //   name: "Pressure",
-        //   data: this.bmeData.map(data => data.pressure)
-        // }
-      ],
+      series: []
     };
+
+    this.chart1Options = {
+      animations: {
+        enabled: true,
+        easing: 'easeout',
+        dynamicAnimation: {
+          speed: 250
+        }
+      },
+      id: "chart1",
+      group:"bmedata",
+      foreColor: sharedChartOptions.chart.foreColor,
+      background: sharedChartOptions.chart.background,
+      height: 300,
+      type: "line",
+      zoom: {
+        enabled: true,
+        type: "x",
+        autoScaleYaxis: true
+      }
+    };
+    this.chart2Options = {
+      animations: {
+        enabled: true,
+        easing: 'easeout',
+        dynamicAnimation: {
+          speed: 250
+        }
+      },
+      id: "chart2",
+      group:"bmedata",
+      foreColor: sharedChartOptions.chart.foreColor,
+      background: sharedChartOptions.chart.background,
+      height: 300,
+      type: "line",
+      zoom: {
+        enabled: true,
+        type: "x",
+        autoScaleYaxis: true
+      }
+
+    };
+    this.chart3Options = {
+      animations: {
+        enabled: true,
+        easing: 'easeout',
+        dynamicAnimation: {
+          speed: 250
+        }
+      },
+      id: "chart3",
+      group:"bmedata",
+      foreColor: sharedChartOptions.chart.foreColor,
+      background: sharedChartOptions.chart.background,
+      height: 300,
+      type: "line",
+      zoom: {
+        enabled: true,
+        type: "x",
+        autoScaleYaxis: true
+      }
+    }
   }
 
-
   async updateSeries(data: BmeData[]) {
-    this.chart.updateSeries(
+    this.chart1.updateSeries(
       [
         {
           name: "Temperature",
@@ -118,18 +181,26 @@ export class HistoricTemperatureDataChartComponent {
             return {x: new Date(data.createdAt).getTime(), y: data.temperatureC}
           })
         },
-        // {
-        //   name: "Humidity",
-        //   data: this.bmeData.map(data => {
-        //     return {x: new Date(data.createdAt).getTime(), y: data.humidity}
-        //   })
-        // },
-        // {
-        //   name: "Pressure",
-        //   data: this.bmeData.map(data => data.pressure)
-        // }
       ]
     );
+    this.chart2.updateSeries(
+      [
+        {
+          name: "Temperature",
+          data: data.map(data => {
+            return {x: new Date(data.createdAt).getTime(), y: data.humidity}
+          })
+        },
+      ]);
+    this.chart3.updateSeries(
+      [
+        {
+          name: "Temperature",
+          data: data.map(data => {
+            return {x: new Date(data.createdAt).getTime(), y: data.pressure}
+          })
+        },
+      ]);
   }
 
 }

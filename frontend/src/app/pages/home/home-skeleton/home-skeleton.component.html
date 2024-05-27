@@ -32,7 +32,7 @@
   }
 
   <div [ngClass]="!this.hidden ? 'pt-16' : ''"
-       class="drawer-content items-center justify-center h-screen w-full lg:justify-start">
+       class="drawer-content items-center justify-center h-screen w-full lg:justify-start overflow-y-auto">
     <!-- Page content here -->
     <router-outlet></router-outlet>
 
@@ -56,7 +56,7 @@
 
         </div>
         <div class="flex flex-col w-full items-center justify-center">
-          <button (click)="logout()" class="btn btn-outline btn-accent" data-testid="logoutButton">Logout</button>
+<!--          <button (click)="logout()" class="btn btn-outline btn-accent" data-testid="logoutButton">Logout</button>-->
         </div>
       </ul>
 

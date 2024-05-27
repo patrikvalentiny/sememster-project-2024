@@ -4,7 +4,7 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke,
+  ApexStroke, ApexTitleSubtitle,
   ApexXAxis,
   ChartComponent,
   NgApexchartsModule
@@ -20,6 +20,7 @@ type ChartOptions = {
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
+  title:ApexTitleSubtitle;
 };
 
 @Component({
@@ -40,6 +41,7 @@ type ChartOptions = {
                  [stroke]="chartOptions.stroke"
                  [colors]="sharedChartOptions.colors"
                  [theme]="sharedChartOptions.theme"
+                 [title]="chartOptions.title"
       ></apx-chart>
 
     </div>`,
@@ -102,10 +104,10 @@ export class CardLineChartComponent {
       stroke: {
         curve: "smooth"
       },
-      // title: {
-      //   text: "Product Trends by Month",
-      //   align: "left"
-      // },
+      title: {
+        text: "Temperature last 24 hours",
+        align: "left"
+      },
       grid: {
         row: {
           colors: [colors.base100, "transparent"], // takes an array which will be repeated on columns
@@ -114,9 +116,9 @@ export class CardLineChartComponent {
       },
       xaxis: {
         type: "datetime",
-        // range: 24 * 60 * 60 * 1000,
+        range: 24 * 60 * 60 * 1000,
         labels: {
-          format: 'HH:mm',
+          format: "HH:mm",
           datetimeUTC: false
         }
       },
