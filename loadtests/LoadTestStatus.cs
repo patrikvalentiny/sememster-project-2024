@@ -13,6 +13,7 @@ public class LoadTestStatus
 
     //smoke test
     [Test]
+    [Order(1)]
     public void Smoke()
     {
         var scenario = Scenario.Create("smoke_test_status", async context =>
@@ -47,6 +48,7 @@ public class LoadTestStatus
     }
 
     [Test]
+    [Order(2)]
     public void Load()
     {
         var scenario = Scenario.Create("load_test_status", async context =>
@@ -80,6 +82,7 @@ public class LoadTestStatus
     }
     
     [Test]
+    [Order(3)]
     public void Soak()
     {
         var scenario = Scenario.Create("soak_test_status", async context =>
