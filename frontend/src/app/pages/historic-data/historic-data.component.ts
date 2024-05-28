@@ -1,7 +1,7 @@
 import {Component, effect, inject, input, InputSignal, OnDestroy, signal, WritableSignal} from '@angular/core';
 import {
-  HistoricTemperatureDataChartComponent
-} from "../../charts/historic-data-chart/historic-temperature-data-chart.component";
+  HistoricDataChartComponent
+} from "../../charts/historic-data-chart/historic-data-chart.component";
 import {BmeData} from "../../models/bme-data";
 import {DataService} from "../../services/data.service";
 import {NgClass} from "@angular/common";
@@ -13,7 +13,7 @@ import {ClientEndsRtc, ClientStartsRtc} from "../../services/events/client/clien
   selector: 'app-historic-data',
   standalone: true,
   imports: [
-    HistoricTemperatureDataChartComponent,
+    HistoricDataChartComponent,
     NgClass
   ],
   templateUrl: './historic-data.component.html',

@@ -66,10 +66,6 @@ jobs:
         with:
           app-name: 'climate-ctrl-staging'
           publish-profile: ${{ secrets.AZURE_WEBAPP_STAGING_PUBLISH_PROFILE }}
-#      - name: Invoke deployment hook
-#        uses: distributhor/workflow-webhook@v3
-#        with:
-#          webhook_url: ${{ secrets.WEBHOOK_STAGING_URL }}
 
   firebase_build_and_deploy:
     name: Firebase Build and Preview
@@ -84,3 +80,19 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIMATE_CTRL_STAGING }}
           channelId: live
           projectId: climate-ctrl-staging
+  
+  run_load_tests:
+    name: Run Load Tests
+    runs-on: ubuntu-latest
+    needs: [push_to_registry, flyway_migrate]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      - name: Test
+        run: |
+          cd ./loadtests/
+          dotnet test

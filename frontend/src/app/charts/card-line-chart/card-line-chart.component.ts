@@ -4,7 +4,9 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexStroke, ApexTitleSubtitle, ApexTooltip,
+  ApexStroke,
+  ApexTitleSubtitle,
+  ApexTooltip,
   ApexXAxis,
   ChartComponent,
   NgApexchartsModule
@@ -20,8 +22,8 @@ type ChartOptions = {
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
-  title:ApexTitleSubtitle;
-  tooltip:ApexTooltip;
+  title: ApexTitleSubtitle;
+  tooltip: ApexTooltip;
 };
 
 @Component({
@@ -66,31 +68,21 @@ export class CardLineChartComponent {
           [
             {
               name: "Temperature",
-              data: this.bmeData.map(data => this.formatData(data))
+              data: this.formatData()
             },
-            // {
-            //   name: "Humidity",
-            //   data: this.bmeData.map(data => {
-            //     return {x: new Date(data.createdAt).getTime(), y: data.humidity}
-            //   })
-            // },
-            // {
-            //   name: "Pressure",
-            //   data: this.bmeData.map(data => [new Date(data.createdAt).getTime(), data.pressure])
-            // }
           ]
         );
       }
     });
 
     this.chartOptions = {
-      tooltip:{
-        shared:true,
-        onDatasetHover:{
+      tooltip: {
+        shared: true,
+        onDatasetHover: {
           highlightDataSeries: true
         },
-        x:{
-          format:"dd/MM/yy HH:mm"
+        x: {
+          format: "dd/MM/yy HH:mm"
         }
       },
       chart: {
@@ -136,28 +128,26 @@ export class CardLineChartComponent {
       series: [
         {
           name: "Temperature",
-          data: this.bmeData.map(data => this.formatData(data))
+          data: this.formatData()
         },
-        // {
-        //   name: "Humidity",
-        //   data: this.bmeData.map(data => {
-        //     return {x: new Date(data.createdAt).getTime(), y: data.humidity}
-        //   })
-        // },
-        // {
-        //   name: "Pressure",
-        //   data: this.bmeData.map(data => data.pressure)
-        // }
       ],
     };
   }
 
-  formatData(data: BmeData) {
+  formatData() {
     const decimalPlaces: number = 3;
     const decimalMultiplier = Math.pow(10, decimalPlaces);
-    return {
-      x: new Date(data.createdAt).getTime(),
-      y: Math.round(data.temperatureC * decimalMultiplier) / decimalMultiplier
-    }
+    return this.bmeData
+    //   .filter(
+    //   data => new Date(data.createdAt).getMinutes() % 10 === 0
+    // )
+      .map(data => {
+      return {
+        x: new Date(data.createdAt).getTime(),
+        y: Math.round(data.temperatureC * decimalMultiplier) / decimalMultiplier
+      }
+    })
+
+
   }
 }
