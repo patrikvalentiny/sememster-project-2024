@@ -6,7 +6,7 @@ namespace service;
 public interface IMotorService
 {
     int SetMotorPosition(string mac, int position);
-    Task<MotorPositionDto> GetMotorPosition(string mac);
+    Task<MotorPositionDto?> GetMotorPosition(string mac);
     Task<int> SetMaxMotorPosition(string mac, int position);
     bool GetMotorReversed(string mac);
     Task<bool> SetMotorDirection(string mac, bool reversed);
@@ -19,9 +19,10 @@ public class MotorService(MotorRepository motorRepository) : IMotorService
         return motorRepository.SetMotorPosition(mac, position);
     }
 
-    public async Task<MotorPositionDto> GetMotorPosition(string mac)
+    public async Task<MotorPositionDto?> GetMotorPosition(string mac)
     {
         var positions = motorRepository.GetMotorPosition(mac);
+        if (positions == null) return null;
         if (positions.MaxMotorPosition >= positions.LastMotorPosition) return positions;
         positions.MaxMotorPosition = positions.LastMotorPosition;
         await SetMaxMotorPosition(mac, positions.MaxMotorPosition);
