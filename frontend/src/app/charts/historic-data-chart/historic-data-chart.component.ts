@@ -32,7 +32,7 @@ type ChartOptions = {
   ],
   template: `
 
-    <div class="flex flex-col gap-2 w-full" id="chart">
+    <div class="flex flex-col gap-2 w-full overflow-hidden" id="chart">
       <apx-chart #chart1
                  [series]="commonChartOptions.series"
                  [chart]="chart1Options"
@@ -73,7 +73,7 @@ type ChartOptions = {
     </div>`,
   styles: ''
 })
-export class HistoricTemperatureDataChartComponent {
+export class HistoricDataChartComponent {
   @Input() bmeData: WritableSignal<BmeData[]> = signal([]);
   @ViewChild("chart1", {static: false}) chart1!: ChartComponent;
   @ViewChild("chart2", {static: false}) chart2!: ChartComponent;
