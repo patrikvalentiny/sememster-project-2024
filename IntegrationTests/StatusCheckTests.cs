@@ -10,12 +10,13 @@ public class StatusCheckTests
     [SetUp]
     public void Setup()
     {
+        Helper.RebuildDb();
     }
 
     [Test]
     public async Task GetStatus()
     {
-        var response = await _client.GetAsync("http://localhost:8080/api/v1/status");
+        var response = await _client.GetAsync(Helper.BaseUrl + "/status");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }
