@@ -79,7 +79,7 @@ export class WebsocketService {
   private ServerDeviceBmeData(data: ServerDeviceBmeData) {
     const bmeData = data.data!;
     const bmeDataList = this.stateService.bmeData.get(bmeData.deviceMac!)!;
-    bmeDataList.update(value => [bmeData as BmeData, ...value.filter(value => value.createdAt.getTime() > Date.now() - 24 * 60 * 60 * 1000)]);
+    bmeDataList.update(value => [bmeData as BmeData, ...value.filter(value => new Date(value.createdAt).getTime() > Date.now() - 24 * 60 * 60 * 1000)]);
   }
 
   private ServerSendsDeviceBaseData(data: ServerSendsDeviceBaseDataDto) {
