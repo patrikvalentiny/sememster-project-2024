@@ -12,7 +12,7 @@ public interface IMotorService
     Task<bool> SetMotorDirection(string mac, bool reversed);
 }
 
-public class MotorService(MotorRepository motorRepository) : IMotorService
+public class MotorService(MotorRepository motorRepository, MqttDeviceCommandsRepository mqtt) : IMotorService
 {
     public int SetMotorPosition(string mac, int position)
     {
@@ -32,7 +32,7 @@ public class MotorService(MotorRepository motorRepository) : IMotorService
     public async Task<int> SetMaxMotorPosition(string mac, int position)
     {
         var max = motorRepository.SetMaxMotorPosition(mac, position);
-        await MqttDeviceCommandsRepository.SendMaxPosition(mac, max);
+        await mqtt.SendMaxPosition(mac, max);
         return max;
     }
 
@@ -44,7 +44,7 @@ public class MotorService(MotorRepository motorRepository) : IMotorService
     public async Task<bool> SetMotorDirection(string mac, bool reversed)
     {
         var r = motorRepository.SetMotorReversed(mac, reversed);
-        await MqttDeviceCommandsRepository.SendReverseCommand(mac, reversed);
+        await mqtt.SendReverseCommand(mac, reversed);
         return r;
     }
 }

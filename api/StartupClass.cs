@@ -5,6 +5,7 @@ using api.Utils;
 using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
+using infrastructure.Mqtt;
 using MediatR;
 using MQTTnet;
 using Serilog;
@@ -80,6 +81,7 @@ public static class StartupClass
         builder.Services.AddSingleton<ConfigRepository>();
         builder.Services.AddSingleton<IMotorService, MotorService>();
         builder.Services.AddSingleton<MotorRepository>();
+        builder.Services.AddSingleton<MqttDeviceCommandsRepository>();
 
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });

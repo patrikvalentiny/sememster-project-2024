@@ -8,6 +8,7 @@ public interface IWebSocketStateService
     ConcurrentDictionary<Guid, IWebSocketConnection> Connections { get; }
     ConcurrentDictionary<string, HashSet<Guid>> MacToConnectionId { get; }
     ConcurrentDictionary<string, HashSet<Guid>> MotorMacToConnectionId { get; }
+    ConcurrentDictionary<string, HashSet<Guid>> RtcMacToConnectionId { get; }
     void CloseSocket(IWebSocketConnection socket);
 }
 
@@ -16,7 +17,7 @@ public class WebSocketStateService : IWebSocketStateService
     public ConcurrentDictionary<Guid, IWebSocketConnection> Connections { get; } = new();
     public ConcurrentDictionary<string, HashSet<Guid>> MacToConnectionId { get; } = new();
     public ConcurrentDictionary<string, HashSet<Guid>> MotorMacToConnectionId { get; } = new();
-
+    public ConcurrentDictionary<string, HashSet<Guid>> RtcMacToConnectionId { get; } = new();
     public void CloseSocket(IWebSocketConnection socket)
     {
         var id = socket.ConnectionInfo.Id;

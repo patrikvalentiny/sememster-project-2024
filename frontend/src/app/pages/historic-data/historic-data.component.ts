@@ -6,7 +6,7 @@ import {BmeData} from "../../models/bme-data";
 import {DataService} from "../../services/data.service";
 import {NgClass} from "@angular/common";
 import {WebsocketService} from "../../services/websocket.service";
-import {ClientEndsRtc, ClientStartsRtc} from "../../services/events/client/client-starts-rtc";
+import {ClientStopsRtc, ClientStartsRtc} from "../../services/events/client/client-starts-rtc";
 
 
 @Component({
@@ -53,6 +53,6 @@ export class HistoricDataComponent implements OnDestroy {
   stopRtc() {
     this.rtcOn = false;
     this.days = 7;
-    this.ws.sendJson(new ClientEndsRtc({mac: this.mac()}));
+    this.ws.sendJson(new ClientStopsRtc({mac: this.mac()}));
   }
 }

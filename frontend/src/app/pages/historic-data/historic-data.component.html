@@ -2,7 +2,7 @@
 
     <div class="flex flex-col w-full h-full">
       <div class="flex flex-row flex-wrap gap-2 p-2 w-full justify-around">
-        <button (click)="startRtc()" [ngClass]="{'btn-accent' : rtcOn}" class="btn flex-1 shrink basis-full min-w-24 hidden ">Realtime
+        <button (click)="startRtc()" [ngClass]="{'btn-accent' : rtcOn}" class="btn flex-1 shrink basis-full min-w-24">Realtime
         </button>
         <button (click)="getBmeData(1)" [ngClass]="{'btn-accent' : days === 1}" class="btn flex-1 min-w-24 ">1 Day
         </button>
@@ -23,7 +23,7 @@
       @if(rtcOn) {
         <p>rtc</p>
       } @else {
-      <app-historic-data-chart [bmeData]="bmeData" class="w-full h-full"></app-historic-data-chart>
+        <app-historic-data-chart [bmeData]="bmeData" class="w-full h-full"></app-historic-data-chart>
       }
     </div>
 
