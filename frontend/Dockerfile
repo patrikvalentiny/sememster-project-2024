@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . .
 
+RUN npm install -g @angular/cli
 RUN npm run build -- --configuration=development
 
 FROM nginx:latest

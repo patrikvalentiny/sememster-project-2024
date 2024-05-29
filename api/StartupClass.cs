@@ -5,6 +5,7 @@ using api.Utils;
 using Fleck;
 using infrastructure;
 using infrastructure.Helpers;
+using infrastructure.Mqtt;
 using MediatR;
 using MQTTnet;
 using Serilog;
@@ -37,6 +38,7 @@ public static class StartupClass
         _ = app.Services.GetRequiredService<MqttDevicesClient>().CommunicateWithBroker();
         _ = app.Services.GetRequiredService<MqttDeviceDataClient>().CommunicateWithBroker();
         _ = app.Services.GetRequiredService<MqttDeviceMotorPosition>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttRtcHandler>().CommunicateWithBroker();
 
         // Initialize the proxy as task
         return app;
@@ -64,7 +66,7 @@ public static class StartupClass
         builder.Host.UseSerilog();
 
         var conn = Environment.GetEnvironmentVariable("ASPNETCORE_ConnectionStrings__Postgres") ??
-                   throw new Exception("Connection string not found");
+                   throw new InvalidOperationException("Connection string not found");
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
             dataSourceBuilder =>
                 dataSourceBuilder.EnableParameterLogging());
@@ -80,6 +82,8 @@ public static class StartupClass
         builder.Services.AddSingleton<ConfigRepository>();
         builder.Services.AddSingleton<IMotorService, MotorService>();
         builder.Services.AddSingleton<MotorRepository>();
+        builder.Services.AddSingleton<MqttDeviceCommandsRepository>();
+        builder.Services.AddSingleton<MqttRtcHandler>();
 
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });
@@ -142,7 +146,7 @@ public static class StartupClass
         return new TcpProxyServer(proxyConfiguration);
     }
 
-    private static IWebSocketServer StartWebSocketServer(IServiceProvider services)
+    private static WebSocketServer StartWebSocketServer(IServiceProvider services)
     {
         var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
         var webSocketStateService = services.GetRequiredService<IWebSocketStateService>();

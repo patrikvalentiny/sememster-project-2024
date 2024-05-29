@@ -42,7 +42,7 @@ bootstrapApplication(AppComponent, {
         duration: 5000,
         position: 'bottom-center',
         style: {
-          backgroundColor: 'oklch(var(--b3))',
+          backgroundColor: 'oklch(var(--b2))',
           color: 'oklch(var(--bc))',
         }
       }

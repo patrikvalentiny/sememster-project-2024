@@ -36,7 +36,7 @@ public static class WsHelper
             DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
         });
 
-        if (dto == null) throw new NullReferenceException("Could not deserialize BaseDto");
+        if (dto == null) throw new ArgumentException("Could not deserialize message",message);
 
         // Remove the "dto" suffix from the event type and convert to lowercase
         var eventType = (dto.EventType.EndsWith("dto", StringComparison.OrdinalIgnoreCase)
@@ -45,7 +45,7 @@ public static class WsHelper
 
 
         // Get the type from the dictionary
-        if (!BaseDtos.TryGetValue(eventType, out var type)) throw new NullReferenceException("Could not find type");
+        if (!BaseDtos.TryGetValue(eventType, out var type)) throw new ArgumentNullException(dto.EventType, "Event type not found");
 
         // Deserialize the message to the type
         var request = JsonConvert.DeserializeObject(message, type)!;

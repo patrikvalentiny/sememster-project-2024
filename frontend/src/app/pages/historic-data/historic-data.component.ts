@@ -6,7 +6,8 @@ import {BmeData} from "../../models/bme-data";
 import {DataService} from "../../services/data.service";
 import {NgClass} from "@angular/common";
 import {WebsocketService} from "../../services/websocket.service";
-import {ClientEndsRtc, ClientStartsRtc} from "../../services/events/client/client-starts-rtc";
+import {ClientStopsRtc, ClientStartsRtc} from "../../services/events/client/client-starts-rtc";
+import {StateService} from "../../services/state.service";
 
 
 @Component({
@@ -21,16 +22,23 @@ import {ClientEndsRtc, ClientStartsRtc} from "../../services/events/client/clien
 })
 export class HistoricDataComponent implements OnDestroy {
   mac: InputSignal<string> = input("", {alias: "mac"});
+  previousMac: string = "";
   bmeData: WritableSignal<BmeData[]> = signal<BmeData[]>([]);
   days: number = 7;
   private readonly dataService = inject(DataService);
   private readonly ws = inject(WebsocketService);
+   stateService = inject(StateService);
   rtcOn: boolean = false;
+  rtcData: WritableSignal<BmeData[]> = signal<BmeData[]>([]);
 
   constructor() {
+    this.rtcData = this.stateService.rtcData.get(this.mac()) ?? signal<BmeData[]>([])
     effect(() => {
-      if(this.days === 0) this.days = 7;
+      if(this.days === 0){
+        this.stopRtc(this.previousMac);
+      }
       this.getBmeData(this.days).then()
+      this.previousMac = this.mac();
     });
   }
 
@@ -50,9 +58,18 @@ export class HistoricDataComponent implements OnDestroy {
     this.ws.sendJson(new ClientStartsRtc({mac: this.mac()}));
   }
 
-  stopRtc() {
+  stopRtc(mac:string = this.mac()) {
     this.rtcOn = false;
     this.days = 7;
-    this.ws.sendJson(new ClientEndsRtc({mac: this.mac()}));
+    this.ws.sendJson(new ClientStopsRtc({mac: mac}));
+  }
+
+  getRtcBmeDataSignal() {
+    let sig = this.stateService.rtcData.get(this.mac());
+    if (!sig){
+      sig = signal<BmeData[]>([]);
+      this.stateService.rtcData.set(this.mac(), sig);
+    }
+    return sig;
   }
 }

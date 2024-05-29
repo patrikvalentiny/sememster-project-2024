@@ -2,7 +2,7 @@
 
 services:
   frontend:
-    image: patrikvalentiny/climate-ctrl-frontend:latest
+    image: patrikvalentiny/climate-ctrl-frontend:main
     build:
       context: ./frontend
       dockerfile: Dockerfile

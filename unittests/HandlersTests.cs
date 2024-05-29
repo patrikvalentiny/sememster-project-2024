@@ -4,6 +4,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using commons.Models;
 using FluentAssertions;
+using infrastructure.Mqtt;
 using Microsoft.AspNetCore.Builder;
 using Moq;
 using service;
@@ -22,7 +23,8 @@ public class HandlersTests
         var data = fixture.CreateMany<BmeData>(10).ToList();
         var dataServiceMock = new Mock<IDataService>();
         dataServiceMock.Setup(x => x.GetLatestData(It.IsAny<string>())).Returns(data);
-        var stateService = new WebSocketStateService();
+        var mqttMock = new Mock<MqttDeviceCommandsRepository>();
+        var stateService = new WebSocketStateService(mqttMock.Object);
         if (set) stateService.MacToConnectionId.TryAdd(dto.Mac, []);
         var handler = new ClientStartsListeningToDevice(stateService, dataServiceMock.Object);
         var result = await handler.Handle(dto, default);
@@ -46,7 +48,8 @@ public class HandlersTests
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
         var dto = fixture.Create<ClientStartsListeningToMotorDto>();
-        var stateService = new WebSocketStateService();
+        var mqttMock = new Mock<MqttDeviceCommandsRepository>();
+        var stateService = new WebSocketStateService(mqttMock.Object);
         if (set) stateService.MotorMacToConnectionId.TryAdd(dto.Mac, []);
         var handler = new ClientStartsListeningToMotor(stateService);
         var act = async () => await handler.Handle(dto, default);
