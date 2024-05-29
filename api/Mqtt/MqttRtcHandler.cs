@@ -20,7 +20,6 @@ public class MqttRtcHandler(IWebSocketStateService webSocketStateService)
                 var m = e.ApplicationMessage;
                 var message = m.ConvertPayloadToString();
                 var mac = m.Topic.Split('/')[2];
-                // Log.Debug("Mqtt Message received: {Message}, Topic: {Topic}", message, m.Topic);
                 var data = JsonConvert.DeserializeObject<BmeData>(message)!;
                 data.CreatedAt = DateTime.UtcNow;
                 var dto = new ServerSendsRtcDataDto { Data = data, Mac = mac };
