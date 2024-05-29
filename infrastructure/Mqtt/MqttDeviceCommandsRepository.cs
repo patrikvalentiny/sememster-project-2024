@@ -5,8 +5,7 @@ namespace infrastructure.Mqtt;
 
 public class MqttDeviceCommandsRepository
 {
-    private readonly IMqttClient _mqttClient = await MqttClientGenerator.CreateMqttClient();
-
+    private readonly IMqttClient _mqttClient = MqttClientGenerator.CreateMqttClient().Result;
     public async Task SendReverseCommand(string mac, bool reversed)
     {
         await _mqttClient.PublishJsonAsync($"/devices/{mac}/commands/motor", new { Reversed = reversed });
