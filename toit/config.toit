@@ -26,7 +26,6 @@ class Config:
       
   get-config:
     client /mqtt.Client := Flespi-MQTT.get-instance.get-client
-    //TODO: wait for response
     client.subscribe "$TOPIC-PREFIX/devices/$MAC/config" :: |topic /string payload /ByteArray|
       json := json.decode payload
       print "Received config message on topic: $topic with payload: $json"

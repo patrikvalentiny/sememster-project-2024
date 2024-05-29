@@ -33,7 +33,7 @@ public class WsHelperTests
             .ReturnsAsync(new ServerSaysHelloDto { Message = "Hello, message!" });
         var act = async () => await socket.InvokeBaseDtoHandler(dtoString, mediatr.Object);
 
-        await act.Should().ThrowAsync<NullReferenceException>();
+        await act.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Test]
