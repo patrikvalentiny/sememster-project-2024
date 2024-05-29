@@ -7,6 +7,7 @@ namespace api.Controllers;
 public class StatusController : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType(200)]
     public IActionResult GetStatus()
     {
         return Ok("Service is running");

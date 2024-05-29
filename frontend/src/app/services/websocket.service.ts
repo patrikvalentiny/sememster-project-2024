@@ -1,4 +1,4 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal, WritableSignal} from '@angular/core';
 import {environment} from "../../environments/environment";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {ServerSendsNotification} from './events/server-sends-notification';
@@ -10,6 +10,7 @@ import {BmeData} from "../models/bme-data";
 import {ServerSendsDeviceBaseDataDto} from './events/server/server-sends-device-base-data-dto';
 import {StateService} from "./state.service";
 import {ServerSendsMotorDataDto} from "./events/server/server-sends-motor-data-dto";
+import {ServerSendsRtcDataDto} from "./events/server/server-sends-rtc-data-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,7 @@ export class WebsocketService {
 
   private handleEvent(event: MessageEvent) {
     if (!environment.production) {
-    console.log("Received: " + event.data);
+      console.log("Received: " + event.data);
     }
     const data = JSON.parse(event.data) as BaseDto<any>;
     //@ts-ignore
@@ -79,8 +80,7 @@ export class WebsocketService {
   private ServerDeviceBmeData(data: ServerDeviceBmeData) {
     const bmeData = data.data!;
     const bmeDataList = this.stateService.bmeData.get(bmeData.deviceMac!)!;
-    bmeDataList.update(value => [bmeData as BmeData, ...value.slice(0, 24)]);
-    // this.stateService.bmeData.set(bmeData.deviceMac!, bmeDataList);
+    bmeDataList.update(value => [bmeData as BmeData, ...value.filter(value => new Date(value.createdAt).getTime() > Date.now() - 24 * 60 * 60 * 1000)]);
   }
 
   private ServerSendsDeviceBaseData(data: ServerSendsDeviceBaseDataDto) {
@@ -90,6 +90,15 @@ export class WebsocketService {
   private ServerSendsMotorData(data: ServerSendsMotorDataDto) {
     this.stateService.motorPosition.set(data.mac!, data.position!);
     this.stateService.motorMoving.set(data.mac!, false);
+  }
+
+  private ServerSendsRtcData(data: ServerSendsRtcDataDto) {
+    const signalList: WritableSignal<BmeData[]> | undefined = this.stateService.rtcData.get(data.mac!);
+    if (!signalList) {
+      this.stateService.rtcData.set(data.mac!, signal([data.data!]));
+      return;
+    }
+    signalList.update(value => [data.data!, ...value]);
   }
 
 }

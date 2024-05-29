@@ -1,17 +1,36 @@
-﻿services:
+﻿version: '3.9'
+
+services:
+  frontend:
+    image: patrikvalentiny/climate-ctrl-frontend:main
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    restart: always
+  
   api:
-    #    image: api
+    depends_on:
+      - db
+      - flyway
+    image: patrikvalentiny/climate-ctrl:latest
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ConnectionStrings__Postgres: postgresql://admin:admin@db:5432/climate_ctrl
     ports:
       - "8080:8080"
-    environment:
-      ASPNETCORE_ConnectionStrings__Postgres: ${ASPNETCORE_ConnectionStrings__Postgres}
-      ASPNETCORE_Flespi__Username: ${ASPNETCORE_Flespi__Username}
+    env_file:
+      - .env
   
   db:
     image: postgres:latest
+    container_name: db
     ports:
       - "5432:5432"
     volumes:
@@ -21,3 +40,19 @@
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_SCHEMA: public
+      POSTGRES_PORT: 5432
+    restart: always
+    
+  flyway:
+    image: flyway/flyway:latest
+    command: migrate
+    volumes:
+      - ./sql:/flyway/sql
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/climate_ctrl
+      FLYWAY_USER: admin
+      FLYWAY_PASSWORD: admin
+      FLYWAY_SCHEMAS: public,climate_ctrl
+      FLYWAY_CONNECT_RETRIES: 50
+    depends_on:
+      - db

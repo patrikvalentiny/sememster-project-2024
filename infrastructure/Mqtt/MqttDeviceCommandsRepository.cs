@@ -1,20 +1,24 @@
 ﻿using commons;
+using MQTTnet.Client;
 
 namespace infrastructure.Mqtt;
 
-public static class MqttDeviceCommandsRepository
+public class MqttDeviceCommandsRepository
 {
-    public static async Task SendReverseCommand(string mac, bool reversed)
+    private readonly IMqttClient _mqttClient = MqttClientGenerator.CreateMqttClient().Result;
+    public async Task SendReverseCommand(string mac, bool reversed)
     {
-        var mqttClient = await MqttClientGenerator.CreateMqttClient();
-        await mqttClient.PublishJsonAsync($"/devices/{mac}/commands/motor", new { Reversed = reversed });
-        mqttClient.Dispose();
+        await _mqttClient.PublishJsonAsync($"/devices/{mac}/commands/motor", new { Reversed = reversed });
     }
 
-    public static async Task SendMaxPosition(string mac, int position)
+    public async Task SendMaxPosition(string mac, int position)
     {
-        var mqttClient = await MqttClientGenerator.CreateMqttClient();
-        await mqttClient.PublishJsonAsync($"/devices/{mac}/commands/motor", new { MaxPosition = position });
-        mqttClient.Dispose();
+        await _mqttClient.PublishJsonAsync($"/devices/{mac}/commands/motor", new { MaxPosition = position });
     }
+    
+    public async Task SendRtcCommand(string mac, bool start)
+    {
+        await _mqttClient.PublishJsonAsync($"/devices/{mac}/commands/bmertc", new { Command = start ? "start" : "stop" });
+    }
+    
 }

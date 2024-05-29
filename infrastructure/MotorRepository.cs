@@ -14,7 +14,7 @@ public class MotorRepository(DbDataSource dataSource)
         return conn.Execute(sql, new { mac, position });
     }
 
-    public MotorPositionDto GetMotorPosition(string mac)
+    public MotorPositionDto? GetMotorPosition(string mac)
     {
         var sql = $@"SELECT 
                     last_motor_position as {nameof(MotorPositionDto.LastMotorPosition)}, 
@@ -23,7 +23,7 @@ public class MotorRepository(DbDataSource dataSource)
                     FROM climate_ctrl.device_config
                     WHERE mac = @mac";
         using var conn = dataSource.OpenConnection();
-        return conn.QueryFirst<MotorPositionDto>(sql, new { mac });
+        return conn.QueryFirstOrDefault<MotorPositionDto>(sql, new { mac });
     }
 
     public int SetMaxMotorPosition(string mac, int position)

@@ -6,7 +6,7 @@ import .utils
 
 class Flespi-MQTT:
   static INSTANCE /Flespi-MQTT? := null
-  static CLIENT-ID /string ::= "patrikvalentiny"
+  static CLIENT-ID /string ::= Utils.get-mac-string
   client_ /mqtt.Client := mqtt.Client --host=secrets.MQTT-HOST
 
   constructor:
