@@ -21,7 +21,7 @@
         </button>
       </div>
       @if(rtcOn) {
-        <p>rtc</p>
+        <app-historic-data-chart [bmeData]="getRtcBmeDataSignal()" class="w-full h-full"></app-historic-data-chart>
       } @else {
         <app-historic-data-chart [bmeData]="bmeData" class="w-full h-full"></app-historic-data-chart>
       }

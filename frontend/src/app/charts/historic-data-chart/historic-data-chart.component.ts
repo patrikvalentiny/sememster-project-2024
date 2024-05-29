@@ -87,7 +87,9 @@ export class HistoricDataChartComponent {
 
   constructor() {
     effect(() => {
-      this.updateSeries(this.bmeData()).then();
+      if (this.bmeData) {
+        this.updateSeries(this.bmeData()).then();
+      }
     });
 
     this.commonChartOptions = {
@@ -127,7 +129,7 @@ export class HistoricDataChartComponent {
         enabled: true,
         easing: 'easeout',
         dynamicAnimation: {
-          speed: 250
+          speed: 1000
         }
       },
       id: "chart1",
@@ -147,7 +149,7 @@ export class HistoricDataChartComponent {
         enabled: true,
         easing: 'easeout',
         dynamicAnimation: {
-          speed: 250
+          speed: 1000
         }
       },
       id: "chart2",
@@ -168,7 +170,7 @@ export class HistoricDataChartComponent {
         enabled: true,
         easing: 'easeout',
         dynamicAnimation: {
-          speed: 250
+          speed: 1000
         }
       },
       id: "chart3",

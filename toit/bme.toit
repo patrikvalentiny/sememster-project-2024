@@ -74,7 +74,7 @@ class BME280 implements BME:
         message := json.decode payload
         print "Received command message on topic: $topic with payload: $message"
         if message["command"] == "start":
-          start-rtc --s=5
+          start-rtc --s=1
         else if message["command"] == "stop":
           stop-rtc
 
@@ -133,6 +133,6 @@ class BME-SIM implements BME:
         message := json.decode payload
         print "Received command message on topic: $topic with payload: $message"
         if message["command"] == "start":
-          start-rtc --s=5
+          start-rtc --s=1
         else if message["command"] == "stop":
           stop-rtc

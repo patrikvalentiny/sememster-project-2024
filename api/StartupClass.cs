@@ -38,6 +38,7 @@ public static class StartupClass
         _ = app.Services.GetRequiredService<MqttDevicesClient>().CommunicateWithBroker();
         _ = app.Services.GetRequiredService<MqttDeviceDataClient>().CommunicateWithBroker();
         _ = app.Services.GetRequiredService<MqttDeviceMotorPosition>().CommunicateWithBroker();
+        _ = app.Services.GetRequiredService<MqttRtcHandler>().CommunicateWithBroker();
 
         // Initialize the proxy as task
         return app;
@@ -82,6 +83,7 @@ public static class StartupClass
         builder.Services.AddSingleton<IMotorService, MotorService>();
         builder.Services.AddSingleton<MotorRepository>();
         builder.Services.AddSingleton<MqttDeviceCommandsRepository>();
+        builder.Services.AddSingleton<MqttRtcHandler>();
 
         var types = Assembly.GetExecutingAssembly();
         builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(types); });

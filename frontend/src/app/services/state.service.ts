@@ -10,6 +10,7 @@ export class StateService {
   bmeData: Map<string, WritableSignal<BmeData[]>> = new Map<string, WritableSignal<BmeData[]>>();
   motorPosition: Map<string, number> = new Map<string, number>();
   motorMoving: Map<string, boolean> = new Map<string, boolean>();
+  rtcData: Map<string, WritableSignal<BmeData[]>> = new Map<string, WritableSignal<BmeData[]>>();
 
   constructor() {
 
