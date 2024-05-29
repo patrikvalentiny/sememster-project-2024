@@ -66,7 +66,7 @@ public static class StartupClass
         builder.Host.UseSerilog();
 
         var conn = Environment.GetEnvironmentVariable("ASPNETCORE_ConnectionStrings__Postgres") ??
-                   throw new Exception("Connection string not found");
+                   throw new InvalidOperationException("Connection string not found");
         builder.Services.AddNpgsqlDataSource(Utilities.FormatConnectionString(conn),
             dataSourceBuilder =>
                 dataSourceBuilder.EnableParameterLogging());
@@ -146,7 +146,7 @@ public static class StartupClass
         return new TcpProxyServer(proxyConfiguration);
     }
 
-    private static IWebSocketServer StartWebSocketServer(IServiceProvider services)
+    private static WebSocketServer StartWebSocketServer(IServiceProvider services)
     {
         var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
         var webSocketStateService = services.GetRequiredService<IWebSocketStateService>();
