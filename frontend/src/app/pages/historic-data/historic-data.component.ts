@@ -22,6 +22,7 @@ import {StateService} from "../../services/state.service";
 })
 export class HistoricDataComponent implements OnDestroy {
   mac: InputSignal<string> = input("", {alias: "mac"});
+  previousMac: string = "";
   bmeData: WritableSignal<BmeData[]> = signal<BmeData[]>([]);
   days: number = 7;
   private readonly dataService = inject(DataService);
@@ -33,8 +34,11 @@ export class HistoricDataComponent implements OnDestroy {
   constructor() {
     this.rtcData = this.stateService.rtcData.get(this.mac()) ?? signal<BmeData[]>([])
     effect(() => {
-      if(this.days === 0) this.days = 7;
+      if(this.days === 0){
+        this.stopRtc(this.previousMac);
+      }
       this.getBmeData(this.days).then()
+      this.previousMac = this.mac();
     });
   }
 
@@ -54,10 +58,10 @@ export class HistoricDataComponent implements OnDestroy {
     this.ws.sendJson(new ClientStartsRtc({mac: this.mac()}));
   }
 
-  stopRtc() {
+  stopRtc(mac:string = this.mac()) {
     this.rtcOn = false;
     this.days = 7;
-    this.ws.sendJson(new ClientStopsRtc({mac: this.mac()}));
+    this.ws.sendJson(new ClientStopsRtc({mac: mac}));
   }
 
   getRtcBmeDataSignal() {

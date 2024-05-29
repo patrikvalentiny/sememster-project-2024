@@ -24,7 +24,7 @@ export class HomeSkeletonComponent implements OnInit {
   stateService = inject(StateService);
   private readonly toast: HotToastService = inject(HotToastService);
   private readonly dashboardService = inject(DashboardService);
-  private readonly router = inject(Router);
+  readonly router = inject(Router);
 
   async ngOnInit(): Promise<void> {
     if (await this.dashboardService.checkStatus()){

@@ -1,5 +1,5 @@
-<div class="flex flex-row justify-between items-center">
-  <button (click)="viewData()" class="btn btn-ghost p-1 w-2/3">{{ device!.name }}</button>
+<div class="flex flex-row justify-between items-center" >
+  <button (click)="viewData()" class="btn p-1 w-2/3" [ngClass]="this.router.url.includes(this.device.mac) ? 'btn-secondary' : 'btn-ghost'">{{ device!.name }}</button>
   <div class="flex flex-row h-full">
     <!--    <button class="btn btn-square btn-ghost w-10" (click)="viewRtcData()">📉</button>-->
     <button (click)="controlMotor()" class="btn btn-square btn-ghost w-10">🪟</button>

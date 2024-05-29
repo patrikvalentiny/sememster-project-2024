@@ -3,7 +3,7 @@ import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
-  ApexGrid,
+  ApexGrid, ApexNoData,
   ApexStroke, ApexTooltip,
   ApexXAxis,
   ChartComponent,
@@ -21,6 +21,7 @@ type ChartOptions = {
   grid: ApexGrid;
   stroke: ApexStroke;
   tooltip:ApexTooltip;
+  noData: ApexNoData;
 };
 
 @Component({
@@ -44,6 +45,7 @@ type ChartOptions = {
                  [theme]="sharedChartOptions.theme"
                  [title]="{text: 'Temperature'}"
                  [tooltip]="commonChartOptions.tooltip"
+                 [noData]="commonChartOptions.noData"
       ></apx-chart>
       <apx-chart #chart2
                  [series]="commonChartOptions.series"
@@ -56,6 +58,8 @@ type ChartOptions = {
                  [theme]="sharedChartOptions.theme"
                  [title]="{text: 'Humidity'}"
                  [tooltip]="commonChartOptions.tooltip"
+                 [noData]="commonChartOptions.noData"
+
       ></apx-chart>
       <apx-chart #chart3
                  [series]="commonChartOptions.series"
@@ -68,6 +72,8 @@ type ChartOptions = {
                  [theme]="sharedChartOptions.theme"
                  [title]="{text: 'Pressure'}"
                  [tooltip]="commonChartOptions.tooltip"
+                 [noData]="commonChartOptions.noData"
+
       ></apx-chart>
 
     </div>`,
@@ -93,6 +99,9 @@ export class HistoricDataChartComponent {
     });
 
     this.commonChartOptions = {
+      noData:{
+        text: "No data available"
+      },
       tooltip:{
         shared:true,
         onDatasetHover:{
@@ -109,10 +118,10 @@ export class HistoricDataChartComponent {
         curve: "smooth"
       },
       grid: {
-        row: {
-          colors: [colors.base100, "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5
-        }
+        // row: {
+          // colors: [colors.base100, "transparent"], // takes an array which will be repeated on columns
+          // opacity: 0.5
+        // }
       },
       xaxis: {
         type: "datetime",
