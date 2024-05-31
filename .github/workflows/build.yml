@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+      - staging
+      - dev
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -62,6 +64,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          ASPNETCORE_ConnectionStrings__Postgres: postgresql://${{ env.FLYWAY_USER }}:${{ env.FLYWAY_PASSWORD }}@localhost:5432/${{ env.DB_NAME }}
+          ASPNETCORE_Flespi__Username: ${{ secrets.FLESPI_USERNAME }}
         shell: powershell
         run: |
           dotnet-sonarscanner begin /k:"patrikvalentiny_ClimateCtrl" /o:"patrikvalentiny" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=unittests\coverage.xml
