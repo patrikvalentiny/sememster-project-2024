@@ -23,13 +23,16 @@ public class ClientStartsListeningToDevice(IWebSocketStateService stateService, 
         CancellationToken cancellationToken)
     {
         var socket = request.Socket!;
-
+        
+        // Add the connection id to the set of connection ids for the mac address
         if (stateService.MacToConnectionId.TryGetValue(request.Mac, out var connectionIdList))
             connectionIdList.Add(socket.ConnectionInfo.Id);
         else
             stateService.MacToConnectionId.TryAdd(request.Mac, [socket.ConnectionInfo.Id]);
 
+        // Get the latest data for the mac address
         var data = dataService.GetLatestData(request.Mac);
+        // Send the data to the client
         return Task.FromResult(new ServerSendsDeviceBaseDataDto { Mac = request.Mac, Data = data });
     }
 }
