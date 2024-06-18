@@ -1,6 +1,4 @@
-﻿version: '3.9'
-
-services:
+﻿services:
   frontend:
     image: patrikvalentiny/climate-ctrl-frontend:main
     build:
