@@ -56,7 +56,7 @@ class BME280 implements BME:
 
 
   live_ /bool := false
-  start-rtc --s=1000:
+  start-rtc --s=1:
     if live_: return
     live_ = true
     task::
@@ -115,7 +115,7 @@ class BME-SIM implements BME:
 
 
   live_ /bool := false
-  start-rtc --s=1000:
+  start-rtc --s=1:
     if live_: return
     live_ = true
     task::

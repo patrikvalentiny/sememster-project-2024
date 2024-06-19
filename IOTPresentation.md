@@ -1,11 +1,8 @@
 ﻿# ClimateCtrl
 
-Realtime data visualization of temperature and humidity data from a ESP32 in a dashboard.
+## [WEBSITE](https://climate-ctrl.web.app/)
 
-### [Configuration](toit/config.toit)
-- Configuration of the device
-- Sends the device mac to the MQTT broker to receive the configuration from the server
-- Blocks the execution until the configuration is received from the MQTT broker
+Realtime data visualization of temperature and humidity data from a ESP32 in a dashboard.
 
 ### [MQTT Driver](toit/flespi-mqtt.toit)
 - Client for the Flespi MQTT broker
@@ -17,8 +14,9 @@ Realtime data visualization of temperature and humidity data from a ESP32 in a d
 - Sends data periodically to the MQTT broker in specific intervals
 - Able to start and stop the realtime communication
   - Listening to `$TOPIC-PREFIX/devices/$MAC/commands/bmertc` for `start` and `stop` commands
+  - Sends data to `$TOPIC-PREFIX/devices/$MAC/bmedata/rtc`
 
-### [DRV8825](toit/drv8825.toit)https://climate-ctrl.web.app/
+### [DRV8825](toit/drv8825.toit)
 - Driver for the DRV8825 stepper motor driver
 - Subscribes MQTT topics:
   - `$TOPIC-PREFIX/devices/$MAC/commands/motor` for max position and direction change commands
@@ -28,4 +26,9 @@ Realtime data visualization of temperature and humidity data from a ESP32 in a d
   - Go to a specific position
   - Move a specific amount of steps CW or CCW
   - Send the current position
+
+### [Configuration](toit/config.toit)
+- Configuration of the device
+- Sends the device mac to the MQTT broker to receive the configuration from the server
+- Blocks the execution until the configuration is received from the MQTT broker
 
